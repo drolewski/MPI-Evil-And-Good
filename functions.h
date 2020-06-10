@@ -7,9 +7,9 @@
 
 Person init(int id, Object* toiletList, Object* potList);
 
-void preparing();
+void preparing(Person* person, Object* toiletList, Object* potList);
 
-void waitCritical();
+void waitCritical(Person* person, Object* toiletList, Object* potList);
 
 void inCritical();
 

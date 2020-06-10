@@ -29,14 +29,17 @@
 #define BROKEN 300
 #define REPAIRED 301
 
-struct Object {
+struct Object
+{
     int objectType;
     int id;
     int objectState;
     int noInList;
-}; typedef struct Object Object;
+};
+typedef struct Object Object;
 
-struct Person {
+struct Person
+{
     int personType;
     int id;
     int goodCount;
@@ -47,23 +50,31 @@ struct Person {
     int messageCount;
     int lamportClock;
     int priority;
-}; typedef struct Person Person;
+};
+typedef struct Person Person;
 
-struct Request {
+ struct Request
+{
     int id;
     int requestType;
     int objectId;
     int priority;
-}; typedef struct Request Request;
+};
 
+typedef struct Request Request;
 
-struct ARequest {
+extern MPI_Datatype MPI_Request;
+extern MPI_Datatype MPI_ARequest;
+
+struct ARequest
+{
     int id;
     int requestType;
     int objectId;
     int priority;
     int objectState;
     int objectType;
-}; typedef struct ARequest ARequest;
+};
+typedef struct ARequest ARequest;
 
 #endif
