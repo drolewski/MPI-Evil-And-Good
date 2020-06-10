@@ -5,7 +5,7 @@
 #include <sys/time.h>
 #include "structure.h"
 
-void init();
+void init(int id, Object* toiletList, Object* potList);
 
 void preparing();
 
