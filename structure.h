@@ -23,17 +23,17 @@
 enum PersonType {
     bad,
     good    
-}
+}; typedef enum PersonType PersonType;
 
 enum ObjectType {
     pot,
     toilet
-}
+}; typedef enum ObjectType ObjectType;
 
 enum ObjectState {
     broken,
     repaired
-}
+}; typedef enum ObjectState ObjectState;
 
 struct Person {
     PersonType personType;
@@ -46,21 +46,22 @@ struct Person {
     int messageCount;
     int lamportClock;
     int priority;
-}
+}; typedef struct Person Person;
 
 struct Object {
     ObjectType objectType;
     int id;
     ObjectState ObjectState;
     int noInList;
-}
+}; typedef struct Object Object;
 
 struct Request {
     int id;
     int requestType;
     int objectId;
     int priority;
-}
+}; typedef struct Request Request;
+
 
 struct ARequest {
     int id;
@@ -69,6 +70,6 @@ struct ARequest {
     int priority;
     int objectState;
     int objectType;
-}
+}; typedef struct ARequest ARequest;
 
 #endif
