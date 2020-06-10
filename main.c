@@ -16,7 +16,7 @@ Person init(int id, Object* toiletList, Object* potList){
         Object pot;
         pot.id = i + 1;
         pot.noInList = i;
-        pot.ObjectState = ObjectState.repaired;
+        pot.objectState = REPAIRED;
         potList[i] = pot;
     }
 
@@ -24,13 +24,13 @@ Person init(int id, Object* toiletList, Object* potList){
         Object toilet;
         toilet.id = i + 1;
         toilet.noInList = i;
-        toilet.ObjectState = ObjectState.repaired;
+        toilet.objectState = REPAIRED;
         toiletList[i] = toilet;
     }
 
     struct Person person;
     person.id = id;
-    person.personType = person.id <= goodNumber ? PersonType.good : PersonType.bad; 
+    person.personType = person.id <= goodNumber ? GOOD : BAD; 
     person.goodCount = goodNumber;
     person.badCount = badNumber;
     person.avaliableObjectsCount = toiletNumber + potNumber;
@@ -43,9 +43,17 @@ Person init(int id, Object* toiletList, Object* potList){
     return person;
 }
 
-int main (int argc, char **argv) {
+void waitRandomTime(int id){
+    time_t tt;
+    int quantum = time(&tt);
+    srand(quantum + id); 
+    double seconds = ((double) (rand()%1000))/500;
+    printf("Process: %d is waiting: %f\n", id, seconds);
+    sleep(seconds);
+}
 
-    MPI_Init(int argc, char **argv);
+int main (int argc, char **argv) {
+    MPI_Init(&argc, &argv);
 
     int size,rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -54,24 +62,31 @@ int main (int argc, char **argv) {
     MPI_Status status;
     if (rank == 0) {
         for(int i = 1; i <= (goodNumber + badNumber); i++){
-            MPI_Send(i, 1, MPI_INT, i, SYNCHR, MPI_COMM_WORLD);
+            MPI_Send(&i, 1, MPI_INT, i, SYNCHR, MPI_COMM_WORLD);
         }
         int counter = 0;
         while(counter < (goodNumber + badNumber)) {
             int sourceId;
-            MPI_Recv(sourceId, 1, MPI_INT, MPI_ANY_SOURCE, SYNCHR, MPI_COMM_WORLD, &status);
+            MPI_Recv(&sourceId, 1, MPI_INT, MPI_ANY_SOURCE, SYNCHR, MPI_COMM_WORLD, &status);
             printf("SYNCHR Message Received from: %d\n", sourceId);
             counter++;
         }
-        printf("SYNCHR done!\n");
+        printf("\nSYNCHR done!\n\n");
+        for(int i = 1; i <= (goodNumber + badNumber); i++){
+            MPI_Send(&i, 1, MPI_INT, i, SYNCHR, MPI_COMM_WORLD);
+        }
     } else {
         int id;
-        MPI_Recv(id, 1, MPI_INT, 0, SYNCHR, MPI_COMM_WORLD, &status);
+        MPI_Recv(&id, 1, MPI_INT, 0, SYNCHR, MPI_COMM_WORLD, &status);
         struct Object* toiletList;
         struct Object* potList;
         Person person = init(id, toiletList, potList);
-        printf("Process: %d is Person: %d, %s\n", rank, person.id, person.personType ? "good" : "bad");
-        MPI_Send(id, 1, MPI_INT, 0, SYNCHR, MPI_COMM_WORLD);
+        printf("Process: %d is Person: %d, %s\n", rank, person.id, person.personType-100 ? "good" : "bad");
+        MPI_Send(&id, 1, MPI_INT, 0, SYNCHR, MPI_COMM_WORLD);
+
+        MPI_Recv(&id, 1, MPI_INT, 0, SYNCHR, MPI_COMM_WORLD, &status);
+        
+        waitRandomTime(id);
     }    
 
     MPI_Finalize();

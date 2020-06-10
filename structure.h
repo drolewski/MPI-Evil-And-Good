@@ -20,23 +20,24 @@
 #define ACKALL 60
 #define REJECT 70
 
-enum PersonType {
-    bad,
-    good    
-}; typedef enum PersonType PersonType;
+#define BAD 100
+#define GOOD 101
 
-enum ObjectType {
-    pot,
-    toilet
-}; typedef enum ObjectType ObjectType;
+#define POT 200
+#define TOILET 201
 
-enum ObjectState {
-    broken,
-    repaired
-}; typedef enum ObjectState ObjectState;
+#define BROKEN 300
+#define REPAIRED 301
+
+struct Object {
+    int objectType;
+    int id;
+    int objectState;
+    int noInList;
+}; typedef struct Object Object;
 
 struct Person {
-    PersonType personType;
+    int personType;
     int id;
     int goodCount;
     int badCount;
@@ -47,13 +48,6 @@ struct Person {
     int lamportClock;
     int priority;
 }; typedef struct Person Person;
-
-struct Object {
-    ObjectType objectType;
-    int id;
-    ObjectState ObjectState;
-    int noInList;
-}; typedef struct Object Object;
 
 struct Request {
     int id;
