@@ -1,3 +1,6 @@
+#ifndef STRUCTURE_H
+#define STRUCTURE_H
+
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,3 +70,5 @@ struct ARequest {
     int objectState;
     int objectType;
 }
+
+#endif
