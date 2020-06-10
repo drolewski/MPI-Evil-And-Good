@@ -17,18 +17,53 @@
 #define ACKALL 60
 #define REJECT 70
 
+enum PersonType {
+    bad,
+    good    
+}
+
+enum ObjectType {
+    pot,
+    toilet
+}
+
+enum ObjectState {
+    broken,
+    repaired
+}
+
 struct Person {
-    
+    PersonType personType;
+    int id;
+    int goodCount;
+    int badCount;
+    Object *potList;
+    Object *toiletList;
+    int avaliableObjectsCount;
+    int messageCount;
+    int lamportClock;
+    int priority;
 }
 
 struct Object {
-
+    ObjectType objectType;
+    int id;
+    ObjectState ObjectState;
+    int noInList;
 }
 
 struct Request {
-
+    int id;
+    int requestType;
+    int objectId;
+    int priority;
 }
 
 struct ARequest {
-
+    int id;
+    int requestType;
+    int objectId;
+    int priority;
+    int objectState;
+    int objectType;
 }
