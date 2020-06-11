@@ -64,7 +64,7 @@ typedef struct Person Person;
 
 typedef struct Request Request;
 
-extern MPI_Datatype MPI_Request;
+extern MPI_Datatype MPI_REQ;
 extern MPI_Datatype MPI_ARequest;
 
 struct ARequest

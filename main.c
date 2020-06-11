@@ -8,7 +8,7 @@ const int potNumber = 1;
 const int goodNumber = 3;
 const int badNumber = 7;
 
-MPI_Datatype MPI_Request;
+MPI_Datatype MPI_REQ;
 MPI_Datatype MPI_ARequest;
 
 Person init(int id, Object *toiletList, Object *potList)
@@ -73,8 +73,8 @@ void setupStructures()
     offsets[4] = offsetof(Request, objectState);
     offsets[5] = offsetof(Request, objectType);
 
-    MPI_Type_create_struct(nItems, blockLengths, offsets, types, &MPI_Request);
-    MPI_Type_commit(&MPI_Request);
+    MPI_Type_create_struct(nItems, blockLengths, offsets, types, &MPI_REQ);
+    MPI_Type_commit(&MPI_REQ);
 
     nItems = 6;
     int aBlockLenghts[6] = {1, 1, 1, 1, 1, 1};
@@ -93,14 +93,14 @@ void setupStructures()
 }
 
 int main(int argc, char **argv)
-{
-    setupStructures();
-    
+{   
     MPI_Init(&argc, &argv);
 
     int size, rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    setupStructures();
 
     MPI_Status status;
     if (rank == 0)
@@ -138,6 +138,7 @@ int main(int argc, char **argv)
         waitRandomTime(id);
 
         preparing(&person);
+        
         waitCritical(&person);
     }
 
@@ -168,7 +169,7 @@ void preparing(Person *person)
                         {
                             if(i != person->id)
                             {
-                                MPI_Send(&req, 1, MPI_Request, i, TREQ, MPI_COMM_WORLD);
+                                MPI_Send(&req, 1, MPI_REQ, i, TREQ, MPI_COMM_WORLD);
                             }
                         }
                     }
@@ -190,7 +191,7 @@ void preparing(Person *person)
                         {
                             if(i != person->id)
                             {
-                                MPI_Send(&req, 1, MPI_Request, i, PREQ, MPI_COMM_WORLD);
+                                MPI_Send(&req, 1, MPI_REQ, i, PREQ, MPI_COMM_WORLD);
                             }
                         }
                     }
@@ -217,7 +218,7 @@ void preparing(Person *person)
                         {
                             if(i != person->id)
                             {
-                                MPI_Send(&req, 1, MPI_Request, i, TREQ, MPI_COMM_WORLD);
+                                MPI_Send(&req, 1, MPI_REQ, i, TREQ, MPI_COMM_WORLD);
                             }
                         }
                     }
@@ -239,7 +240,7 @@ void preparing(Person *person)
                         {
                             if(i != person->id)
                             {
-                                MPI_Send(&req, 1, MPI_Request, i, PREQ, MPI_COMM_WORLD);
+                                MPI_Send(&req, 1, MPI_REQ, i, PREQ, MPI_COMM_WORLD);
                             }
                         }
                     }
@@ -252,7 +253,7 @@ void preparing(Person *person)
         {
             MPI_Status status;
             Request request;
-            MPI_Recv(&request, sizeof(Request), MPI_Request, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+            MPI_Recv(&request, sizeof(Request), MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
             if (status.MPI_ERROR == MPI_SUCCESS)
             {
                 int receivedId = request.id;
@@ -262,13 +263,13 @@ void preparing(Person *person)
                     request.id = person->id;
                     request.requestType = PACK;
                     printf("\tSend PACK to: %d\n", receivedId);
-                    MPI_Send(&request, 1, MPI_Request, receivedId, PACK, MPI_COMM_WORLD);
+                    MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                     break;
                 case TREQ:
                     request.id = person->id;
                     request.requestType = TACK;
                     printf("\tSend TACK to: %d\n", receivedId);
-                    MPI_Send(&request, 1, MPI_Request, receivedId, TACK, MPI_COMM_WORLD);
+                    MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                     break;
                 case ACKALL:
                     if(request.objectType == POT)
@@ -304,5 +305,13 @@ void preparing(Person *person)
                 }
             }
         }
+    }
+}
+
+void waitCritical(Person *person)
+{
+    while(true)
+    {
+
     }
 }
