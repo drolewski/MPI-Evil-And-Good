@@ -7,7 +7,7 @@
 
 Person init(int id, Object *toiletList, Object *potList);
 
-int preparing(Person *person, Object *objectList);
+int preparing(Person *person, Object *objectList, int rejectedRest);
 
 int waitCritical(Person *person, Object *objectList, int listSize, int *objectId, int *objectType);
 

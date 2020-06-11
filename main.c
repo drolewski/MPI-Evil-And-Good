@@ -3,10 +3,10 @@
 #include "structure.h"
 #include "functions.h"
 
-const int toiletNumber = 5;
-const int potNumber = 5;
-const int goodNumber = 3;
-const int badNumber = 7;
+const int toiletNumber = 3;
+const int potNumber = 4;
+const int goodNumber = 4;
+const int badNumber = 6;
 
 MPI_Datatype MPI_REQ;
 
@@ -56,10 +56,7 @@ void waitRandomTime(int id)
     int quantum = time(&tt);
     srand(quantum + id);
     double seconds = ((double)(rand() % 1000)) / 500;
-    char processor[100];
-    int len;
-    MPI_Get_processor_name(processor, &len);
-    printf("%s Process: %d is waiting: %f\n", processor, id, seconds);
+    printf("Process: %d is waiting: %f\n", id, seconds);
     sleep(seconds);
 }
 
@@ -90,11 +87,6 @@ int main(int argc, char **argv)
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
     setupStructures();
-    
-    char processor[100];
-    int len;
-    MPI_Get_processor_name(processor, &len);
-    printf("Size: %d, Rank: %d, processor: %s\n", size, rank, processor);
 
     MPI_Status status;
     if (rank == 0)
@@ -133,9 +125,10 @@ int main(int argc, char **argv)
         waitRandomTime(id);
 
         Object *sendObjects = malloc(sizeof(struct Object) * (toiletNumber + potNumber));
+        int rejectedRest = false;
         while (true)
         {
-            int objectListSize = preparing(&person, sendObjects);
+            int objectListSize = preparing(&person, sendObjects, rejectedRest);
             int objectId = -1;
             int objectType = -1;
             int canGoCritical = waitCritical(&person, sendObjects, objectListSize, &objectId, &objectType);
@@ -156,9 +149,11 @@ int main(int argc, char **argv)
 
                 afterCritical(&person, &object);
                 rest(&person);
+                rejectedRest = false;
             }
             else
             {
+                rejectedRest = true;
                 rest(&person);
             }
         }
@@ -169,36 +164,37 @@ int main(int argc, char **argv)
     MPI_Finalize();
 }
 
-int preparing(Person *person, Object *objectList)
+int preparing(Person *person, Object *objectList, int rejectedRest)
 {
     while (true)
     {
         if (person->avaliableObjectsCount > 0)
         {
             int iterator = 0;
-            if (person->personType - 100)
+            if (person->personType - BAD)
             {
                 // good
                 for (int i = 0; i < toiletNumber; i++)
                 {
                     if (person->toiletList[i].objectState == BROKEN)
                     {
-                        time_t tt;
-                        int quantum = time(&tt);
-                        srand(quantum + person->id);
-                        double priority = rand() % 10;
                         Request req;
                         req.id = person->id;
                         req.objectId = person->toiletList[i].id;
-                        req.priority = person->lamportClock + priority;
                         req.requestType = TREQ;
                         req.objectType = TOILET;
                         req.objectState = person->toiletList[i].objectState;
+                        person->priority = rejectedRest ? person->priority : person->lamportClock;
                         for (int i = 1; i <= (person->goodCount + person->badCount); i++)
                         {
                             if (i != person->id)
                             {
+                                time_t tt;
+                                int quantum = time(&tt);
+                                srand(quantum + person->id + i);
+                                int priority = rand() % 10;
                                 person->lamportClock += 1;
+                                req.priority = person->priority + priority;
                                 printf("\tPREPARING, %d: Send TREQ to: %d\n", person->id, i);
                                 MPI_Send(&req, 1, MPI_REQ, i, TREQ, MPI_COMM_WORLD);
                             }
@@ -211,22 +207,23 @@ int preparing(Person *person, Object *objectList)
                 {
                     if (person->potList[i].objectState == BROKEN)
                     {
-                        time_t tt;
-                        int quantum = time(&tt);
-                        srand(quantum + person->id);
-                        double priority = rand() % 10;
                         Request req;
                         req.id = person->id;
                         req.objectId = person->potList[i].id;
-                        req.priority = person->lamportClock + priority;
                         req.requestType = PREQ;
                         req.objectType = POT;
                         req.objectState = person->toiletList[i].objectState;
+                        person->priority = rejectedRest ? person->priority : person->lamportClock;
                         for (int i = 1; i <= (person->goodCount + person->badCount); i++)
                         {
                             if (i != person->id)
                             {
+                                time_t tt;
+                                int quantum = time(&tt);
+                                srand(quantum + person->id + i);
+                                int priority = rand() % 10;
                                 person->lamportClock += 1;
+                                req.priority = person->priority + priority;
                                 printf("\tPREPARING, %d: Send PREQ to: %d\n", person->id, i);
                                 MPI_Send(&req, 1, MPI_REQ, i, PREQ, MPI_COMM_WORLD);
                             }
@@ -235,7 +232,6 @@ int preparing(Person *person, Object *objectList)
                         iterator++;
                     }
                 }
-                person->lamportClock += 1;
             }
             else
             {
@@ -244,22 +240,23 @@ int preparing(Person *person, Object *objectList)
                 {
                     if (person->toiletList[i].objectState == REPAIRED)
                     {
-                        time_t tt;
-                        int quantum = time(&tt);
-                        srand(quantum + person->id);
-                        double priority = rand() % 10;
                         Request req;
                         req.id = person->id;
                         req.objectId = person->toiletList[i].id;
-                        req.priority = person->lamportClock + priority;
                         req.requestType = TREQ;
                         req.objectType = TOILET;
                         req.objectState = person->toiletList[i].objectState;
+                        person->priority = rejectedRest ? person->priority : person->lamportClock;
                         for (int i = 1; i <= (person->goodCount + person->badCount); i++)
                         {
                             if (i != person->id)
                             {
+                                time_t tt;
+                                int quantum = time(&tt);
+                                srand(quantum + person->id + i);
+                                int priority = rand() % 10;
                                 person->lamportClock += 1;
+                                req.priority = person->priority + priority;
                                 printf("\tPREPARING, %d: Send TREQ to: %d\n", person->id, i);
                                 MPI_Send(&req, 1, MPI_REQ, i, TREQ, MPI_COMM_WORLD);
                             }
@@ -272,22 +269,23 @@ int preparing(Person *person, Object *objectList)
                 {
                     if (person->potList[i].objectState == REPAIRED)
                     {
-                        time_t tt;
-                        int quantum = time(&tt);
-                        srand(quantum + person->id);
-                        double priority = rand() % 10;
                         Request req;
                         req.id = person->id;
                         req.objectId = person->potList[i].id;
-                        req.priority = person->lamportClock + priority;
                         req.requestType = PREQ;
                         req.objectType = POT;
                         req.objectState = person->toiletList[i].objectState;
+                        person->priority = rejectedRest ? person->priority : person->lamportClock;
                         for (int i = 1; i <= (person->goodCount + person->badCount); i++)
                         {
                             if (i != person->id)
                             {
+                                time_t tt;
+                                int quantum = time(&tt);
+                                srand(quantum + person->id + i);
+                                int priority = rand() % 10;
                                 person->lamportClock += 1;
+                                req.priority = person->priority + priority;
                                 printf("\tPREPARING, %d: Send PREQ to: %d\n", person->id, i);
                                 MPI_Send(&req, 1, MPI_REQ, i, PREQ, MPI_COMM_WORLD);
                             }
@@ -296,7 +294,6 @@ int preparing(Person *person, Object *objectList)
                         iterator++;
                     }
                 }
-                person->lamportClock += 1;
             }
             return iterator;
         }
@@ -317,8 +314,8 @@ int preparing(Person *person, Object *objectList)
                     request.objectType = POT;
                     request.objectState = request.objectState;
                     request.objectId = request.objectId;
-                    request.priority = request.priority;
                     person->lamportClock += 1;
+                    request.priority = request.priority;
                     printf("\tPREPARING, %d: Send PACK to: %d\n", person->id, receivedId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                     break;
@@ -328,8 +325,8 @@ int preparing(Person *person, Object *objectList)
                     request.requestType = TACK;
                     request.objectType = TOILET;
                     request.objectState = request.objectState;
-                    request.priority = request.priority;
                     person->lamportClock += 1;
+                    request.priority = request.priority;
                     printf("\tPREPARING, %d: Send TACK to: %d\n", person->id, receivedId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                     break;
@@ -397,8 +394,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                     request.objectId = request.objectId;
                     request.objectState = request.objectState;
                     request.objectType = request.objectType;
-                    request.priority = request.priority;
                     person->lamportClock += 1;
+                    request.priority = request.priority;
                     printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                 }
@@ -421,8 +418,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                         request.objectId = request.objectId;
                         request.objectState = request.objectState;
                         request.objectType = request.objectType;
-                        request.priority = request.priority;
                         person->lamportClock += 1;
+                        request.priority = request.priority;
                         printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                         MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                     }
@@ -442,8 +439,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                                     request.objectId = request.objectId;
                                     request.objectState = request.objectState;
                                     request.objectType = request.objectType;
-                                    request.priority = request.priority;
                                     person->lamportClock += 1;
+                                    request.priority = request.priority;
                                     printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                     MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                                     rejectList[i] += 1;
@@ -455,8 +452,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                                     request.objectId = request.objectId;
                                     request.objectState = request.objectState;
                                     request.objectType = request.objectType;
-                                    request.priority = request.priority;
                                     person->lamportClock += 1;
+                                    request.priority = request.priority;
                                     printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                     MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                                 }
@@ -469,8 +466,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                                         request.objectId = request.objectId;
                                         request.objectState = request.objectState;
                                         request.objectType = request.objectType;
-                                        request.priority = request.priority;
                                         person->lamportClock += 1;
+                                        request.priority = request.priority;
                                         printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                         MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                                     }
@@ -481,8 +478,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                                         request.objectId = request.objectId;
                                         request.objectState = request.objectState;
                                         request.objectType = request.objectType;
-                                        request.priority = request.priority;
                                         person->lamportClock += 1;
+                                        request.priority = request.priority;
                                         printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                         MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                                         rejectList[i] += 1;
@@ -497,8 +494,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                             request.objectId = request.objectId;
                             request.objectState = request.objectState;
                             request.objectType = request.objectType;
-                            request.priority = request.priority;
                             person->lamportClock += 1;
+                            request.priority = request.priority;
                             printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                             MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                         }
@@ -514,8 +511,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                     request.objectId = request.objectId;
                     request.objectState = request.objectState;
                     request.objectType = request.objectType;
-                    request.priority = request.priority;
                     person->lamportClock += 1;
+                    request.priority = request.priority;
                     printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                 }
@@ -538,8 +535,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                         request.objectId = request.objectId;
                         request.objectState = request.objectState;
                         request.objectType = request.objectType;
-                        request.priority = request.priority;
                         person->lamportClock += 1;
+                        request.priority = request.priority;
                         printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                         MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                     }
@@ -559,8 +556,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                                     request.objectId = request.objectId;
                                     request.objectState = request.objectState;
                                     request.objectType = request.objectType;
-                                    request.priority = request.priority;
                                     person->lamportClock += 1;
+                                    request.priority = request.priority;
                                     printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                     MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                                     rejectList[i] += 1;
@@ -572,8 +569,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                                     request.objectId = request.objectId;
                                     request.objectState = request.objectState;
                                     request.objectType = request.objectType;
-                                    request.priority = request.priority;
                                     person->lamportClock += 1;
+                                    request.priority = request.priority;
                                     printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                     MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                                 }
@@ -586,8 +583,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                                         request.objectId = request.objectId;
                                         request.objectState = request.objectState;
                                         request.objectType = request.objectType;
-                                        request.priority = request.priority;
                                         person->lamportClock += 1;
+                                        request.priority = request.priority;
                                         printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                         MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                                     }
@@ -598,8 +595,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                                         request.objectId = request.objectId;
                                         request.objectState = request.objectState;
                                         request.objectType = request.objectType;
-                                        request.priority = request.priority;
                                         person->lamportClock += 1;
+                                        request.priority = request.priority;
                                         printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                         MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                                         rejectList[i] += 1;
@@ -614,8 +611,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                             request.objectId = request.objectId;
                             request.objectState = request.objectState;
                             request.objectType = request.objectType;
-                            request.priority = request.priority;
                             person->lamportClock += 1;
+                            request.priority = request.priority;
                             printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                             MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                         }
@@ -695,7 +692,7 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                     if (objectList[i].id == request.objectId)
                     {
                         rejectList[i] += 1;
-                        person->priority = request.priority;
+                        // person->priority = request.priority;
                     }
                 }
                 break;
@@ -749,7 +746,7 @@ void rest(Person *person)
     time_t tt;
     int quantum = time(&tt);
     srand(quantum + person->id);
-    int iterations = rand() % 15 + 1;
+    int iterations = rand() % (person->goodCount + person->badCount) + 1;
     printf("Process: %d is waiting: %d\n", person->id, iterations);
     while (iterations > 0)
     {
@@ -768,7 +765,6 @@ void rest(Person *person)
                 request.objectId = request.objectId;
                 request.objectState = request.objectState;
                 request.objectType = request.objectType;
-                request.priority = request.priority;
                 person->lamportClock += 1;
                 printf("\tREST, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                 MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
@@ -779,7 +775,6 @@ void rest(Person *person)
                 request.objectId = request.objectId;
                 request.objectState = request.objectState;
                 request.objectType = request.objectType;
-                request.priority = request.priority;
                 person->lamportClock += 1;
                 printf("\tREST, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                 MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
@@ -823,7 +818,7 @@ void rest(Person *person)
 
 void inCritical(Person *person)
 {
-    printf("\tIN_CRITICAL, %d: process is in cricital section\n", person->id);
+    printf(ANSI_COLOR_CYAN "\tIN_CRITICAL, %d: process is in cricital section" ANSI_COLOR_RESET "\n", person->id);
     waitRandomTime(person->id);
 }
 
@@ -835,10 +830,10 @@ void afterCritical(Person *person, Object *object)
         request.id = person->id;
         request.requestType = ACKALL;
         request.objectId = object->id;
-        request.objectState = object->objectState;
+        request.objectState = object->objectState == BROKEN ? REPAIRED : BROKEN;
         request.objectType = object->objectType;
-        request.priority = person->priority;
         person->lamportClock += 1;
+        person->priority = request.priority;
         printf("\tAFTER_CRITICAL, %d: SEND ACKALL to id: %d about objectId: %d\n", person->id, i, request.objectId);
         MPI_Send(&request, 1, MPI_REQ, i, ACKALL, MPI_COMM_WORLD);
     }
