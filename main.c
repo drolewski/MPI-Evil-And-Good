@@ -184,7 +184,7 @@ int preparing(Person *person, Object *objectList, int rejectedRest)
                         req.requestType = TREQ;
                         req.objectType = TOILET;
                         req.objectState = person->toiletList[i].objectState;
-                        person->priority = rejectedRest ? person->priority : person->lamportClock;
+                        person->priority = rejectedRest ? person->priority + 10 : person->lamportClock;
                         for (int i = 1; i <= (person->goodCount + person->badCount); i++)
                         {
                             if (i != person->id)
@@ -671,7 +671,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                 {
                     if (objectList[i].objectType == POT && objectList[i].id == request.objectId)
                     {
-                        ackList[i] += 1;
+                        if ((request.priority - person->priority) <= 9)
+                            ackList[i] += 1;
                     }
                 }
                 break;
@@ -681,7 +682,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                 {
                     if (objectList[i].objectType == TOILET && objectList[i].id == request.objectId)
                     {
-                        ackList[i] += 1;
+                        if ((request.priority - person->priority) <= 9)
+                            ackList[i] += 1;
                     }
                 }
                 break;
@@ -691,7 +693,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                 {
                     if (objectList[i].id == request.objectId)
                     {
-                        rejectList[i] += 1;
+                        if ((request.priority - person->priority) <= 9)
+                            rejectList[i] += 1;
                         // person->priority = request.priority;
                     }
                 }
