@@ -153,8 +153,10 @@ int main(int argc, char **argv)
                 rest(&person);
             }
         }
+        free(sendObjects);
+        free(person.toiletList);
+        free(person.potList);
     }
-
     MPI_Finalize();
 }
 
@@ -716,6 +718,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                 printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person->id, objectList[i].objectType == TOILET ? "toilet" : "pot", objectList[i].id);
                 objectId = &objectList[i].id;
                 objectType = &objectList[i].objectType;
+                free(ackList);
+                free(rejectList);
                 return true;
             }
         }
@@ -723,6 +727,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
         if (listSize == 0)
         {
             printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person->id);
+            free(ackList);
+            free(rejectList);
             return false;
         }
     }
