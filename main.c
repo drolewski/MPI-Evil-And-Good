@@ -139,17 +139,30 @@ int main(int argc, char **argv)
 
         Object *sendObjects = malloc(sizeof(struct Object) * (toiletNumber + potNumber));
         int objectListSize = preparing(&person, sendObjects);
-
-        int canGoCritical = waitCritical(&person, sendObjects, objectListSize);
+        int objectId = -1;
+        int objectType = -1;
+        int canGoCritical = waitCritical(&person, sendObjects, objectListSize, &objectId, &objectType);
 
         if (canGoCritical)
         {
             inCritical(&person);
-            rest();
+
+            Object object;
+            if (objectType == TOILET && objectId > 0)
+            {
+                object = person.toiletList[objectId - 1];
+            }
+            else if (objectType == POT && objectId > 0)
+            {
+                object = person.potList[objectId - 1];
+            }
+
+            afterCritical(&person, &object);
+            rest(&person);
         }
         else
         {
-            rest();
+            rest(&person);
         }
     }
 
@@ -334,7 +347,7 @@ int preparing(Person *person, Object *objectList)
     return -1;
 }
 
-int waitCritical(Person *person, Object *objectList, int listSize)
+int waitCritical(Person *person, Object *objectList, int listSize, int *objectId, int *objectType)
 {
     int *ackList = malloc(sizeof(int) * listSize);
     memset(ackList, 0, (sizeof(int) * listSize));
@@ -632,6 +645,8 @@ int waitCritical(Person *person, Object *objectList, int listSize)
             if (ackList[i] == (person->goodCount + person->badCount - 1))
             {
                 printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person->id, objectList[i].objectType == TOILET ? "toilet" : "pot", objectList[i].id);
+                objectId = objectList[i].id;
+                objectType = objectList[i].objectType;
                 return true;
             }
         }
@@ -644,12 +659,29 @@ int waitCritical(Person *person, Object *objectList, int listSize)
     }
 }
 
-void rest()
+void rest(Person *person)
 {
 }
 
-void inCritical(Person* person)
+void inCritical(Person *person)
 {
     printf("\tIN_CRITICAL, %d: process is in cricital section\n", person->id);
     waitRandomTime(person->id);
+}
+
+void afterCritical(Person *person, Object *object)
+{
+    Request request;
+    for (int i = 0; i <= (person->goodCount + person->badCount); i++)
+    {
+        request.id = person->id;
+        request.requestType = ACKALL;
+        request.objectId = object->id;
+        request.objectState = object->objectState;
+        request.objectType = object->objectType;
+        request.priority = person->priority;
+        person->lamportClock += 1;
+        printf("\tWAIT_CRITICAL, %d: SEND ACKALL to id: %d about objectId: %d\n", person->id, i, request.objectId);
+        MPI_Send(&request, 1, MPI_REQ, i, ACKALL, MPI_COMM_WORLD);
+    }
 }

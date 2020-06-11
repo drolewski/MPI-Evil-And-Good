@@ -5,16 +5,16 @@
 #include <sys/time.h>
 #include "structure.h"
 
-Person init(int id, Object* toiletList, Object* potList);
+Person init(int id, Object *toiletList, Object *potList);
 
-int preparing(Person* person, Object* objectList);
+int preparing(Person *person, Object *objectList);
 
-int waitCritical(Person* person, Object* objectList, int listSize);
+int waitCritical(Person *person, Object *objectList, int listSize, int *objectId, int *objectType);
 
-void inCritical(Person* person);
+void inCritical(Person *person);
 
-void afterCritical();
+void afterCritical(Person *person, Object *object);
 
-void rest();
+void rest(Person *person);
 
 #endif
