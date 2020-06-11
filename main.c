@@ -13,8 +13,8 @@ MPI_Datatype MPI_ARequest;
 
 Person init(int id, Object *toiletList, Object *potList)
 {
-    toiletList = malloc(sizeof(struct Object) * (toiletNumber + potNumber));
-    potList = malloc(sizeof(struct Object) * (toiletNumber + potNumber));
+    toiletList = malloc(sizeof(struct Object) * toiletNumber );
+    potList = malloc(sizeof(struct Object) * potNumber);
 
     for (int i = 0; i < potNumber; i++)
     {
@@ -137,18 +137,20 @@ int main(int argc, char **argv)
 
         waitRandomTime(id);
 
-        preparing(&person);
+        Object *sendObjects = malloc(sizeof(struct Object) * (toiletNumber + potNumber));
+        int objectListSize = preparing(&person, sendObjects);
         
-        waitCritical(&person);
+        waitCritical(&person, sendObjects, objectListSize);
     }
 
     MPI_Finalize();
 }
 
-void preparing(Person *person)
+int preparing(Person *person, Object* objectList)
 {
     while(true){
         if(person->avaliableObjectsCount > 0){
+            int iterator = 0;
             if(person->personType - 100)
             {
                 // good
@@ -172,6 +174,8 @@ void preparing(Person *person)
                                 MPI_Send(&req, 1, MPI_REQ, i, TREQ, MPI_COMM_WORLD);
                             }
                         }
+                        objectList[iterator] = person->toiletList[i];
+                        iterator++;
                     }
                 }
                 for(int i = 0; i < potNumber; i++)
@@ -194,6 +198,8 @@ void preparing(Person *person)
                                 MPI_Send(&req, 1, MPI_REQ, i, PREQ, MPI_COMM_WORLD);
                             }
                         }
+                        objectList[iterator] = person->potList[i];
+                        iterator++;
                     }
                 }
                 person->lamportClock += 1;
@@ -221,6 +227,8 @@ void preparing(Person *person)
                                 MPI_Send(&req, 1, MPI_REQ, i, TREQ, MPI_COMM_WORLD);
                             }
                         }
+                        objectList[iterator] = person->toiletList[i];
+                        iterator++;
                     }
                 }
                 for(int i = 0; i < potNumber; i++)
@@ -243,11 +251,13 @@ void preparing(Person *person)
                                 MPI_Send(&req, 1, MPI_REQ, i, PREQ, MPI_COMM_WORLD);
                             }
                         }
+                        objectList[iterator] = person->potList[i];
+                        iterator++;
                     }
                 }
                 person->lamportClock += 1;
             }    
-            break;    
+            return iterator;    
         }
         else
         {
@@ -262,19 +272,19 @@ void preparing(Person *person)
                 case PREQ:
                     request.id = person->id;
                     request.requestType = PACK;
-                    printf("\tSend PACK to: %d\n", receivedId);
+                    printf("\t%d: Send PACK to: %d\n", person->id, receivedId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                     break;
                 case TREQ:
                     request.id = person->id;
                     request.requestType = TACK;
-                    printf("\tSend TACK to: %d\n", receivedId);
+                    printf("\t%d: Send TACK to: %d\n", person->id,receivedId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                     break;
                 case ACKALL:
                     if(request.objectType == POT)
                     {
-                        printf("\tReceive ACK_ALL with pot: %d and state: %s\n", receivedId, request.objectState - BROKEN ? "repaired": "broken");
+                        printf("\t%d: Receive ACK_ALL with pot: %d and state: %s\n", person->id, receivedId, request.objectState - BROKEN ? "repaired": "broken");
                         person->potList[request.objectId - 1].objectState = request.objectState;
                         if(person->personType == GOOD)
                         {
@@ -287,7 +297,7 @@ void preparing(Person *person)
                     }
                     else
                     {
-                        printf("\tReceive ACK_ALL with toilet: %d and state: %s\n", receivedId, request.objectState - BROKEN ? "repaired": "broken");
+                        printf("\t%d: Receive ACK_ALL with toilet: %d and state: %s\n", person->id, receivedId, request.objectState - BROKEN ? "repaired": "broken");
                         person->toiletList[request.objectId - 1].objectState = request.objectState;
                         if(person->personType == GOOD)
                         {
@@ -306,9 +316,10 @@ void preparing(Person *person)
             }
         }
     }
+    return -1;
 }
 
-void waitCritical(Person *person)
+void waitCritical(Person *person, Object* objectList, int listSize)
 {
     while(true)
     {
