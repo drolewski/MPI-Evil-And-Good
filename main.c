@@ -5,8 +5,8 @@
 
 const int toiletNumber = 2;
 const int potNumber = 1;
-const int goodNumber = 3;
-const int badNumber = 7;
+const int goodNumber = 1;
+const int badNumber = 2;
 
 MPI_Datatype MPI_REQ;
 MPI_Datatype MPI_ARequest;
