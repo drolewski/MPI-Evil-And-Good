@@ -90,12 +90,18 @@ int main(int argc, char **argv)
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
     setupStructures();
+    
+    char processor[100];
+    int len;
+    MPI_Get_processor_name(processor, &len);
+    printf("Size: %d, Rank: %d, processor: %d\n", size, rank, processor);
 
     MPI_Status status;
     if (rank == 0)
     {
         for (int i = 1; i <= (goodNumber + badNumber); i++)
         {
+            printf("SYNCHR Message SENT to: %d\n", i);
             MPI_Send(&i, 1, MPI_INT, i, SYNCHR, MPI_COMM_WORLD);
         }
         int counter = 0;
