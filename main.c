@@ -4,12 +4,11 @@
 #include "functions.h"
 
 const int toiletNumber = 2;
-const int potNumber = 1;
-const int goodNumber = 1;
+const int potNumber = 2;
+const int goodNumber = 2;
 const int badNumber = 2;
 
 MPI_Datatype MPI_REQ;
-MPI_Datatype MPI_ARequest;
 
 Person init(int id, Object *toiletList, Object *potList)
 {
@@ -75,21 +74,6 @@ void setupStructures()
 
     MPI_Type_create_struct(nItems, blockLengths, offsets, types, &MPI_REQ);
     MPI_Type_commit(&MPI_REQ);
-
-    nItems = 6;
-    int aBlockLenghts[6] = {1, 1, 1, 1, 1, 1};
-    MPI_Datatype aTypes[6] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT};
-
-    MPI_Aint aOffsets[6];
-    aOffsets[0] = offsetof(ARequest, id);
-    aOffsets[1] = offsetof(ARequest, requestType);
-    aOffsets[2] = offsetof(ARequest, objectId);
-    aOffsets[3] = offsetof(ARequest, priority);
-    aOffsets[4] = offsetof(ARequest, objectState);
-    aOffsets[5] = offsetof(ARequest, objectType);
-
-    MPI_Type_create_struct(nItems, aBlockLenghts, aOffsets, aTypes, &MPI_ARequest);
-    MPI_Type_commit(&MPI_ARequest);
 }
 
 int main(int argc, char **argv)
@@ -138,31 +122,34 @@ int main(int argc, char **argv)
         waitRandomTime(id);
 
         Object *sendObjects = malloc(sizeof(struct Object) * (toiletNumber + potNumber));
-        int objectListSize = preparing(&person, sendObjects);
-        int objectId = -1;
-        int objectType = -1;
-        int canGoCritical = waitCritical(&person, sendObjects, objectListSize, &objectId, &objectType);
-
-        if (canGoCritical)
+        while (true)
         {
-            inCritical(&person);
-
-            Object object;
-            if (objectType == TOILET && objectId > 0)
+            int objectListSize = preparing(&person, sendObjects);
+            int objectId = -1;
+            int objectType = -1;
+            int canGoCritical = waitCritical(&person, sendObjects, objectListSize, &objectId, &objectType);
+            printf("\ncanGoToCritical: %d\n", canGoCritical);
+            if (canGoCritical)
             {
-                object = person.toiletList[objectId - 1];
-            }
-            else if (objectType == POT && objectId > 0)
-            {
-                object = person.potList[objectId - 1];
-            }
+                inCritical(&person);
 
-            afterCritical(&person, &object);
-            rest(&person);
-        }
-        else
-        {
-            rest(&person);
+                Object object;
+                if (objectType == TOILET && objectId > 0)
+                {
+                    object = person.toiletList[objectId - 1];
+                }
+                else if (objectType == POT && objectId > 0)
+                {
+                    object = person.potList[objectId - 1];
+                }
+
+                afterCritical(&person, &object);
+                rest(&person);
+            }
+            else
+            {
+                rest(&person);
+            }
         }
     }
 
