@@ -7,7 +7,6 @@
 #include <stddef.h>
 #include <unistd.h>
 #include <string.h>
-#include <pthread.h>
 
 #define false 0
 #define true 1
@@ -59,6 +58,8 @@ typedef struct Person Person;
     int requestType;
     int objectId;
     int priority;
+    int objectState;
+    int objectType;
 };
 
 typedef struct Request Request;
