@@ -9,12 +9,12 @@ Person init(int id, Object *toiletList, Object *potList);
 
 int preparing(Person *person, Object *objectList, int rejectedRest);
 
-int waitCritical(Person *person, Object *objectList, int listSize, int *objectId, int *objectType);
+int waitCritical(Person *person, Object *objectList, int listSize, int *objectId, int *objectType, int *ackList, int *rejectList);
 
 void inCritical(Person *person);
 
 void afterCritical(Person *person, Object *object);
 
-void rest(Person *person);
+void rest(Person *person, int listSize, int *ackList, int *rejectList, Object *objectList);
 
 #endif

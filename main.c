@@ -131,7 +131,14 @@ int main(int argc, char **argv)
             int objectListSize = preparing(&person, sendObjects, rejectedRest);
             int objectId = -1;
             int objectType = -1;
-            int canGoCritical = waitCritical(&person, sendObjects, objectListSize, &objectId, &objectType);
+            int *ackList = malloc(sizeof(int) * objectListSize);
+            int *rejectList = malloc(sizeof(int) * objectListSize);
+            for(int i = 0; i < objectListSize; i++){
+                ackList[i] = 0;
+                rejectList[i] = 0;
+            }
+            int canGoCritical = waitCritical(&person, sendObjects, objectListSize, &objectId, &objectType, ackList, rejectList);
+
             printf("\ncanGoToCritical: %d\n", canGoCritical);
             if (canGoCritical)
             {
@@ -148,13 +155,13 @@ int main(int argc, char **argv)
                 }
 
                 afterCritical(&person, &object);
-                rest(&person);
+                rest(&person, objectListSize, ackList, rejectList, sendObjects);
                 rejectedRest = false;
             }
             else
             {
                 rejectedRest = true;
-                rest(&person);
+                rest(&person, objectListSize, ackList, rejectList, sendObjects);
             }
         }
         free(sendObjects);
@@ -368,12 +375,8 @@ int preparing(Person *person, Object *objectList, int rejectedRest)
     return -1;
 }
 
-int waitCritical(Person *person, Object *objectList, int listSize, int *objectId, int *objectType)
+int waitCritical(Person *person, Object *objectList, int listSize, int *objectId, int *objectType, int *ackList, int *rejectList)
 {
-    int *ackList = malloc(sizeof(int) * listSize);
-    memset(ackList, 0, (sizeof(int) * listSize));
-    int *rejectList = malloc(sizeof(int) * listSize);
-    memset(rejectList, 0, (sizeof(int) * listSize));
     while (true)
     {
         MPI_Status status;
@@ -647,22 +650,9 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                     }
                 }
 
-                if (!((receivedId > person->goodCount && person->id <= person->goodCount) || (receivedId <= person->goodCount && person->id > person->goodCount)))
+                for (int i = 0; i < listSize; i++)
                 {
-                    for (int i = 0; i < listSize; i++)
-                    {
-                        if (request.objectType == objectList[i].objectType)
-                        {
-                            if (request.objectId == objectList[i].id)
-                            {
-                                ackList[i] += 1;
-                            }
-                            else
-                            {
-                                rejectList[i] += 1;
-                            }
-                        }
-                    }
+                    ackList[i] += 1;
                 }
                 break;
             case PACK:
@@ -727,8 +717,6 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
                 printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person->id, objectList[i].objectType == TOILET ? "toilet" : "pot", objectList[i].id);
                 objectId = &objectList[i].id;
                 objectType = &objectList[i].objectType;
-                free(ackList);
-                free(rejectList);
                 return true;
             }
         }
@@ -736,22 +724,21 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
         if (listSize == 0)
         {
             printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person->id);
-            free(ackList);
-            free(rejectList);
             return false;
         }
     }
 }
 
-void rest(Person *person)
+void rest(Person *person, int listSize, int *ackList, int *rejectList, Object *objectList)
 {
     printf("\tREST, %d: process is rest\n", person->id);
     time_t tt;
     int quantum = time(&tt);
     srand(quantum + person->id);
-    int iterations = rand() % (person->goodCount + person->badCount) + 1;
+    int iterations = (person->badCount + person->goodCount - 1) * listSize;
     printf("Process: %d is waiting: %d\n", person->id, iterations);
-    while (iterations > 0)
+    int iter = 0;
+    while (iter < iterations)
     {
         MPI_Status status;
         Request request;
@@ -809,13 +796,49 @@ void rest(Person *person)
                         person->avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
                     }
                 }
+                for (int i = 0; i < listSize; i++)
+                {
+                    printf("wartość: %d\n\n", ackList[i]);
+                    ackList[i] += 1;
+                }
+                break;
+            case PACK:
+                for (int i = 0; i < listSize; i++)
+                {
+                    if (objectList[i].id == request.objectId && objectList[i].objectType == POT)
+                    {
+                        ackList[i] += 1;
+                    }
+                }
+                break;
+            case TACK:
+                for (int i = 0; i < listSize; i++)
+                {
+                    if (objectList[i].id == request.objectId && objectList[i].objectType == TOILET)
+                    {
+                        ackList[i] += 1;
+                    }
+                }
+                break;
+            case REJECT:
+                for (int i = 0; i < listSize; i++)
+                {
+                    if (objectList[i].id == request.objectId && objectList[i].objectType == request.objectType)
+                    {
+                        rejectList[i] += 1;
+                    }
+                }
                 break;
             default:
                 printf("\tREST, %d: Received ignore message.\n", person->id);
                 break;
             }
         }
-        iterations--;
+        iter = 0;
+        for (int i = 0; i < listSize; i++)
+        {
+            iter += (rejectList[i] + ackList[i]);
+        }
     }
 }
 
