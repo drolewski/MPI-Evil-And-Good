@@ -11,7 +11,7 @@ int preparing(Person* person, Object* objectList);
 
 int waitCritical(Person* person, Object* objectList, int listSize);
 
-void inCritical();
+void inCritical(Person* person);
 
 void afterCritical();
 

@@ -144,7 +144,8 @@ int main(int argc, char **argv)
 
         if (canGoCritical)
         {
-            inCritical();
+            inCritical(&person);
+            rest();
         }
         else
         {
@@ -647,6 +648,8 @@ void rest()
 {
 }
 
-void inCritical()
+void inCritical(Person* person)
 {
+    printf("\tIN_CRITICAL, %d: process is in cricital section\n", person->id);
+    waitRandomTime(person->id);
 }
