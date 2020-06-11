@@ -326,6 +326,10 @@ int preparing(Person *person, Object *objectList)
 
 void waitCritical(Person *person, Object *objectList, int listSize)
 {
+    int *ackList = malloc(sizeof(int) * listSize);
+    memset(ackList, 0, (sizeof(int) * listSize));
+    int *rejectList = malloc(sizeof(int) * listSize);
+    memset(rejectList, 0, (sizeof(int) * listSize));
     while (true)
     {
         MPI_Status status;
@@ -383,7 +387,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                                     person->lamportClock += 1;
                                     printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                     MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
-                                    rest();
+                                    rejectList[i] += 1;
                                 }
                                 else if (person->priority < request.priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
                                 {
@@ -410,7 +414,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                                         person->lamportClock += 1;
                                         printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                         MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
-                                        rest();
+                                        rejectList[i] += 1;
                                     }
                                 }
                             }
@@ -472,7 +476,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                                     person->lamportClock += 1;
                                     printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                     MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
-                                    rest();
+                                    rejectList[i] += 1;
                                 }
                                 else if (person->priority < request.priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
                                 {
@@ -499,7 +503,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                                         person->lamportClock += 1;
                                         printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                         MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
-                                        rest();
+                                        rejectList[i] += 1;
                                     }
                                 }
                             }
@@ -515,18 +519,81 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                     }
                 }
                 break;
+            case ACKALL:
+                if (request.objectType == POT)
+                {
+                    printf("\tWAIT_CRITICAL, %d: Receive ACK_ALL with pot: %d and state: %s\n", person->id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
+                    person->potList[request.objectId - 1].objectState = request.objectState;
+                    if (person->personType == GOOD)
+                    {
+                        person->avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
+                    }
+                    else
+                    {
+                        person->avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
+                    }
+                }
+                else
+                {
+                    printf("\tWAIT_CRITICAL, %d: Receive ACK_ALL with toilet: %d and state: %s\n", person->id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
+                    person->toiletList[request.objectId - 1].objectState = request.objectState;
+                    if (person->personType == GOOD)
+                    {
+                        person->avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
+                    }
+                    else
+                    {
+                        person->avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
+                    }
+                }
+
+                if(!((receivedId > person->goodCount && person->id <= person->goodCount) || (receivedId <= person->goodCount && person->id > person->goodCount)))
+                {
+                    for(int i = 0; i < listSize; i++)
+                    {
+                        if(request.objectType == objectList[i].objectType)
+                        {   
+                            if(request.objectId == objectList[i].id)
+                            {
+                                ackList[i] += 1;
+                            }else
+                            {
+                                rejectList[i] += 1;
+                            }
+                        }
+                    }
+                }
+                break;
             case PACK:
                 break;
             case TACK:
                 break;
             case REJECT:
                 break;
-            case ACKALL:
-                rest();
-                break;
             default:
                 printf("\tWAIT_CRITICAL, %d: Received ignore message.\n", person->id);
                 break;
+            }
+        }
+        for(int i = 0; i < listSize; i++)
+        {
+            if(rejectList[i] == (person->goodCount + person->badCount - 1))
+            {
+                // delete from array
+                for(int j = i; j < listSize - 1; j++)
+                {
+                    objectList[j] = objectList[j + 1];
+                    rejectList[j] = rejectList[j + 1];
+                    ackList[j] = ackList[j + 1];
+                }
+                listSize -= 1;
+                // przechodzenie do resta
+            }
+        }
+        for(int i = 0; i < listSize; i++){
+            if(ackList[i] == (person->goodCount + person->badCount - 1))
+            {
+                // in critical
             }
         }
     }
