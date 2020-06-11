@@ -13,7 +13,7 @@ MPI_Datatype MPI_ARequest;
 
 Person init(int id, Object *toiletList, Object *potList)
 {
-    toiletList = malloc(sizeof(struct Object) * toiletNumber );
+    toiletList = malloc(sizeof(struct Object) * toiletNumber);
     potList = malloc(sizeof(struct Object) * potNumber);
 
     for (int i = 0; i < potNumber; i++)
@@ -93,7 +93,7 @@ void setupStructures()
 }
 
 int main(int argc, char **argv)
-{   
+{
     MPI_Init(&argc, &argv);
 
     int size, rank;
@@ -139,24 +139,26 @@ int main(int argc, char **argv)
 
         Object *sendObjects = malloc(sizeof(struct Object) * (toiletNumber + potNumber));
         int objectListSize = preparing(&person, sendObjects);
-        
+
         waitCritical(&person, sendObjects, objectListSize);
     }
 
     MPI_Finalize();
 }
 
-int preparing(Person *person, Object* objectList)
+int preparing(Person *person, Object *objectList)
 {
-    while(true){
-        if(person->avaliableObjectsCount > 0){
+    while (true)
+    {
+        if (person->avaliableObjectsCount > 0)
+        {
             int iterator = 0;
-            if(person->personType - 100)
+            if (person->personType - 100)
             {
                 // good
-                for(int i = 0; i < toiletNumber; i++)
+                for (int i = 0; i < toiletNumber; i++)
                 {
-                    if(person->toiletList[i].objectState == BROKEN)
+                    if (person->toiletList[i].objectState == BROKEN)
                     {
                         time_t tt;
                         int quantum = time(&tt);
@@ -167,9 +169,9 @@ int preparing(Person *person, Object* objectList)
                         req.objectId = person->toiletList[i].id;
                         req.priority = person->lamportClock + priority;
                         req.requestType = TREQ;
-                        for(int i = 1; i <= (person->goodCount + person->badCount); i++)
+                        for (int i = 1; i <= (person->goodCount + person->badCount); i++)
                         {
-                            if(i != person->id)
+                            if (i != person->id)
                             {
                                 MPI_Send(&req, 1, MPI_REQ, i, TREQ, MPI_COMM_WORLD);
                             }
@@ -178,9 +180,9 @@ int preparing(Person *person, Object* objectList)
                         iterator++;
                     }
                 }
-                for(int i = 0; i < potNumber; i++)
+                for (int i = 0; i < potNumber; i++)
                 {
-                    if(person->potList[i].objectState == BROKEN)
+                    if (person->potList[i].objectState == BROKEN)
                     {
                         time_t tt;
                         int quantum = time(&tt);
@@ -191,9 +193,9 @@ int preparing(Person *person, Object* objectList)
                         req.objectId = person->potList[i].id;
                         req.priority = person->lamportClock + priority;
                         req.requestType = PREQ;
-                        for(int i = 1; i <= (person->goodCount + person->badCount); i++)
+                        for (int i = 1; i <= (person->goodCount + person->badCount); i++)
                         {
-                            if(i != person->id)
+                            if (i != person->id)
                             {
                                 MPI_Send(&req, 1, MPI_REQ, i, PREQ, MPI_COMM_WORLD);
                             }
@@ -207,9 +209,9 @@ int preparing(Person *person, Object* objectList)
             else
             {
                 // bad
-                for(int i = 0; i < toiletNumber; i++)
+                for (int i = 0; i < toiletNumber; i++)
                 {
-                    if(person->toiletList[i].objectState == REPAIRED)
+                    if (person->toiletList[i].objectState == REPAIRED)
                     {
                         time_t tt;
                         int quantum = time(&tt);
@@ -220,9 +222,9 @@ int preparing(Person *person, Object* objectList)
                         req.objectId = person->toiletList[i].id;
                         req.priority = person->lamportClock + priority;
                         req.requestType = TREQ;
-                        for(int i = 1; i <= (person->goodCount + person->badCount); i++)
+                        for (int i = 1; i <= (person->goodCount + person->badCount); i++)
                         {
-                            if(i != person->id)
+                            if (i != person->id)
                             {
                                 MPI_Send(&req, 1, MPI_REQ, i, TREQ, MPI_COMM_WORLD);
                             }
@@ -231,9 +233,9 @@ int preparing(Person *person, Object* objectList)
                         iterator++;
                     }
                 }
-                for(int i = 0; i < potNumber; i++)
+                for (int i = 0; i < potNumber; i++)
                 {
-                    if(person->potList[i].objectState == REPAIRED)
+                    if (person->potList[i].objectState == REPAIRED)
                     {
                         time_t tt;
                         int quantum = time(&tt);
@@ -244,9 +246,9 @@ int preparing(Person *person, Object* objectList)
                         req.objectId = person->potList[i].id;
                         req.priority = person->lamportClock + priority;
                         req.requestType = PREQ;
-                        for(int i = 1; i <= (person->goodCount + person->badCount); i++)
+                        for (int i = 1; i <= (person->goodCount + person->badCount); i++)
                         {
-                            if(i != person->id)
+                            if (i != person->id)
                             {
                                 MPI_Send(&req, 1, MPI_REQ, i, PREQ, MPI_COMM_WORLD);
                             }
@@ -256,8 +258,8 @@ int preparing(Person *person, Object* objectList)
                     }
                 }
                 person->lamportClock += 1;
-            }    
-            return iterator;    
+            }
+            return iterator;
         }
         else
         {
@@ -272,21 +274,21 @@ int preparing(Person *person, Object* objectList)
                 case PREQ:
                     request.id = person->id;
                     request.requestType = PACK;
-                    printf("\t%d: Send PACK to: %d\n", person->id, receivedId);
+                    printf("\tPREPARING, %d: Send PACK to: %d\n", person->id, receivedId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                     break;
                 case TREQ:
                     request.id = person->id;
                     request.requestType = TACK;
-                    printf("\t%d: Send TACK to: %d\n", person->id,receivedId);
+                    printf("\tPREPARING, %d: Send TACK to: %d\n", person->id, receivedId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                     break;
                 case ACKALL:
-                    if(request.objectType == POT)
+                    if (request.objectType == POT)
                     {
-                        printf("\t%d: Receive ACK_ALL with pot: %d and state: %s\n", person->id, receivedId, request.objectState - BROKEN ? "repaired": "broken");
+                        printf("\tPREPARING, %d: Receive ACK_ALL with pot: %d and state: %s\n", person->id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
                         person->potList[request.objectId - 1].objectState = request.objectState;
-                        if(person->personType == GOOD)
+                        if (person->personType == GOOD)
                         {
                             person->avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
                         }
@@ -297,9 +299,9 @@ int preparing(Person *person, Object* objectList)
                     }
                     else
                     {
-                        printf("\t%d: Receive ACK_ALL with toilet: %d and state: %s\n", person->id, receivedId, request.objectState - BROKEN ? "repaired": "broken");
+                        printf("\tPREPARING, %d: Receive ACK_ALL with toilet: %d and state: %s\n", person->id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
                         person->toiletList[request.objectId - 1].objectState = request.objectState;
-                        if(person->personType == GOOD)
+                        if (person->personType == GOOD)
                         {
                             person->avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
                         }
@@ -310,7 +312,7 @@ int preparing(Person *person, Object* objectList)
                     }
                     break;
                 default:
-                    printf("Received ignore message.\n");
+                    printf("\tPREPARING, %d: Received ignore message.\n", person->id);
                     break;
                 }
             }
@@ -319,10 +321,117 @@ int preparing(Person *person, Object* objectList)
     return -1;
 }
 
-void waitCritical(Person *person, Object* objectList, int listSize)
+void waitCritical(Person *person, Object *objectList, int listSize)
 {
-    while(true)
+    while (true)
     {
+        MPI_Status status;
+        Request request;
+        MPI_Recv(&request, sizeof(Request), MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+        if (status.MPI_ERROR == MPI_SUCCESS)
+        {
+            int receivedId = request.id;
+            switch (request.requestType)
+            {
+            case PREQ:
+                if ((receivedId > person->goodCount && person->id <= person->goodCount) || (receivedId <= person->goodCount && person->id > person->goodCount))
+                {
+                    request.id = person->id;
+                    request.requestType = PACK;
+                    MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+                }
+                else
+                {
+                    int arePotsInList = false;
+                    for (int i = 0; i < listSize; i++)
+                    {
+                        if (objectList[i].objectType == POT)
+                        {
+                            arePotsInList = true;
+                            break;
+                        }
+                    }
 
+                    if (arePotsInList == false)
+                    {
+                        request.id = person->id;
+                        request.requestType = PACK;
+                        MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+                    }
+                    else
+                    {
+                        int arePotsWithIdInList = false;
+                        for (int i = 0; i < listSize; i++)
+                        {
+                            if (objectList[i].objectType == POT && objectList[i].id == request.objectId)
+                            {
+                                arePotsInList = true;
+
+                                if (person->priority > request.priority) // request ma wyższy priorytet, tj. niższą wartość zmiennej priority
+                                {
+                                    request.id = person->id;
+                                    request.requestType = PACK;
+                                    MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+                                    rest();
+                                }
+                                else if (person->priority < request.priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
+                                {
+                                    request.id = person->id;
+                                    request.requestType = REJECT;
+                                    MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
+                                }
+                                else //równe priorytety
+                                {
+                                    if (person->id > request.id)
+                                    {
+                                        request.id = person->id;
+                                        request.requestType = REJECT;
+                                        MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
+                                    }
+                                    else
+                                    {
+                                        request.id = person->id;
+                                        request.requestType = PACK;
+                                        MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+                                        rest();
+                                    }
+                                }
+                            }
+                        }
+                        if (arePotsWithIdInList == false)
+                        {
+                            request.id = person->id;
+                            request.requestType = PACK;
+                            MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+                        }
+                    }
+                }
+                break;
+            case TREQ:
+                if ((receivedId > person->goodCount && person->id <= person->goodCount) || (receivedId <= person->goodCount && person->id > person->goodCount))
+                {
+                    request.id = person->id;
+                    request.requestType = TACK;
+                    MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                }
+                break;
+            case PACK:
+                break;
+            case TACK:
+                break;
+            case REJECT:
+                break;
+            case ACKALL:
+                rest();
+                break;
+            default:
+                printf("\tWAIT_CRITICAL, %d: Received ignore message.\n", person->id);
+                break;
+            }
+        }
     }
+}
+
+void rest()
+{
 }
