@@ -288,7 +288,7 @@ int preparing(Person *person, Object *objectList)
         {
             MPI_Status status;
             Request request;
-            MPI_Recv(&request, sizeof(Request), MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+            MPI_Recv(&request, 1, MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
             person->lamportClock = request.priority > person->lamportClock ? request.priority + 1 : person->lamportClock + 1;
             if (status.MPI_ERROR == MPI_SUCCESS)
             {
@@ -357,7 +357,7 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
     {
         MPI_Status status;
         Request request;
-        MPI_Recv(&request, sizeof(Request), MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+        MPI_Recv(&request, 1, MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         person->lamportClock = request.priority > person->lamportClock ? request.priority + 1 : person->lamportClock + 1;
         if (status.MPI_ERROR == MPI_SUCCESS)
         {
@@ -645,8 +645,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
             if (ackList[i] == (person->goodCount + person->badCount - 1))
             {
                 printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person->id, objectList[i].objectType == TOILET ? "toilet" : "pot", objectList[i].id);
-                objectId = objectList[i].id;
-                objectType = objectList[i].objectType;
+                objectId = &objectList[i].id;
+                objectType = &objectList[i].objectType;
                 return true;
             }
         }
@@ -662,7 +662,71 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
 void rest(Person *person)
 {
     printf("\tREST, %d: process is rest\n", person->id);
-    waitRandomTime(person->id);
+    time_t tt;
+    int quantum = time(&tt);
+    srand(quantum + person->id);
+    int iterations = rand() % 15 + 1;
+    printf("Process: %d is waiting: %d\n", person->id, iterations);
+    while (iterations > 0)
+    {
+        MPI_Status status;
+        Request request;
+        MPI_Recv(&request, 1, MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+        person->lamportClock = request.priority > person->lamportClock ? request.priority + 1 : person->lamportClock + 1;
+        if (status.MPI_ERROR == MPI_SUCCESS)
+        {
+            int receivedId = request.id;
+            switch (request.requestType)
+            {
+            case PREQ:
+                request.id = person->id;
+                request.requestType = PACK;
+                person->lamportClock += 1;
+                printf("\tREST, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
+                MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+                break;
+            case TREQ:
+                request.id = person->id;
+                request.requestType = TACK;
+                person->lamportClock += 1;
+                printf("\tREST, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
+                MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                break;
+            case ACKALL:
+                if (request.objectType == POT)
+                {
+                    printf("\tREST, %d: Receive ACK_ALL with pot: %d and state: %s\n", person->id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
+                    person->potList[request.objectId - 1].objectState = request.objectState;
+                    if (person->personType == GOOD)
+                    {
+                        person->avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
+                    }
+                    else
+                    {
+                        person->avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
+                    }
+                }
+                else
+                {
+                    printf("\tREST, %d: Receive ACK_ALL with toilet: %d and state: %s\n", person->id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
+                    person->toiletList[request.objectId - 1].objectState = request.objectState;
+                    if (person->personType == GOOD)
+                    {
+                        person->avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
+                    }
+                    else
+                    {
+                        person->avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
+                    }
+                }
+                break;
+            default:
+                printf("\tREST, %d: Received ignore message.\n", person->id);
+                break;
+            }
+        }
+        iterations--;
+    }
 }
 
 void inCritical(Person *person)
