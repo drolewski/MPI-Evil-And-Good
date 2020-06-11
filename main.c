@@ -94,7 +94,7 @@ int main(int argc, char **argv)
     char processor[100];
     int len;
     MPI_Get_processor_name(processor, &len);
-    printf("Size: %d, Rank: %d, processor: %d\n", size, rank, processor);
+    printf("Size: %d, Rank: %d, processor: %s\n", size, rank, processor);
 
     MPI_Status status;
     if (rank == 0)
