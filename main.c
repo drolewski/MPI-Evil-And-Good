@@ -334,10 +334,12 @@ void waitCritical(Person *person, Object *objectList, int listSize)
             switch (request.requestType)
             {
             case PREQ:
+                printf("\tWAIT_CRITICAL, %d: Receive PREQ from id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
                 if ((receivedId > person->goodCount && person->id <= person->goodCount) || (receivedId <= person->goodCount && person->id > person->goodCount))
                 {
                     request.id = person->id;
                     request.requestType = PACK;
+                    printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                 }
                 else
@@ -356,6 +358,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                     {
                         request.id = person->id;
                         request.requestType = PACK;
+                        printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
                         MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                     }
                     else
@@ -365,12 +368,13 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                         {
                             if (objectList[i].objectType == POT && objectList[i].id == request.objectId)
                             {
-                                arePotsInList = true;
+                                arePotsWithIdInList = true;
 
                                 if (person->priority > request.priority) // request ma wyższy priorytet, tj. niższą wartość zmiennej priority
                                 {
                                     request.id = person->id;
                                     request.requestType = PACK;
+                                    printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
                                     MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                                     rest();
                                 }
@@ -378,6 +382,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                                 {
                                     request.id = person->id;
                                     request.requestType = REJECT;
+                                    printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
                                     MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                                 }
                                 else //równe priorytety
@@ -386,12 +391,14 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                                     {
                                         request.id = person->id;
                                         request.requestType = REJECT;
+                                        printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
                                         MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                                     }
                                     else
                                     {
                                         request.id = person->id;
                                         request.requestType = PACK;
+                                        printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
                                         MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                                         rest();
                                     }
@@ -402,17 +409,92 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                         {
                             request.id = person->id;
                             request.requestType = PACK;
+                            printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
                             MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                         }
                     }
                 }
                 break;
             case TREQ:
+                printf("\tWAIT_CRITICAL, %d: Receive TREQ from id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
                 if ((receivedId > person->goodCount && person->id <= person->goodCount) || (receivedId <= person->goodCount && person->id > person->goodCount))
                 {
                     request.id = person->id;
                     request.requestType = TACK;
+                    printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                }
+                else
+                {
+                    int areToiletsInList = false;
+                    for (int i = 0; i < listSize; i++)
+                    {
+                        if (objectList[i].objectType == TOILET)
+                        {
+                            areToiletsInList = true;
+                            break;
+                        }
+                    }
+
+                    if (areToiletsInList == false)
+                    {
+                        request.id = person->id;
+                        request.requestType = TACK;
+                        printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                        MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                    }
+                    else
+                    {
+                        int areToiletsWithIdInList = false;
+                        for (int i = 0; i < listSize; i++)
+                        {
+                            if (objectList[i].objectType == TOILET && objectList[i].id == request.objectId)
+                            {
+                                areToiletsWithIdInList = true;
+
+                                if (person->priority > request.priority) // request ma wyższy priorytet, tj. niższą wartość zmiennej priority
+                                {
+                                    request.id = person->id;
+                                    request.requestType = TACK;
+                                    printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                                    MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                                    rest();
+                                }
+                                else if (person->priority < request.priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
+                                {
+                                    request.id = person->id;
+                                    request.requestType = REJECT;
+                                    printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                                    MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
+                                }
+                                else //równe priorytety
+                                {
+                                    if (person->id > request.id)
+                                    {
+                                        request.id = person->id;
+                                        request.requestType = REJECT;
+                                        printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                                        MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
+                                    }
+                                    else
+                                    {
+                                        request.id = person->id;
+                                        request.requestType = TACK;
+                                        printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                                        MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                                        rest();
+                                    }
+                                }
+                            }
+                        }
+                        if (areToiletsWithIdInList == false)
+                        {
+                            request.id = person->id;
+                            request.requestType = TACK;
+                            printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                            MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                        }
+                    }
                 }
                 break;
             case PACK:
