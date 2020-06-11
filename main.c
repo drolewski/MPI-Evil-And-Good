@@ -140,7 +140,16 @@ int main(int argc, char **argv)
         Object *sendObjects = malloc(sizeof(struct Object) * (toiletNumber + potNumber));
         int objectListSize = preparing(&person, sendObjects);
 
-        waitCritical(&person, sendObjects, objectListSize);
+        int canGoCritical = waitCritical(&person, sendObjects, objectListSize);
+
+        if (canGoCritical)
+        {
+            inCritical();
+        }
+        else
+        {
+            rest();
+        }
     }
 
     MPI_Finalize();
@@ -324,7 +333,7 @@ int preparing(Person *person, Object *objectList)
     return -1;
 }
 
-void waitCritical(Person *person, Object *objectList, int listSize)
+int waitCritical(Person *person, Object *objectList, int listSize)
 {
     int *ackList = malloc(sizeof(int) * listSize);
     memset(ackList, 0, (sizeof(int) * listSize));
@@ -547,16 +556,17 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                     }
                 }
 
-                if(!((receivedId > person->goodCount && person->id <= person->goodCount) || (receivedId <= person->goodCount && person->id > person->goodCount)))
+                if (!((receivedId > person->goodCount && person->id <= person->goodCount) || (receivedId <= person->goodCount && person->id > person->goodCount)))
                 {
-                    for(int i = 0; i < listSize; i++)
+                    for (int i = 0; i < listSize; i++)
                     {
-                        if(request.objectType == objectList[i].objectType)
-                        {   
-                            if(request.objectId == objectList[i].id)
+                        if (request.objectType == objectList[i].objectType)
+                        {
+                            if (request.objectId == objectList[i].id)
                             {
                                 ackList[i] += 1;
-                            }else
+                            }
+                            else
                             {
                                 rejectList[i] += 1;
                             }
@@ -575,12 +585,12 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                 break;
             }
         }
-        for(int i = 0; i < listSize; i++)
+        for (int i = 0; i < listSize; i++)
         {
-            if(rejectList[i] == (person->goodCount + person->badCount - 1))
+            if (rejectList[i] > 0)
             {
                 // delete from array
-                for(int j = i; j < listSize - 1; j++)
+                for (int j = i; j < listSize - 1; j++)
                 {
                     objectList[j] = objectList[j + 1];
                     rejectList[j] = rejectList[j + 1];
@@ -590,15 +600,24 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                 // przechodzenie do resta
             }
         }
-        for(int i = 0; i < listSize; i++){
-            if(ackList[i] == (person->goodCount + person->badCount - 1))
+
+        for (int i = 0; i < listSize; i++)
+        {
+            if (ackList[i] == (person->goodCount + person->badCount - 1))
             {
-                // in critical
+                return true;
             }
         }
+
+        if (listSize == 0)
+            return false;
     }
 }
 
 void rest()
+{
+}
+
+void inCritical()
 {
 }
