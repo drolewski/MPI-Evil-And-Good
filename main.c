@@ -575,10 +575,35 @@ int waitCritical(Person *person, Object *objectList, int listSize)
                 }
                 break;
             case PACK:
+                printf("\tWAIT_CRITICAL, %d: Receive PACK from: %d\n", person->id, receivedId);
+                for (int i = 0; i < listSize; i++)
+                {
+                    if (objectList[i].objectType == POT && objectList[i].id == request.objectId)
+                    {
+                        ackList[i] += 1;
+                    }
+                }
                 break;
             case TACK:
+                printf("\tWAIT_CRITICAL, %d: Receive TACK from: %d\n", person->id, receivedId);
+                for (int i = 0; i < listSize; i++)
+                {
+                    if (objectList[i].objectType == TOILET && objectList[i].id == request.objectId)
+                    {
+                        ackList[i] += 1;
+                    }
+                }
                 break;
             case REJECT:
+                printf("\tWAIT_CRITICAL, %d: Receive REJECT from: %d\n", person->id, receivedId);
+                for (int i = 0; i < listSize; i++)
+                {
+                    if (objectList[i].id == request.objectId)
+                    {
+                        rejectList[i] += 1;
+                        person->priority = request.priority;
+                    }
+                }
                 break;
             default:
                 printf("\tWAIT_CRITICAL, %d: Received ignore message.\n", person->id);
@@ -597,7 +622,7 @@ int waitCritical(Person *person, Object *objectList, int listSize)
                     ackList[j] = ackList[j + 1];
                 }
                 listSize -= 1;
-                // przechodzenie do resta
+                printf("\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person->id, listSize);
             }
         }
 
@@ -605,12 +630,16 @@ int waitCritical(Person *person, Object *objectList, int listSize)
         {
             if (ackList[i] == (person->goodCount + person->badCount - 1))
             {
+                printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person->id, objectList[i].objectType == TOILET ? "toilet" : "pot", objectList[i].id);
                 return true;
             }
         }
 
         if (listSize == 0)
+        {
+            printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person->id);
             return false;
+        }
     }
 }
 
