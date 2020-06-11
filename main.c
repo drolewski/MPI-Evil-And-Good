@@ -56,7 +56,10 @@ void waitRandomTime(int id)
     int quantum = time(&tt);
     srand(quantum + id);
     double seconds = ((double)(rand() % 1000)) / 500;
-    printf("Process: %d is waiting: %f\n", id, seconds);
+    char processor[100];
+    int len;
+    MPI_Get_processor_name(processor, &len);
+    printf("%s Process: %d is waiting: %f\n", processor, id, seconds);
     sleep(seconds);
 }
 
