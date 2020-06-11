@@ -334,12 +334,12 @@ void waitCritical(Person *person, Object *objectList, int listSize)
             switch (request.requestType)
             {
             case PREQ:
-                printf("\tWAIT_CRITICAL, %d: Receive PREQ from id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                printf("\tWAIT_CRITICAL, %d: Receive PREQ from id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                 if ((receivedId > person->goodCount && person->id <= person->goodCount) || (receivedId <= person->goodCount && person->id > person->goodCount))
                 {
                     request.id = person->id;
                     request.requestType = PACK;
-                    printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                    printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                 }
                 else
@@ -358,7 +358,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                     {
                         request.id = person->id;
                         request.requestType = PACK;
-                        printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                        printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                         MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                     }
                     else
@@ -374,7 +374,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                                 {
                                     request.id = person->id;
                                     request.requestType = PACK;
-                                    printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                                    printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                     MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                                     rest();
                                 }
@@ -382,7 +382,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                                 {
                                     request.id = person->id;
                                     request.requestType = REJECT;
-                                    printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                                    printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                     MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                                 }
                                 else //równe priorytety
@@ -391,14 +391,14 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                                     {
                                         request.id = person->id;
                                         request.requestType = REJECT;
-                                        printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                                        printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                         MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                                     }
                                     else
                                     {
                                         request.id = person->id;
                                         request.requestType = PACK;
-                                        printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                                        printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                         MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                                         rest();
                                     }
@@ -409,19 +409,19 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                         {
                             request.id = person->id;
                             request.requestType = PACK;
-                            printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                            printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                             MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                         }
                     }
                 }
                 break;
             case TREQ:
-                printf("\tWAIT_CRITICAL, %d: Receive TREQ from id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                printf("\tWAIT_CRITICAL, %d: Receive TREQ from id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                 if ((receivedId > person->goodCount && person->id <= person->goodCount) || (receivedId <= person->goodCount && person->id > person->goodCount))
                 {
                     request.id = person->id;
                     request.requestType = TACK;
-                    printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                    printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                 }
                 else
@@ -440,7 +440,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                     {
                         request.id = person->id;
                         request.requestType = TACK;
-                        printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                        printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                         MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                     }
                     else
@@ -456,7 +456,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                                 {
                                     request.id = person->id;
                                     request.requestType = TACK;
-                                    printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                                    printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                     MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                                     rest();
                                 }
@@ -464,7 +464,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                                 {
                                     request.id = person->id;
                                     request.requestType = REJECT;
-                                    printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                                    printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                     MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                                 }
                                 else //równe priorytety
@@ -473,14 +473,14 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                                     {
                                         request.id = person->id;
                                         request.requestType = REJECT;
-                                        printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                                        printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                         MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                                     }
                                     else
                                     {
                                         request.id = person->id;
                                         request.requestType = TACK;
-                                        printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                                        printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                                         MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                                         rest();
                                     }
@@ -491,7 +491,7 @@ void waitCritical(Person *person, Object *objectList, int listSize)
                         {
                             request.id = person->id;
                             request.requestType = TACK;
-                            printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %s\n", person->id, receivedId, request.objectId);
+                            printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person->id, receivedId, request.objectId);
                             MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                         }
                     }
