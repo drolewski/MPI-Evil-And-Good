@@ -661,6 +661,8 @@ int waitCritical(Person *person, Object *objectList, int listSize, int *objectId
 
 void rest(Person *person)
 {
+    printf("\tREST, %d: process is rest\n", person->id);
+    waitRandomTime(person->id);
 }
 
 void inCritical(Person *person)
@@ -681,7 +683,7 @@ void afterCritical(Person *person, Object *object)
         request.objectType = object->objectType;
         request.priority = person->priority;
         person->lamportClock += 1;
-        printf("\tWAIT_CRITICAL, %d: SEND ACKALL to id: %d about objectId: %d\n", person->id, i, request.objectId);
+        printf("\tAFTER_CRITICAL, %d: SEND ACKALL to id: %d about objectId: %d\n", person->id, i, request.objectId);
         MPI_Send(&request, 1, MPI_REQ, i, ACKALL, MPI_COMM_WORLD);
     }
 }
