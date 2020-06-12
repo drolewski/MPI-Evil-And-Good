@@ -21,6 +21,7 @@ int restIterations;
 Object *sendObjects;
 
 pthread_mutex_t lamportMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t listDeletingMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_t requestThread;
 MPI_Datatype MPI_REQ;
 
@@ -357,7 +358,9 @@ void waitCriticalRequestHandler(Request *request, Object *objectList)
                             request->priority = request->priority;
                             printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
                             MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+                            pthread_mutex_lock(&listDeletingMutex);
                             rejectList[i] += 1;
+                            pthread_mutex_unlock(&listDeletingMutex);
                         }
                         else if (person.priority < request->priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
                         {
@@ -396,7 +399,9 @@ void waitCriticalRequestHandler(Request *request, Object *objectList)
                                 request->priority = request->priority;
                                 printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
                                 MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+                                pthread_mutex_lock(&listDeletingMutex);
                                 rejectList[i] += 1;
+                                pthread_mutex_unlock(&listDeletingMutex);
                             }
                         }
                     }
@@ -474,7 +479,9 @@ void waitCriticalRequestHandler(Request *request, Object *objectList)
                             request->priority = request->priority;
                             printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
                             MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                            pthread_mutex_lock(&listDeletingMutex);
                             rejectList[i] += 1;
+                            pthread_mutex_unlock(&listDeletingMutex);
                         }
                         else if (person.priority < request->priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
                         {
@@ -513,7 +520,9 @@ void waitCriticalRequestHandler(Request *request, Object *objectList)
                                 request->priority = request->priority;
                                 printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
                                 MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                                pthread_mutex_lock(&listDeletingMutex);
                                 rejectList[i] += 1;
+                                pthread_mutex_unlock(&listDeletingMutex);
                             }
                         }
                     }
@@ -538,6 +547,7 @@ void waitCriticalRequestHandler(Request *request, Object *objectList)
 
         if (!((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount)))
         {
+            pthread_mutex_lock(&listDeletingMutex);
             for (int i = 0; i < listSize; i++)
             {
                 if (request->objectType == objectList[i].objectType)
@@ -552,10 +562,12 @@ void waitCriticalRequestHandler(Request *request, Object *objectList)
                     }
                 }
             }
+            pthread_mutex_unlock(&listDeletingMutex);
         }
         break;
     case PACK:
         printf("\tWAIT_CRITICAL, %d: Receive PACK from: %d\n", person.id, receivedId);
+        pthread_mutex_lock(&listDeletingMutex);
         for (int i = 0; i < listSize; i++)
         {
             if (objectList[i].objectType == POT && objectList[i].id == request->objectId)
@@ -563,9 +575,11 @@ void waitCriticalRequestHandler(Request *request, Object *objectList)
                 ackList[i] += 1;
             }
         }
+        pthread_mutex_unlock(&listDeletingMutex);
         break;
     case TACK:
         printf("\tWAIT_CRITICAL, %d: Receive TACK from: %d\n", person.id, receivedId);
+        pthread_mutex_lock(&listDeletingMutex);
         for (int i = 0; i < listSize; i++)
         {
             if (objectList[i].objectType == TOILET && objectList[i].id == request->objectId)
@@ -573,9 +587,11 @@ void waitCriticalRequestHandler(Request *request, Object *objectList)
                 ackList[i] += 1;
             }
         }
+        pthread_mutex_unlock(&listDeletingMutex);
         break;
     case REJECT:
         printf("\tWAIT_CRITICAL, %d: Receive REJECT from: %d\n", person.id, receivedId);
+        pthread_mutex_lock(&listDeletingMutex);
         for (int i = 0; i < listSize; i++)
         {
             if (objectList[i].id == request->objectId)
@@ -583,6 +599,7 @@ void waitCriticalRequestHandler(Request *request, Object *objectList)
                 rejectList[i] += 1;
                 // person.priority = request->priority;
             }
+            pthread_mutex_unlock(&listDeletingMutex);
         }
         break;
     default:
@@ -830,6 +847,7 @@ int waitCriticalState(Object *objectList, int *objectId, int *objectType)
         if (rejectList[i] > 0)
         {
             // delete from array
+            pthread_mutex_lock(&listDeletingMutex);
             for (int j = i; j < listSize - 1; j++)
             {
                 objectList[j] = objectList[j + 1];
@@ -838,6 +856,7 @@ int waitCriticalState(Object *objectList, int *objectId, int *objectType)
             }
             listSize -= 1;
             printf("\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person.id, listSize);
+            pthread_mutex_unlock(&listDeletingMutex);
         }
     }
 
