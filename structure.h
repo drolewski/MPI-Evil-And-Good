@@ -19,6 +19,13 @@
 #define ACKALL 60
 #define REJECT 70
 
+#define INIT 410
+#define PREPARING 420
+#define WAIT_CRITICAL 430
+#define IN_CRITICAL 440
+#define AFTER_CRITICAL 450
+#define REST 460
+
 #define BAD 100
 #define GOOD 101
 

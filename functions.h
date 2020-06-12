@@ -17,4 +17,9 @@ void afterCritical(Person *person, Object *object);
 
 void rest(Person *person);
 
+void handleRequests();
+
+void updateLists(Person * person, Request *request, char* stateName);
+
+void updateLamportClock(Person *person);
 #endif
