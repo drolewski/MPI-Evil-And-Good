@@ -22,4 +22,6 @@ void handleRequests();
 void updateLists(Request *request, char* stateName);
 
 void updateLamportClock();
+
+void handleStates();
 #endif

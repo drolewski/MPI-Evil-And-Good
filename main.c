@@ -9,11 +9,17 @@ const int potNumber = 4;
 const int goodNumber = 4;
 const int badNumber = 6;
 
+Person person;
+Object ackObject;
+int state = INIT;
+int rejectedRest = false;
+int objectId = -1;
+int objectType = -1;
+int canGoCritical= false;
+
 pthread_mutex_t lamportMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_t requestThread;
-
 MPI_Datatype MPI_REQ;
-Person person;
 
 Person init(int id, Object *toiletList, Object *potList)
 {
@@ -129,46 +135,90 @@ int main(int argc, char **argv)
 
         waitRandomTime(id);
 
-        Object *sendObjects = malloc(sizeof(struct Object) * (toiletNumber + potNumber));
-        int rejectedRest = false;
         pthread_create(&requestThread, NULL, handleRequests, 0);
+        handleStates();
         pthread_join(requestThread, NULL);
-        while (true)
-        {
-            int objectListSize = preparing(sendObjects, rejectedRest);
-            int objectId = -1;
-            int objectType = -1;
-            int canGoCritical = waitCritical(sendObjects, objectListSize, &objectId, &objectType);
-            printf("\ncanGoToCritical: %d\n", canGoCritical);
-            if (canGoCritical)
-            {
-                inCritical(&person);
 
-                Object object;
-                if (objectType == TOILET && objectId > 0)
-                {
-                    object = person.toiletList[objectId - 1];
-                }
-                else if (objectType == POT && objectId > 0)
-                {
-                    object = person.potList[objectId - 1];
-                }
-
-                afterCritical(&object);
-                rest(&person);
-                rejectedRest = false;
-            }
-            else
-            {
-                rejectedRest = true;
-                rest(&person);
-            }
-        }
-        free(sendObjects);
         free(person.toiletList);
         free(person.potList);
     }
     MPI_Finalize();
+}
+
+void handleStates()
+{
+    while (true)
+    {
+        switch (state)
+        {
+        case INIT:
+            state = PREPARING;
+            break;
+        case PREPARING:
+            break;
+        case WAIT_CRITICAL:
+            if (canGoCritical)
+            {
+                // inCritical(&person);
+
+                if (objectType == TOILET && objectId > 0)
+                {
+                    ackObject = person.toiletList[objectId - 1];
+                }
+                else if (objectType == POT && objectId > 0)
+                {
+                    ackObject = person.potList[objectId - 1];
+                }
+
+                rejectedRest = false;
+                state = IN_CRITICAL;
+            }
+            else
+            {
+                rejectedRest = true;
+                state = REST;
+            }
+            break;
+        case IN_CRITICAL:
+            break;
+        case AFTER_CRITICAL:
+            break;
+        case REST:
+            break;
+        }
+    }
+}
+
+void handleRequests()
+{
+    Object *sendObjects = malloc(sizeof(struct Object) * (toiletNumber + potNumber));
+    int objectListSize;
+    while (true)
+    {
+        switch (state)
+        {
+        case INIT:
+            state = PREPARING;
+            break;
+        case PREPARING:
+            objectListSize = preparing(sendObjects, rejectedRest);
+            break;
+        case WAIT_CRITICAL:
+            int canGoCritical = waitCritical(sendObjects, objectListSize, &objectId, &objectType);
+            printf("\ncanGoToCritical: %d\n", canGoCritical);
+            break;
+        case IN_CRITICAL:
+            inCritical();
+            break;
+        case AFTER_CRITICAL:
+            afterCritical(&ackObject);
+            break;
+        case REST:
+            rest();
+            break;
+        }
+    }
+    free(sendObjects);
 }
 
 int preparing(Object *objectList, int rejectedRest)
@@ -775,10 +825,6 @@ void afterCritical(Object *object)
         printf("\tAFTER_CRITICAL, %d: SEND ACKALL to id: %d about objectId: %d\n", person.id, i, request.objectId);
         MPI_Send(&request, 1, MPI_REQ, i, ACKALL, MPI_COMM_WORLD);
     }
-}
-
-void handleRequests()
-{
 }
 
 void updateLists(Request *request, char *stateName)
