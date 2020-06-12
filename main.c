@@ -4,10 +4,10 @@
 #include "functions.h"
 #include <pthread.h>
 
-const int toiletNumber = 3;
-const int potNumber = 4;
-const int goodNumber = 4;
-const int badNumber = 6;
+const int toiletNumber = 2;
+const int potNumber = 1;
+const int goodNumber = 2;
+const int badNumber = 2;
 
 Person person;
 Object ackObject;
@@ -271,7 +271,7 @@ void preparingRequestHandler(Request *request)
         request->objectId = request->objectId;
         updateLamportClock();
         request->priority = request->priority;
-        printf("\tPREPARING, %d: Send PACK to: %d\n", person.id, receivedId);
+        printf("\tPREPARING, %d: Send PACK to: %d about %d\n", person.id, receivedId, request->objectId);
         MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
         break;
     case TREQ:
@@ -282,7 +282,7 @@ void preparingRequestHandler(Request *request)
         request->objectState = request->objectState;
         updateLamportClock();
         request->priority = request->priority;
-        printf("\tPREPARING, %d: Send TACK to: %d\n", person.id, receivedId);
+        printf("\tPREPARING, %d: Send TACK to: %d about %d\n", person.id, receivedId, request->objectId);
         MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
         break;
     case ACKALL:
@@ -679,7 +679,7 @@ int preparingState(Object *objectList, int rejectedRest)
                             int priority = rand() % 10;
                             updateLamportClock();
                             req.priority = person.priority + priority;
-                            printf("\tPREPARING, %d: Send TREQ to: %d\n", person.id, i);
+                            printf("\tPREPARING, %d: Send TREQ to: %d about %d\n", person.id, i, request.objectId);
                             MPI_Send(&req, 1, MPI_REQ, i, TREQ, MPI_COMM_WORLD);
                         }
                     }
@@ -708,7 +708,7 @@ int preparingState(Object *objectList, int rejectedRest)
                             int priority = rand() % 10;
                             updateLamportClock();
                             req.priority = person.priority + priority;
-                            printf("\tPREPARING, %d: Send PREQ to: %d\n", person.id, i);
+                            printf("\tPREPARING, %d: Send PREQ to: %d about %d\n", person.id, i, req.objectId);
                             MPI_Send(&req, 1, MPI_REQ, i, PREQ, MPI_COMM_WORLD);
                         }
                     }
@@ -741,7 +741,7 @@ int preparingState(Object *objectList, int rejectedRest)
                             int priority = rand() % 10;
                             updateLamportClock();
                             req.priority = person.priority + priority;
-                            printf("\tPREPARING, %d: Send TREQ to: %d\n", person.id, i);
+                            printf("\tPREPARING, %d: Send TREQ to: %d about %d\n", person.id, i, req.objectId);
                             MPI_Send(&req, 1, MPI_REQ, i, TREQ, MPI_COMM_WORLD);
                         }
                     }
@@ -770,7 +770,7 @@ int preparingState(Object *objectList, int rejectedRest)
                             int priority = rand() % 10;
                             updateLamportClock();
                             req.priority = person.priority + priority;
-                            printf("\tPREPARING, %d: Send PREQ to: %d\n", person.id, i);
+                            printf("\tPREPARING, %d: Send PREQ to: %d about %d\n", person.id, i, req.objectId);
                             MPI_Send(&req, 1, MPI_REQ, i, PREQ, MPI_COMM_WORLD);
                         }
                     }
