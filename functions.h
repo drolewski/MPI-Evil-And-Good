@@ -13,9 +13,9 @@ void waitCriticalRequestHandler(Request *request, Object *objectList);
 
 void inCriticalState();
 
-void afterCritical(Object *object);
+void afterCriticalState(Object *object);
 
-void rest();
+void restRequestHandler();
 
 void handleRequests();
 

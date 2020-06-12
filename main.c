@@ -19,6 +19,7 @@ int canGoCritical = false;
 int *ackList;
 int *rejectList;
 int listSize;
+int restIterations;
 Object *sendObjects;
 
 pthread_mutex_t lamportMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -191,6 +192,12 @@ void handleStates()
             {
                 rejectedRest = true;
                 state = REST;
+                printf("\tREST, %d: process is rest\n", person.id);
+                time_t tt;
+                int quantum = time(&tt);
+                srand(quantum + person.id);
+                restIterations = rand() % (person.goodCount + person.badCount) + 1;
+                printf("Process: %d is waiting: %d\n", person.id, restIterations);
             }
             //ZWOLNIĆ WSZYSTKO
             free(ackList);
@@ -198,10 +205,21 @@ void handleStates()
             break;
         case IN_CRITICAL:
             inCriticalState();
+            state = AFTER_CRITICAL;
             break;
         case AFTER_CRITICAL:
+            afterCriticalState(&ackObject);
+            state = REST;
+            printf("\tREST, %d: process is rest\n", person.id);
+            time_t tt;
+            int quantum = time(&tt);
+            srand(quantum + person.id);
+            restIterations = rand() % (person.goodCount + person.badCount) + 1;
+            printf("Process: %d is waiting: %d\n", person.id, restIterations);
             break;
         case REST:
+            if (restIterations <= 0)
+                state = PREPARING;
             break;
         }
     }
@@ -232,13 +250,8 @@ void handleRequests()
             case WAIT_CRITICAL:
                 waitCriticalRequestHandler(&request, sendObjects);
                 break;
-            case IN_CRITICAL:
-                break;
-            case AFTER_CRITICAL:
-                afterCritical(&ackObject);
-                break;
             case REST:
-                rest();
+                restRequestHandler();
                 break;
             }
         }
@@ -578,57 +591,40 @@ void waitCriticalRequestHandler(Request *request, Object *objectList)
     }
 }
 
-void rest()
+void restRequestHandler(Request *request)
 {
-    printf("\tREST, %d: process is rest\n", person.id);
-    time_t tt;
-    int quantum = time(&tt);
-    srand(quantum + person.id);
-    int iterations = rand() % (person.goodCount + person.badCount) + 1;
-    printf("Process: %d is waiting: %d\n", person.id, iterations);
-    while (iterations > 0)
+    int receivedId = request->id;
+    switch (request->requestType)
     {
-        MPI_Status status;
-        Request request;
-        MPI_Recv(&request, 1, MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-        pthread_mutex_lock(&lamportMutex);
-        person.lamportClock = request.priority > person.lamportClock ? request.priority + 1 : person.lamportClock + 1;
-        pthread_mutex_unlock(&lamportMutex);
-        if (status.MPI_ERROR == MPI_SUCCESS)
-        {
-            int receivedId = request.id;
-            switch (request.requestType)
-            {
-            case PREQ:
-                request.id = person.id;
-                request.requestType = PACK;
-                request.objectId = request.objectId;
-                request.objectState = request.objectState;
-                request.objectType = request.objectType;
-                updateLamportClock();
-                printf("\tREST, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
-                break;
-            case TREQ:
-                request.id = person.id;
-                request.requestType = TACK;
-                request.objectId = request.objectId;
-                request.objectState = request.objectState;
-                request.objectType = request.objectType;
-                updateLamportClock();
-                printf("\tREST, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
-                break;
-            case ACKALL:
-                updateLists(&request, "REST");
-                break;
-            default:
-                printf("\tREST, %d: Received ignore message.\n", person.id);
-                break;
-            }
-        }
-        iterations--;
+    case PREQ:
+        request->id = person.id;
+        request->requestType = PACK;
+        request->objectId = request->objectId;
+        request->objectState = request->objectState;
+        request->objectType = request->objectType;
+        updateLamportClock();
+        printf("\tREST, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+        MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+        break;
+    case TREQ:
+        request->id = person.id;
+        request->requestType = TACK;
+        request->objectId = request->objectId;
+        request->objectState = request->objectState;
+        request->objectType = request->objectType;
+        updateLamportClock();
+        printf("\tREST, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+        MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+        break;
+    case ACKALL:
+        updateLists(&request, "REST");
+        break;
+    default:
+        printf("\tREST, %d: Received ignore message.\n", person.id);
+        break;
     }
+
+    restIterations--;
 }
 
 void inCriticalState()
@@ -637,7 +633,7 @@ void inCriticalState()
     waitRandomTime(person.id);
 }
 
-void afterCritical(Object *object)
+void afterCriticalState(Object *object)
 {
     Request request;
     for (int i = 0; i <= (person.goodCount + person.badCount); i++)
