@@ -17,7 +17,7 @@ void afterCriticalState(Object *object);
 
 void restRequestHandler();
 
-void handleRequests();
+void* handleRequests();
 
 void updateLists(Request *request, char* stateName);
 

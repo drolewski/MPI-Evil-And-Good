@@ -13,8 +13,6 @@ Person person;
 Object ackObject;
 int state = INIT;
 int rejectedRest = false;
-int objectId = -1;
-int objectType = -1;
 int canGoCritical = false;
 int *ackList;
 int *rejectList;
@@ -153,6 +151,7 @@ int main(int argc, char **argv)
 
 void handleStates()
 {
+    int iterator, canGoCritical, objectId = -1, objectType = -1;
     while (true)
     {
         switch (state)
@@ -161,7 +160,7 @@ void handleStates()
             state = PREPARING;
             break;
         case PREPARING:
-            int iterator = preparingState(sendObjects, rejectedRest);
+            iterator = preparingState(sendObjects, rejectedRest);
             if (iterator > -1)
             {
                 ackList = malloc(sizeof(int) * iterator);
@@ -173,7 +172,8 @@ void handleStates()
             }
             break;
         case WAIT_CRITICAL:
-            int canGoCricital = waitCriticalState(sendObjects, objectId, objectType);
+
+            canGoCritical = waitCriticalState(sendObjects, &objectId, &objectType);
             printf("\ncanGoToCritical: %d\n", canGoCritical);
             if (canGoCritical)
             {
@@ -188,7 +188,7 @@ void handleStates()
                 rejectedRest = false;
                 state = IN_CRITICAL;
             }
-            else if (canGoCricital == false)
+            else if (canGoCritical == false)
             {
                 rejectedRest = true;
                 state = REST;
@@ -226,7 +226,7 @@ void handleStates()
     free(sendObjects);
 }
 
-void handleRequests()
+void *handleRequests()
 {
     int objectListSize;
     while (true)
@@ -251,7 +251,7 @@ void handleRequests()
                 waitCriticalRequestHandler(&request, sendObjects);
                 break;
             case REST:
-                restRequestHandler();
+                restRequestHandler(&request);
                 break;
             }
         }
@@ -286,7 +286,7 @@ void preparingRequestHandler(Request *request)
         MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
         break;
     case ACKALL:
-        updateLists(&request, "PREPARING");
+        updateLists(request, "PREPARING");
         break;
     default:
         printf("\tPREPARING, %d: Received ignore message.\n", person.id);
@@ -534,7 +534,7 @@ void waitCriticalRequestHandler(Request *request, Object *objectList)
         }
         break;
     case ACKALL:
-        updateLists(&request, "WAIT_CRITICAL");
+        updateLists(request, "WAIT_CRITICAL");
 
         if (!((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount)))
         {
@@ -617,7 +617,7 @@ void restRequestHandler(Request *request)
         MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
         break;
     case ACKALL:
-        updateLists(&request, "REST");
+        updateLists(request, "REST");
         break;
     default:
         printf("\tREST, %d: Received ignore message.\n", person.id);
