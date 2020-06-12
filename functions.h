@@ -7,19 +7,19 @@
 
 Person init(int id, Object *toiletList, Object *potList);
 
-int preparing(Person *person, Object *objectList, int rejectedRest);
+int preparing(Object *objectList, int rejectedRest);
 
-int waitCritical(Person *person, Object *objectList, int listSize, int *objectId, int *objectType);
+int waitCritical(Object *objectList, int listSize, int *objectId, int *objectType);
 
-void inCritical(Person *person);
+void inCritical();
 
-void afterCritical(Person *person, Object *object);
+void afterCritical(Object *object);
 
-void rest(Person *person);
+void rest();
 
 void handleRequests();
 
-void updateLists(Person * person, Request *request, char* stateName);
+void updateLists(Request *request, char* stateName);
 
-void updateLamportClock(Person *person);
+void updateLamportClock();
 #endif
