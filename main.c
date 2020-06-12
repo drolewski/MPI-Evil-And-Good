@@ -22,6 +22,7 @@ Object *sendObjects;
 
 pthread_mutex_t lamportMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t listDeletingMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t avaliableObjectsCountMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_t requestThread;
 MPI_Datatype MPI_REQ;
 
@@ -669,7 +670,10 @@ void afterCriticalState(Object *object)
 
 int preparingState(Object *objectList, int rejectedRest)
 {
-    if (person.avaliableObjectsCount > 0)
+    pthread_mutex_lock(&avaliableObjectsCountMutex);
+    int availableObjectsCount = person.avaliableObjectsCount;
+    pthread_mutex_unlock(&avaliableObjectsCountMutex);
+    if (availableObjectsCount > 0)
     {
         int iterator = 0;
         if (person.personType - BAD)
@@ -805,6 +809,7 @@ int preparingState(Object *objectList, int rejectedRest)
 void updateLists(Request *request, char *stateName)
 {
     int receivedId = request->id;
+    pthread_mutex_lock(&avaliableObjectsCountMutex);
     if (request->objectType == POT)
     {
         printf("\t%s, %d: Receive ACK_ALL with pot: %d and state: %s\n", stateName, person.id, receivedId, request->objectState - BROKEN ? "repaired" : "broken");
@@ -831,6 +836,7 @@ void updateLists(Request *request, char *stateName)
             person.avaliableObjectsCount += request->objectState - BROKEN ? 1 : -1;
         }
     }
+    pthread_mutex_unlock(&avaliableObjectsCountMutex);
 }
 
 void updateLamportClock()
