@@ -679,7 +679,7 @@ int preparingState(Object *objectList, int rejectedRest)
                             int priority = rand() % 10;
                             updateLamportClock();
                             req.priority = person.priority + priority;
-                            printf("\tPREPARING, %d: Send TREQ to: %d about %d\n", person.id, i, request.objectId);
+                            printf("\tPREPARING, %d: Send TREQ to: %d about %d\n", person.id, i, req.objectId);
                             MPI_Send(&req, 1, MPI_REQ, i, TREQ, MPI_COMM_WORLD);
                         }
                     }
