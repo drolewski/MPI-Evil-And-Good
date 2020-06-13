@@ -4,10 +4,10 @@
 #include "functions.h"
 #include <pthread.h>
 
-const int toiletNumber = 6;
-const int potNumber = 4;
-const int goodNumber = 6;
-const int badNumber = 6;
+const int toiletNumber = 2;
+const int potNumber = 1;
+const int goodNumber = 2;
+const int badNumber = 2;
 
 Person person;
 Object ackObject;
@@ -19,12 +19,12 @@ Object *sendObjects;
 int iterationsCounter;
 int iterator;
 
-pthread_mutex_t stateMutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t lamportMutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t listDeletingMutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t avaliableObjectsCountMutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t listSizeMutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t iterationsCounterMutex = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t stateMutex = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t lamportMutex = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t listDeletingMutex = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t avaliableObjectsCountMutex = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t listSizeMutex = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t iterationsCounterMutex = PTHREAD_MUTEX_INITIALIZER;
 
 pthread_t requestThread;
 MPI_Datatype MPI_REQ;
@@ -161,38 +161,39 @@ int main(int argc, char **argv)
 
 void handleStates()
 {
+     int tempRestIterations;
     int canGoCritical = false, objectId = -1, objectType = -1, rejectedRest = false;
     while (true)
     {
-        pthread_mutex_lock(&stateMutex);
+        //pthread_mutex_lock(&stateMutex);
         int lockState = state;
-        pthread_mutex_unlock(&stateMutex);
+        //pthread_mutex_unlock(&stateMutex);
         switch (lockState)
         {
         case INIT:
-            pthread_mutex_lock(&iterationsCounterMutex);
+            //pthread_mutex_lock(&iterationsCounterMutex);
             iterationsCounter = 0;
-            pthread_mutex_unlock(&iterationsCounterMutex);
-            pthread_mutex_lock(&stateMutex);
+            //pthread_mutex_unlock(&iterationsCounterMutex);
+            //pthread_mutex_lock(&stateMutex);
             state = PREPARING;
-            pthread_mutex_unlock(&stateMutex);
+            //pthread_mutex_unlock(&stateMutex);
             break;
         case PREPARING:
             iterator = preparingState(sendObjects, rejectedRest);
             if (iterator > -1)
             {
-                pthread_mutex_lock(&listDeletingMutex);
+                //pthread_mutex_lock(&listDeletingMutex);
                 rejectList = malloc(sizeof(int) * iterator);
                 ackList = malloc(sizeof(int) * iterator);
                 memset(ackList, 0, (sizeof(int) * iterator));
                 memset(rejectList, 0, (sizeof(int) * iterator));
-                pthread_mutex_unlock(&listDeletingMutex);
-                pthread_mutex_lock(&listSizeMutex);
+                //pthread_mutex_unlock(&listDeletingMutex);
+                //pthread_mutex_lock(&listSizeMutex);
                 listSize = iterator;
-                pthread_mutex_unlock(&listSizeMutex);
-                pthread_mutex_lock(&stateMutex);
+                //pthread_mutex_unlock(&listSizeMutex);
+                //pthread_mutex_lock(&stateMutex);
                 state = WAIT_CRITICAL;
-                pthread_mutex_unlock(&stateMutex);
+                //pthread_mutex_unlock(&stateMutex);
             }
             break;
         case WAIT_CRITICAL:
@@ -200,9 +201,9 @@ void handleStates()
             canGoCritical = waitCriticalState(&objectId, &objectType);
             if (canGoCritical != -1)
             {
-                pthread_mutex_lock(&listSizeMutex);
+                //pthread_mutex_lock(&listSizeMutex);
                 int tempListSize = listSize;
-                pthread_mutex_unlock(&listSizeMutex);
+                //pthread_mutex_unlock(&listSizeMutex);
             }
             //printf("\ncanGoToCritical: %d\n", canGoCritical);
             if (canGoCritical == true)
@@ -219,44 +220,44 @@ void handleStates()
                     // printf("\t\ttak wiem noo: %d, typ: %d, %d, person: %d\n", ackObject.objectState, ackObject.objectType, ackObject.id, person.id);
                 }
                 rejectedRest = false;
-                pthread_mutex_lock(&stateMutex);
+                //pthread_mutex_lock(&stateMutex);
                 state = IN_CRITICAL;
-                pthread_mutex_unlock(&stateMutex);
+                //pthread_mutex_unlock(&stateMutex);
             }
             else if (canGoCritical == false)
             {
                 // printf("\t\ttak wiem noo: %d, %d\n", objectId, objectType);
                 rejectedRest = true;
-                pthread_mutex_lock(&stateMutex);
+                //pthread_mutex_lock(&stateMutex);
                 state = REST;
-                pthread_mutex_unlock(&stateMutex);
+                //pthread_mutex_unlock(&stateMutex);
                 //printf("\tREST, %d: process is rest\n", person.id);
             }
             //ZWOLNIĆ WSZYSTKO
             break;
         case IN_CRITICAL:
             inCriticalState();
-            pthread_mutex_lock(&stateMutex);
+            //pthread_mutex_lock(&stateMutex);
             state = AFTER_CRITICAL;
-            pthread_mutex_unlock(&stateMutex);
+            //pthread_mutex_unlock(&stateMutex);
             break;
         case AFTER_CRITICAL:
             afterCriticalState(&ackObject);
-            pthread_mutex_lock(&stateMutex);
+            //pthread_mutex_lock(&stateMutex);
             state = REST;
-            pthread_mutex_unlock(&stateMutex);
+            //pthread_mutex_unlock(&stateMutex);
             break;
         case REST:
-            pthread_mutex_lock(&iterationsCounterMutex);
-            int tempRestIterations = iterationsCounter;
-            pthread_mutex_unlock(&iterationsCounterMutex);
+            //pthread_mutex_lock(&iterationsCounterMutex);
+            tempRestIterations = iterationsCounter;
+            //pthread_mutex_unlock(&iterationsCounterMutex);
             if (tempRestIterations <= 0)
             {
-                pthread_mutex_lock(&stateMutex);
+                //pthread_mutex_lock(&stateMutex);
                 state = PREPARING;
                 free(ackList);
                 free(rejectList);
-                pthread_mutex_unlock(&stateMutex);
+                //pthread_mutex_unlock(&stateMutex);
             }
             break;
         }
@@ -272,15 +273,15 @@ void *handleRequests()
         MPI_Status status;
         Request request;
         MPI_Recv(&request, 1, MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-        pthread_mutex_lock(&lamportMutex);
+        //pthread_mutex_lock(&lamportMutex);
         // printf("ObjectStatus: %d, succes: %d, tag: %d, request priority: %d, lamport: %d, whoami: %d\n", request.objectState, status.MPI_ERROR, status.MPI_TAG, request.priority, person.lamportClock, status.MPI_SOURCE);
         person.lamportClock = request.priority > person.lamportClock ? request.priority + 1 : person.lamportClock + 1;
-        pthread_mutex_unlock(&lamportMutex);
+        //pthread_mutex_unlock(&lamportMutex);
         if (status.MPI_ERROR == MPI_SUCCESS)
         {
-            pthread_mutex_lock(&stateMutex);
+            //pthread_mutex_lock(&stateMutex);
             int lockState = state;
-            pthread_mutex_unlock(&stateMutex);
+            //pthread_mutex_unlock(&stateMutex);
             switch (lockState)
             {
             case PREPARING:
@@ -357,9 +358,9 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
         else
         {
             int arePotsInList = false;
-            pthread_mutex_lock(&listSizeMutex);
+            //pthread_mutex_lock(&listSizeMutex);
             int tempListSize = listSize;
-            pthread_mutex_unlock(&listSizeMutex);
+            //pthread_mutex_unlock(&listSizeMutex);
             for (int i = 0; i < tempListSize; i++)
             {
                 if (objectList[i].objectType == POT)
@@ -384,9 +385,9 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             else
             {
                 int arePotsWithIdInList = false;
-                pthread_mutex_lock(&listSizeMutex);
+                //pthread_mutex_lock(&listSizeMutex);
                 int tempListSize = listSize;
-                pthread_mutex_unlock(&listSizeMutex);
+                //pthread_mutex_unlock(&listSizeMutex);
                 for (int i = 0; i < tempListSize; i++)
                 {
                     if (objectList[i].objectType == POT && objectList[i].id == request.objectId)
@@ -404,9 +405,9 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                             request.priority = request.priority;
                             printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
                             MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
-                            pthread_mutex_lock(&listDeletingMutex);
+                            //pthread_mutex_lock(&listDeletingMutex);
                             rejectList[i] += 1;
-                            pthread_mutex_unlock(&listDeletingMutex);
+                            //pthread_mutex_unlock(&listDeletingMutex);
                         }
                         else if (person.priority < request.priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
                         {
@@ -445,9 +446,9 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                                 request.priority = request.priority;
                                 printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
                                 MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
-                                pthread_mutex_lock(&listDeletingMutex);
+                                //pthread_mutex_lock(&listDeletingMutex);
                                 rejectList[i] += 1;
-                                pthread_mutex_unlock(&listDeletingMutex);
+                                //pthread_mutex_unlock(&listDeletingMutex);
                             }
                         }
                     }
@@ -485,9 +486,9 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
         else
         {
             int areToiletsInList = false;
-            pthread_mutex_lock(&listSizeMutex);
+            //pthread_mutex_lock(&listSizeMutex);
             int tempListSize = listSize;
-            pthread_mutex_unlock(&listSizeMutex);
+            //pthread_mutex_unlock(&listSizeMutex);
             for (int i = 0; i < tempListSize; i++)
             {
                 if (objectList[i].objectType == TOILET)
@@ -529,9 +530,9 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                             request.priority = request.priority;
                             printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
                             MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
-                            pthread_mutex_lock(&listDeletingMutex);
+                            //pthread_mutex_lock(&listDeletingMutex);
                             rejectList[i] += 1;
-                            pthread_mutex_unlock(&listDeletingMutex);
+                            //pthread_mutex_unlock(&listDeletingMutex);
                         }
                         else if (person.priority < request.priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
                         {
@@ -570,9 +571,9 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                                 request.priority = request.priority;
                                 printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
                                 MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
-                                pthread_mutex_lock(&listDeletingMutex);
+                                //pthread_mutex_lock(&listDeletingMutex);
                                 rejectList[i] += 1;
-                                pthread_mutex_unlock(&listDeletingMutex);
+                                //pthread_mutex_unlock(&listDeletingMutex);
                             }
                         }
                     }
@@ -597,77 +598,77 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
 
         if (!((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount)))
         {
-            pthread_mutex_lock(&listSizeMutex);
+            //pthread_mutex_lock(&listSizeMutex);
             int tempListSize = listSize;
-            pthread_mutex_unlock(&listSizeMutex);
+            //pthread_mutex_unlock(&listSizeMutex);
 
-            pthread_mutex_lock(&listDeletingMutex);
+            //pthread_mutex_lock(&listDeletingMutex);
             // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
             for (int i = 0; i < tempListSize; i++)
             {
                 ackList[i] += 1;
-                pthread_mutex_lock(&iterationsCounterMutex);
+                //pthread_mutex_lock(&iterationsCounterMutex);
                 iterationsCounter -= 1;
-                pthread_mutex_unlock(&iterationsCounterMutex);
+                //pthread_mutex_unlock(&iterationsCounterMutex);
             }
-            pthread_mutex_unlock(&listDeletingMutex);
+            //pthread_mutex_unlock(&listDeletingMutex);
         }
         break;
     case PACK:
         printf("\tWAIT_CRITICAL, %d: Receive PACK from: %d\n", person.id, receivedId);
-        pthread_mutex_lock(&listSizeMutex);
+        //pthread_mutex_lock(&listSizeMutex);
         tempListSize = listSize;
-        pthread_mutex_unlock(&listSizeMutex);
-        pthread_mutex_lock(&listDeletingMutex);
+        //pthread_mutex_unlock(&listSizeMutex);
+        //pthread_mutex_lock(&listDeletingMutex);
         // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
         for (int i = 0; i < tempListSize; i++)
         {
             if (objectList[i].objectType == POT && objectList[i].id == request.objectId)
             {
                 ackList[i] += 1;
-                pthread_mutex_lock(&iterationsCounterMutex);
+                //pthread_mutex_lock(&iterationsCounterMutex);
                 iterationsCounter -= 1;
-                pthread_mutex_unlock(&iterationsCounterMutex);
+                //pthread_mutex_unlock(&iterationsCounterMutex);
             }
         }
-        pthread_mutex_unlock(&listDeletingMutex);
+        //pthread_mutex_unlock(&listDeletingMutex);
         break;
     case TACK:
         printf("\tWAIT_CRITICAL, %d: Receive TACK from: %d about: %d\n", person.id, receivedId, request.objectId);
-        pthread_mutex_lock(&listSizeMutex);
+        //pthread_mutex_lock(&listSizeMutex);
         tempListSize = listSize;
-        pthread_mutex_unlock(&listSizeMutex);
-        pthread_mutex_lock(&listDeletingMutex);
+        //pthread_mutex_unlock(&listSizeMutex);
+        //pthread_mutex_lock(&listDeletingMutex);
         for (int i = 0; i < tempListSize; i++)
         {
             // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
             if (objectList[i].objectType == TOILET && objectList[i].id == request.objectId)
             {
                 ackList[i] += 1;
-                pthread_mutex_lock(&iterationsCounterMutex);
+                //pthread_mutex_lock(&iterationsCounterMutex);
                 iterationsCounter -= 1;
-                pthread_mutex_unlock(&iterationsCounterMutex);
+                //pthread_mutex_unlock(&iterationsCounterMutex);
             }
         }
-        pthread_mutex_unlock(&listDeletingMutex);
+        //pthread_mutex_unlock(&listDeletingMutex);
         break;
     case REJECT:
         printf("\tWAIT_CRITICAL, %d: Receive REJECT from: %d\n", person.id, receivedId);
-        pthread_mutex_lock(&listSizeMutex);
+        //pthread_mutex_lock(&listSizeMutex);
         tempListSize = listSize;
-        pthread_mutex_unlock(&listSizeMutex);
-        pthread_mutex_lock(&listDeletingMutex);
+        //pthread_mutex_unlock(&listSizeMutex);
+        //pthread_mutex_lock(&listDeletingMutex);
         for (int i = 0; i < tempListSize; i++)
         {
             if (objectList[i].id == request.objectId)
             {
                 rejectList[i] += 1;
                 // person.priority = request.priority;
-                pthread_mutex_lock(&iterationsCounterMutex);
+                //pthread_mutex_lock(&iterationsCounterMutex);
                 iterationsCounter -= 1;
-                pthread_mutex_unlock(&iterationsCounterMutex);
+                //pthread_mutex_unlock(&iterationsCounterMutex);
             }
-            pthread_mutex_unlock(&listDeletingMutex);
+            //pthread_mutex_unlock(&listDeletingMutex);
         }
         break;
     default:
@@ -703,18 +704,18 @@ void restRequestHandler(Request request)
         break;
     case ACKALL:
         updateLists(request, "REST");
-        pthread_mutex_lock(&iterationsCounterMutex);
+        //pthread_mutex_lock(&iterationsCounterMutex);
         iterationsCounter -= iterator;
-        pthread_mutex_unlock(&iterationsCounterMutex);
+        //pthread_mutex_unlock(&iterationsCounterMutex);
         break;
     case PACK:
-        pthread_mutex_lock(&iterationsCounterMutex);
+        //pthread_mutex_lock(&iterationsCounterMutex);
         iterationsCounter--;
-        pthread_mutex_unlock(&iterationsCounterMutex);
+        //pthread_mutex_unlock(&iterationsCounterMutex);
     case TACK:
-        pthread_mutex_lock(&iterationsCounterMutex);
+        //pthread_mutex_lock(&iterationsCounterMutex);
         iterationsCounter--;
-        pthread_mutex_unlock(&iterationsCounterMutex);
+        //pthread_mutex_unlock(&iterationsCounterMutex);
         break;
     default:
         printf("\tREST, %d: Received ignore message.\n", person.id);
@@ -749,10 +750,10 @@ void afterCriticalState(Object *object)
 
 int preparingState(Object *objectList, int rejectedRest)
 {
-    pthread_mutex_lock(&avaliableObjectsCountMutex);
+    //pthread_mutex_lock(&avaliableObjectsCountMutex);
     int availableObjectsCount = person.avaliableObjectsCount;
     // printf(ANSI_COLOR_MAGENTA "PREPARING - Licz się koleżanko z moim zdaniem: %d jestem s**ą o imieniu: %s" ANSI_COLOR_RESET "\n", person.avaliableObjectsCount, person.personType == BAD ? "bad" : "good");
-    pthread_mutex_unlock(&avaliableObjectsCountMutex);
+    //pthread_mutex_unlock(&avaliableObjectsCountMutex);
     if (availableObjectsCount > 0)
     {
         int iterator = 0;
@@ -782,9 +783,9 @@ int preparingState(Object *objectList, int rejectedRest)
                             updateLamportClock();
                             req.priority = person.priority + priority;
                             printf(ANSI_COLOR_YELLOW "\tPREPARING, %d: Send TREQ to: %d about %d" ANSI_COLOR_RESET "\n", person.id, j, req.objectId);
-                            pthread_mutex_lock(&iterationsCounterMutex);
+                            //pthread_mutex_lock(&iterationsCounterMutex);
                             iterationsCounter += 1;
-                            pthread_mutex_unlock(&iterationsCounterMutex);
+                            //pthread_mutex_unlock(&iterationsCounterMutex);
                             MPI_Send(&req, 1, MPI_REQ, j, TREQ, MPI_COMM_WORLD);
                         }
                     }
@@ -815,9 +816,9 @@ int preparingState(Object *objectList, int rejectedRest)
                             updateLamportClock();
                             req.priority = person.priority + priority;
                             printf(ANSI_COLOR_YELLOW "\tPREPARING, %d: Send PREQ to: %d about %d" ANSI_COLOR_RESET "\n", person.id, j, req.objectId);
-                            pthread_mutex_lock(&iterationsCounterMutex);
+                            //pthread_mutex_lock(&iterationsCounterMutex);
                             iterationsCounter += 1;
-                            pthread_mutex_unlock(&iterationsCounterMutex);
+                            //pthread_mutex_unlock(&iterationsCounterMutex);
                             MPI_Send(&req, 1, MPI_REQ, j, PREQ, MPI_COMM_WORLD);
                         }
                     }
@@ -852,9 +853,9 @@ int preparingState(Object *objectList, int rejectedRest)
                             updateLamportClock();
                             req.priority = person.priority + priority;
                             printf(ANSI_COLOR_YELLOW "\tPREPARING, %d: Send TREQ to: %d about %d" ANSI_COLOR_RESET "\n", person.id, j, req.objectId);
-                            pthread_mutex_lock(&iterationsCounterMutex);
+                            //pthread_mutex_lock(&iterationsCounterMutex);
                             iterationsCounter += 1;
-                            pthread_mutex_unlock(&iterationsCounterMutex);
+                            //pthread_mutex_unlock(&iterationsCounterMutex);
                             MPI_Send(&req, 1, MPI_REQ, j, TREQ, MPI_COMM_WORLD);
                         }
                     }
@@ -885,9 +886,9 @@ int preparingState(Object *objectList, int rejectedRest)
                             updateLamportClock();
                             req.priority = person.priority + priority;
                             printf(ANSI_COLOR_YELLOW "\tPREPARING, %d: Send PREQ to: %d about %d" ANSI_COLOR_RESET "\n", person.id, j, req.objectId);
-                            pthread_mutex_lock(&iterationsCounterMutex);
+                            //pthread_mutex_lock(&iterationsCounterMutex);
                             iterationsCounter += 1;
-                            pthread_mutex_unlock(&iterationsCounterMutex);
+                            //pthread_mutex_unlock(&iterationsCounterMutex);
                             MPI_Send(&req, 1, MPI_REQ, j, PREQ, MPI_COMM_WORLD);
                         }
                     }
@@ -905,7 +906,7 @@ int preparingState(Object *objectList, int rejectedRest)
 void updateLists(Request request, char *stateName)
 {
     int receivedId = request.id;
-    pthread_mutex_lock(&avaliableObjectsCountMutex);
+    //pthread_mutex_lock(&avaliableObjectsCountMutex);
     if (request.objectType == POT)
     {
         //printf("\t%s, %d: Receive ACK_ALL with pot: %d and state: %s\n", stateName, person.id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
@@ -939,31 +940,31 @@ void updateLists(Request request, char *stateName)
         }
     }
     //printf(ANSI_COLOR_CYAN "%s - Licz się koleżanko z moim zdaniem: %d jestem s**ą o imieniu: %s" ANSI_COLOR_RESET "\n", stateName, person.avaliableObjectsCount, person.personType == BAD ? "bad" : "good");
-    pthread_mutex_unlock(&avaliableObjectsCountMutex);
+    //pthread_mutex_unlock(&avaliableObjectsCountMutex);
 }
 
 void updateLamportClock()
 {
-    pthread_mutex_lock(&lamportMutex);
+    //pthread_mutex_lock(&lamportMutex);
     person.lamportClock += 1;
-    pthread_mutex_unlock(&lamportMutex);
+    //pthread_mutex_unlock(&lamportMutex);
 }
 
 int waitCriticalState(int *objectId, int *objectType)
 {
 
-    pthread_mutex_lock(&listSizeMutex);
+    //pthread_mutex_lock(&listSizeMutex);
     int tempListSize = listSize;
-    pthread_mutex_unlock(&listSizeMutex);
+    //pthread_mutex_unlock(&listSizeMutex);
     for (int i = 0; i < tempListSize; i++)
     {
-        pthread_mutex_lock(&listDeletingMutex);
+        //pthread_mutex_lock(&listDeletingMutex);
         int tempRejectListValue = rejectList[i];
-        pthread_mutex_unlock(&listDeletingMutex);
+        //pthread_mutex_unlock(&listDeletingMutex);
         if (tempRejectListValue > 0)
         {
             // delete from array
-            pthread_mutex_lock(&listDeletingMutex);
+            //pthread_mutex_lock(&listDeletingMutex);
             for (int j = i; j < tempListSize - 1; j++)
             {
                 sendObjects[j] = sendObjects[j + 1];
@@ -972,19 +973,19 @@ int waitCriticalState(int *objectId, int *objectType)
             }
             tempListSize -= 1;
             printf("\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person.id, tempListSize);
-            pthread_mutex_unlock(&listDeletingMutex);
+            //pthread_mutex_unlock(&listDeletingMutex);
 
-            pthread_mutex_lock(&listSizeMutex);
+            //pthread_mutex_lock(&listSizeMutex);
             listSize = tempListSize;
-            pthread_mutex_unlock(&listSizeMutex);
+            //pthread_mutex_unlock(&listSizeMutex);
         }
     }
 
     for (int i = 0; i < tempListSize; i++)
     {
-        pthread_mutex_lock(&listDeletingMutex);
+        //pthread_mutex_lock(&listDeletingMutex);
         int tempAckListValue = ackList[i];
-        pthread_mutex_unlock(&listDeletingMutex);
+        //pthread_mutex_unlock(&listDeletingMutex);
         // printf("ackList: %d, reszta gowna: %d\n", ackList[i],person.goodCount + person.badCount - 1);
         if (tempAckListValue == (person.goodCount + person.badCount - 1))
         {
