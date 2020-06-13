@@ -286,27 +286,51 @@ void *handleRequests()
     {
         MPI_Status status;
         Request request;
-        MPI_Recv(&request, 1, MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-        pthread_mutex_lock(&lamportMutex);
-        // printf("ObjectStatus: %d, succes: %d, tag: %d, request priority: %d, lamport: %d, whoami: %d\n", request.objectState, status.MPI_ERROR, status.MPI_TAG, request.priority, person.lamportClock, status.MPI_SOURCE);
-        person.lamportClock = request.priority > person.lamportClock ? request.priority + 1 : person.lamportClock + 1;
-        pthread_mutex_unlock(&lamportMutex);
-        if (status.MPI_ERROR == MPI_SUCCESS)
+        MPI_Request mpiReq;
+        int flag = 0;
+        if (state == REST)
         {
-            pthread_mutex_lock(&stateMutex);
-            int lockState = state;
-            pthread_mutex_unlock(&stateMutex);
-            switch (lockState)
+            MPI_Irecv(&request, 1, MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &mpiReq);
+            pthread_mutex_lock(&lamportMutex);
+            // printf("ObjectStatus: %d, succes: %d, tag: %d, request priority: %d, lamport: %d, whoami: %d\n", request.objectState, status.MPI_ERROR, status.MPI_TAG, request.priority, person.lamportClock, status.MPI_SOURCE);
+            person.lamportClock = request.priority > person.lamportClock ? request.priority + 1 : person.lamportClock + 1;
+            pthread_mutex_unlock(&lamportMutex);
+            MPI_Request_get_status(mpiReq, &flag, &status);
+            if (flag)
             {
-            case PREPARING:
-                preparingRequestHandler(request);
-                break;
-            case WAIT_CRITICAL:
-                waitCriticalRequestHandler(request, sendObjects);
-                break;
-            case REST:
                 restRequestHandler(request);
-                break;
+            }
+            else
+            {
+                pthread_mutex_lock(&restIterationsMutex);
+                restIterations--;
+                pthread_mutex_unlock(&restIterationsMutex);
+            }
+        }
+        else
+        {
+            MPI_Recv(&request, 1, MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+            pthread_mutex_lock(&lamportMutex);
+            // printf("ObjectStatus: %d, succes: %d, tag: %d, request priority: %d, lamport: %d, whoami: %d\n", request.objectState, status.MPI_ERROR, status.MPI_TAG, request.priority, person.lamportClock, status.MPI_SOURCE);
+            person.lamportClock = request.priority > person.lamportClock ? request.priority + 1 : person.lamportClock + 1;
+            pthread_mutex_unlock(&lamportMutex);
+            if (status.MPI_ERROR == MPI_SUCCESS)
+            {
+                pthread_mutex_lock(&stateMutex);
+                int lockState = state;
+                pthread_mutex_unlock(&stateMutex);
+                switch (lockState)
+                {
+                case PREPARING:
+                    preparingRequestHandler(request);
+                    break;
+                case WAIT_CRITICAL:
+                    waitCriticalRequestHandler(request, sendObjects);
+                    break;
+                case REST:
+                    restRequestHandler(request);
+                    break;
+                }
             }
         }
     }
