@@ -101,8 +101,8 @@ int main(int argc, char **argv)
 {
     int errs = 0;
     int provided, flag, claimed;
- 
-    MPI_Init_thread( 0, 0, MPI_THREAD_MULTIPLE, &provided );
+
+    MPI_Init_thread(0, 0, MPI_THREAD_MULTIPLE, &provided);
 
     int size, rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -207,6 +207,7 @@ void handleStates()
             //printf("\ncanGoToCritical: %d\n", canGoCritical);
             if (canGoCritical == true)
             {
+                printf("\t\ttak wiem noo: %d, %d\n", objectId, objectType);
                 if (objectType == TOILET && objectId > 0)
                 {
                     ackObject = person.toiletList[objectId - 1];
@@ -222,6 +223,7 @@ void handleStates()
             }
             else if (canGoCritical == false)
             {
+                printf("\t\ttak wiem noo: %d, %d\n", objectId, objectType);
                 rejectedRest = true;
                 pthread_mutex_lock(&stateMutex);
                 state = REST;
@@ -321,7 +323,7 @@ void preparingRequestHandler(Request request)
         request.objectId = request.objectId;
         updateLamportClock();
         request.priority = request.priority;
-        printf("\tPREPARING, %d: Send PACK to: %d about %d\n", person.id, receivedId, request.objectId);
+        //printf("\tPREPARING, %d: Send PACK to: %d about %d\n", person.id, receivedId, request.objectId);
         MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
         break;
     case TREQ:
@@ -362,7 +364,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             request.objectType = request.objectType;
             updateLamportClock();
             request.priority = request.priority;
-            printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
+            //printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
             MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
         }
         else
@@ -389,7 +391,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 request.objectType = request.objectType;
                 updateLamportClock();
                 request.priority = request.priority;
-                printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
+                //printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
                 MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
             }
             else
@@ -413,7 +415,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                             request.objectType = request.objectType;
                             updateLamportClock();
                             request.priority = request.priority;
-                            printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
+                            //printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
                             MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                             pthread_mutex_lock(&listDeletingMutex);
                             rejectList[i] += 1;
@@ -428,7 +430,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                             request.objectType = request.objectType;
                             updateLamportClock();
                             request.priority = request.priority;
-                            printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
+                            //printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
                             MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                         }
                         else //równe priorytety
@@ -442,7 +444,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                                 request.objectType = request.objectType;
                                 updateLamportClock();
                                 request.priority = request.priority;
-                                printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
+                                //printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
                                 MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                             }
                             else
@@ -454,7 +456,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                                 request.objectType = request.objectType;
                                 updateLamportClock();
                                 request.priority = request.priority;
-                                printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
+                                //printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
                                 MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                                 pthread_mutex_lock(&listDeletingMutex);
                                 rejectList[i] += 1;
@@ -472,7 +474,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                     request.objectType = request.objectType;
                     updateLamportClock();
                     request.priority = request.priority;
-                    printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
+                    //printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
                     MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                 }
             }
@@ -615,7 +617,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             pthread_mutex_lock(&listDeletingMutex);
             for (int i = 0; i < tempListSize; i++)
             {
-                printf("objectType: %d\n", request.objectType);
+                printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
                 if (request.objectType == objectList[i].objectType)
                 {
                     if (request.objectId == objectList[i].id)
@@ -632,14 +634,14 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
         }
         break;
     case PACK:
-        printf("\tWAIT_CRITICAL, %d: Receive PACK from: %d\n", person.id, receivedId);
+        //printf("\tWAIT_CRITICAL, %d: Receive PACK from: %d\n", person.id, receivedId);
         pthread_mutex_lock(&listSizeMutex);
         tempListSize = listSize;
         pthread_mutex_unlock(&listSizeMutex);
         pthread_mutex_lock(&listDeletingMutex);
         for (int i = 0; i < tempListSize; i++)
         {
-            printf("objectType: %d\n", request.objectType);
+            printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
             if (objectList[i].objectType == POT && objectList[i].id == request.objectId)
             {
                 ackList[i] += 1;
@@ -648,14 +650,14 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
         pthread_mutex_unlock(&listDeletingMutex);
         break;
     case TACK:
-        printf("\tWAIT_CRITICAL, %d: Receive TACK from: %d\n", person.id, receivedId);
+        //printf("\tWAIT_CRITICAL, %d: Receive TACK from: %d\n", person.id, receivedId);
         pthread_mutex_lock(&listSizeMutex);
         tempListSize = listSize;
         pthread_mutex_unlock(&listSizeMutex);
         pthread_mutex_lock(&listDeletingMutex);
         for (int i = 0; i < tempListSize; i++)
         {
-            printf("objectType: %d\n", request.objectType);
+            printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
             if (objectList[i].objectType == TOILET && objectList[i].id == request.objectId)
             {
                 ackList[i] += 1;
@@ -770,7 +772,7 @@ int preparingState(Object *objectList, int rejectedRest)
                     req.requestType = TREQ;
                     req.objectType = TOILET;
                     req.objectState = person.toiletList[i].objectState;
-                    printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", req.objectState == BROKEN ? "Broken" : req.objectState == REPAIRED ? "repaired" : "smieci");
+                    //printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", req.objectState == BROKEN ? "Broken" : req.objectState == REPAIRED ? "repaired" : "smieci");
                     person.priority = rejectedRest ? person.priority : person.lamportClock;
                     for (int j = 1; j <= (person.goodCount + person.badCount); j++)
                     {
@@ -800,7 +802,7 @@ int preparingState(Object *objectList, int rejectedRest)
                     req.requestType = PREQ;
                     req.objectType = POT;
                     req.objectState = person.toiletList[i].objectState;
-                    printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", req.objectState == BROKEN ? "Broken" : req.objectState == REPAIRED ? "repaired" : "smieci");
+                    //printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", req.objectState == BROKEN ? "Broken" : req.objectState == REPAIRED ? "repaired" : "smieci");
                     person.priority = rejectedRest ? person.priority : person.lamportClock;
                     for (int j = 1; j <= (person.goodCount + person.badCount); j++)
                     {
@@ -834,7 +836,7 @@ int preparingState(Object *objectList, int rejectedRest)
                     req.requestType = TREQ;
                     req.objectType = TOILET;
                     req.objectState = person.toiletList[i].objectState;
-                    printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", req.objectState == BROKEN ? "Broken" : "Repaired");
+                    //printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", req.objectState == BROKEN ? "Broken" : "Repaired");
                     person.priority = rejectedRest ? person.priority : person.lamportClock;
                     for (int j = 1; j <= (person.goodCount + person.badCount); j++)
                     {
@@ -877,7 +879,6 @@ int preparingState(Object *objectList, int rejectedRest)
                             updateLamportClock();
                             req.priority = person.priority + priority;
                             // printf("\tPREPARING, %d: Send PREQ to: %d about %d\n", person.id, i, req.objectId);
-                            printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %d" ANSI_COLOR_RESET "\n", req.priority);
                             MPI_Send(&req, 1, MPI_REQ, j, PREQ, MPI_COMM_WORLD);
                         }
                     }
@@ -975,9 +976,8 @@ int waitCriticalState(int *objectId, int *objectType)
         if (tempAckListValue == (person.goodCount + person.badCount - 1))
         {
             //printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
-            objectId = &sendObjects[i].id;
-            objectType = &sendObjects[i].objectType;
-            //printf( "No tutaj jest bajlando %d\n", sendObjects[i].objectType);
+            *objectId = sendObjects[i].id;
+            *objectType = sendObjects[i].objectType;
             return true;
         }
     }
