@@ -15,7 +15,7 @@ void inCriticalState();
 
 void afterCriticalState(Object *object);
 
-void restRequestHandler();
+void restRequestHandler(Request request);
 
 void* handleRequests();
 
