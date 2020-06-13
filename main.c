@@ -155,6 +155,7 @@ int main(int argc, char **argv)
     free(person.toiletList);
     free(person.potList);
     free(sendObjects);
+    MPI_Type_free(&MPI_REQ);
     MPI_Finalize();
 }
 
