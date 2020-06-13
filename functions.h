@@ -7,9 +7,9 @@
 
 Person init(int id, Object *toiletList, Object *potList);
 
-void preparingRequestHandler(Request *request);
+void preparingRequestHandler(Request request);
 
-void waitCriticalRequestHandler(Request *request, Object *objectList);
+void waitCriticalRequestHandler(Request request, Object *objectList);
 
 void inCriticalState();
 
@@ -19,7 +19,7 @@ void restRequestHandler();
 
 void* handleRequests();
 
-void updateLists(Request *request, char* stateName);
+void updateLists(Request request, char* stateName);
 
 void updateLamportClock();
 
@@ -27,5 +27,5 @@ void handleStates();
 
 int preparingState(Object *objectList, int rejectedRest);
 
-int waitCriticalState(Object *objectList,int *objectId, int *objectType);
+int waitCriticalState(int *objectId, int *objectType);
 #endif
