@@ -207,14 +207,16 @@ void handleStates()
             //printf("\ncanGoToCritical: %d\n", canGoCritical);
             if (canGoCritical == true)
             {
-                printf("\t\ttak wiem noo: %d, %d\n", objectId, objectType);
+
                 if (objectType == TOILET && objectId > 0)
                 {
                     ackObject = person.toiletList[objectId - 1];
+                    printf("\t\ttak wiem noo: %d, typ: %d, %d, person: %d\n", ackObject.objectState, ackObject.objectType, ackObject.id, person.id);
                 }
                 else if (objectType == POT && objectId > 0)
                 {
                     ackObject = person.potList[objectId - 1];
+                    printf("\t\ttak wiem noo: %d, typ: %d, %d, person: %d\n", ackObject.objectState, ackObject.objectType, ackObject.id, person.id);
                 }
                 rejectedRest = false;
                 pthread_mutex_lock(&stateMutex);
@@ -615,9 +617,9 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             pthread_mutex_unlock(&listSizeMutex);
 
             pthread_mutex_lock(&listDeletingMutex);
+            printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
             for (int i = 0; i < tempListSize; i++)
             {
-                printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
                 if (request.objectType == objectList[i].objectType)
                 {
                     if (request.objectId == objectList[i].id)
@@ -639,9 +641,9 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
         tempListSize = listSize;
         pthread_mutex_unlock(&listSizeMutex);
         pthread_mutex_lock(&listDeletingMutex);
+        printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
         for (int i = 0; i < tempListSize; i++)
         {
-            printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
             if (objectList[i].objectType == POT && objectList[i].id == request.objectId)
             {
                 ackList[i] += 1;
@@ -739,8 +741,7 @@ void afterCriticalState(Object *object)
     request.objectState = object->objectState == BROKEN ? REPAIRED : BROKEN;
     //printf(ANSI_COLOR_MAGENTA "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", request.objectState == BROKEN ? "Broken" : "Repaired");
     request.objectType = object->objectType;
-    //printf("TY CHUJU::: %d\n", object->objectType);
-    // person.priority = request.priority;
+    request.priority = person.lamportClock;
     updateLists(request, "AFTER_CRITICAL");
     for (int i = 0; i <= (person.goodCount + person.badCount); i++)
     {
