@@ -232,8 +232,6 @@ void handleStates()
                 //printf("\tREST, %d: process is rest\n", person.id);
             }
             //ZWOLNIĆ WSZYSTKO
-            // free(ackList);
-            // free(rejectList);
             break;
         case IN_CRITICAL:
             inCriticalState();
@@ -255,6 +253,8 @@ void handleStates()
             {
                 pthread_mutex_lock(&stateMutex);
                 state = PREPARING;
+                free(ackList);
+                free(rejectList);
                 pthread_mutex_unlock(&stateMutex);
             }
             break;
