@@ -180,7 +180,7 @@ void handleStates()
             break;
         case PREPARING:
             iterator = preparingState(sendObjects, rejectedRest);
-            if (iterator > -1)
+            if (iterator > 0)
             {
                 pthread_mutex_lock(&listDeletingMutex);
                 rejectList = malloc(sizeof(int) * iterator);
@@ -201,9 +201,7 @@ void handleStates()
             canGoCritical = waitCriticalState(&objectId, &objectType);
             if (canGoCritical != -1)
             {
-                pthread_mutex_lock(&listSizeMutex);
-                int tempListSize = listSize;
-                pthread_mutex_unlock(&listSizeMutex);
+                // printf("XD?\n");
             }
             //printf("\ncanGoToCritical: %d\n", canGoCritical);
             if (canGoCritical == true)
@@ -262,7 +260,7 @@ void handleStates()
             break;
         }
     }
-    free(sendObjects);
+    // free(sendObjects);
 }
 
 void *handleRequests()
@@ -337,6 +335,7 @@ void preparingRequestHandler(Request request)
     case REJECT:
         break;
     default:
+        printf(ANSI_COLOR_MAGENTA "PREPARING - request: %d, sendertId: %d, objectID: %d, objectType: %d, objectState: %d, priority: %d, my Priority: %d, my id: %d" ANSI_COLOR_RESET "\n", request.requestType,request.id, request.objectId, request.objectType, request.objectState, request.priority, person.priority, person.id);
         //printf("\tPREPARING, %d: Received ignore message.\n", person.id);
         break;
     }
@@ -721,6 +720,7 @@ void restRequestHandler(Request request)
         pthread_mutex_lock(&iterationsCounterMutex);
         iterationsCounter--;
         pthread_mutex_unlock(&iterationsCounterMutex);
+        break;
     case TACK:
         pthread_mutex_lock(&iterationsCounterMutex);
         iterationsCounter--;
@@ -944,7 +944,10 @@ int waitCriticalState(int *objectId, int *objectType)
         }
     }
 
-    if (listSize == 0)
+    pthread_mutex_lock(&listSizeMutex);
+    tempListSize = listSize;
+    pthread_mutex_unlock(&listSizeMutex);
+    if (tempListSize == 0)
     {
         printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.id);
         return false;
