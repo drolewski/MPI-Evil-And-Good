@@ -172,7 +172,7 @@ void handleStates()
         {
         case INIT:
             pthread_mutex_lock(&iterationsCounterMutex);
-            iterationsCounter = 0;
+            iterationsCounter = -1;
             pthread_mutex_unlock(&iterationsCounterMutex);
             pthread_mutex_lock(&stateMutex);
             state = PREPARING;
@@ -205,7 +205,7 @@ void handleStates()
                 pthread_mutex_lock(&iterationsCounterMutex);
                 int tempIterationsCounter = iterationsCounter;
                 pthread_mutex_unlock(&iterationsCounterMutex);
-                if (tempIterationsCounter <= 0)
+                if (tempIterationsCounter == 0)
                 {
                     pthread_mutex_lock(&stateMutex);
                     state = PREPARING;
