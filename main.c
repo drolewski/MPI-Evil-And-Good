@@ -7,8 +7,8 @@
 
 #define LISTSIZE 3
 
-const int toiletNumber = 2;
-const int potNumber = 1;
+#define toiletNumber 2
+#define potNumber 1
 const int goodNumber = 2;
 const int badNumber = 2;
 
@@ -23,6 +23,8 @@ int listSize;
 Object sendObjects[LISTSIZE];
 int iterationsCounter;
 int iterator;
+struct Object toiletList[toiletNumber];
+struct Object potList[potNumber];
 
 pthread_mutex_t stateMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lamportMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -65,8 +67,6 @@ Person init(int id, Object *toiletList, Object *potList)
     person.badCount = badNumber;
     person.avaliableObjectsCount = person.personType - BAD ? 0 : toiletNumber + potNumber;
     //printf(ANSI_COLOR_CYAN "Licz się koleżanko z moim zdaniem: %d" ANSI_COLOR_RESET "\n", person.avaliableObjectsCount);
-    person.toiletList = toiletList;
-    person.potList = potList;
     person.priority = 0;
     person.messageCount = 0;
     person.lamportClock = 0;
@@ -141,8 +141,6 @@ int main(int argc, char **argv)
     {
         int id;
         MPI_Recv(&id, 1, MPI_INT, 0, SYNCHR, MPI_COMM_WORLD, &status);
-        struct Object toiletList[toiletNumber];
-        struct Object potList[potNumber];
         person = init(id, toiletList, potList);
 
         //printf("Process: %d is Person: %d, %s\n", rank, person.id, person.personType - BAD ? "good" : "bad");
@@ -155,8 +153,6 @@ int main(int argc, char **argv)
 
         pthread_join(requestThread, NULL);
     }
-    free(person.toiletList);
-    free(person.potList);
     MPI_Type_free(&MPI_REQ);
     MPI_Finalize();
 }
@@ -217,12 +213,12 @@ void handleStates()
 
                 if (tempObjectType == TOILET && tempObjectId > 0)
                 {
-                    ackObject = person.toiletList[tempObjectId - 1];
+                    ackObject = toiletList[tempObjectId - 1];
                     // printf("\t\ttak wiem noo: %d, typ: %d, %d, person: %d\n", ackObject.objectState, ackObject.tempObjectType, ackObject.id, person.id);
                 }
                 else if (tempObjectType == POT && tempObjectId > 0)
                 {
-                    ackObject = person.potList[tempObjectId - 1];
+                    ackObject = potList[tempObjectId - 1];
                     // printf("\t\ttak wiem noo: %d, typ: %d, %d, person: %d\n", ackObject.objectState, ackObject.objectType, ackObject.id, person.id);
                 }
                 rejectedRest = false;
@@ -805,18 +801,18 @@ int preparingState(int rejectedRest)
             // good
             for (int i = 0; i < toiletNumber; i++)
             {
-                if (person.toiletList[i].objectState == BROKEN)
+                if (toiletList[i].objectState == BROKEN)
                 {
-                    sendObjects[iterator] = person.toiletList[i];
+                    sendObjects[iterator] = toiletList[i];
                     iterator++;
                 }
             }
             for (int i = 0; i < potNumber; i++)
             {
-                if (person.potList[i].objectState == BROKEN)
+                if (potList[i].objectState == BROKEN)
                 {
 
-                    sendObjects[iterator] = person.potList[i];
+                    sendObjects[iterator] = potList[i];
                     iterator++;
                 }
             }
@@ -826,17 +822,17 @@ int preparingState(int rejectedRest)
             // bad
             for (int i = 0; i < toiletNumber; i++)
             {
-                if (person.toiletList[i].objectState == REPAIRED)
+                if (toiletList[i].objectState == REPAIRED)
                 {
-                    sendObjects[iterator] = person.toiletList[i];
+                    sendObjects[iterator] = toiletList[i];
                     iterator++;
                 }
             }
             for (int i = 0; i < potNumber; i++)
             {
-                if (person.potList[i].objectState == REPAIRED)
+                if (potList[i].objectState == REPAIRED)
                 {
-                    sendObjects[iterator] = person.potList[i];
+                    sendObjects[iterator] = potList[i];
                     iterator++;
                 }
             }
@@ -892,7 +888,7 @@ void updateLists(Request request, char *stateName)
     if (request.objectType == POT)
     {
         //printf("\t%s, %d: Receive ACK_ALL with pot: %d and state: %s\n", stateName, person.id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
-        person.potList[request.objectId - 1].objectState = request.objectState;
+        potList[request.objectId - 1].objectState = request.objectState;
         //printf(ANSI_COLOR_GREEN "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", request.objectState == BROKEN ? "Broken" : "Repaired");
         if (person.personType == GOOD)
         {
@@ -908,7 +904,7 @@ void updateLists(Request request, char *stateName)
     else
     {
         //printf("\t%s, %d: Receive ACK_ALL with toilet: %d and state: %s\n", stateName, person.id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
-        person.toiletList[request.objectId - 1].objectState = request.objectState;
+        toiletList[request.objectId - 1].objectState = request.objectState;
         //printf(ANSI_COLOR_GREEN "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", request.objectState == BROKEN ? "Broken" : "Repaired");
         if (person.personType == GOOD)
         {

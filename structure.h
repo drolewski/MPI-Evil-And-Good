@@ -59,8 +59,6 @@ struct Person
     int id;
     int goodCount;
     int badCount;
-    Object *potList;
-    Object *toiletList;
     int avaliableObjectsCount;
     int messageCount;
     int lamportClock;
