@@ -5,10 +5,10 @@
 #include <pthread.h>
 #include <math.h>
 
-const int toiletNumber = 3;
-const int potNumber = 3;
-const int goodNumber = 3;
-const int badNumber = 4;
+const int toiletNumber = 2;
+const int potNumber = 1;
+const int goodNumber = 2;
+const int badNumber = 2;
 
 Person person;
 Object ackObject;
@@ -165,7 +165,7 @@ int main(int argc, char **argv)
 
 void handleStates()
 {
-    int canGoCritical = false, objectId = -1, objectType = -1, rejectedRest = false, lockState;
+    int canGoCritical = -1, objectId = -1, objectType = -1, rejectedRest = false, lockState;
     while (true)
     {
         pthread_mutex_lock(&stateMutex);
@@ -179,7 +179,6 @@ void handleStates()
             pthread_mutex_unlock(&iterationsCounterMutex);
             pthread_mutex_lock(&stateMutex);
             state = PREPARING;
-            lockState = PREPARING;
             pthread_mutex_unlock(&stateMutex);
             break;
         case PREPARING:
@@ -197,12 +196,14 @@ void handleStates()
                 pthread_mutex_unlock(&listSizeMutex);
                 pthread_mutex_lock(&stateMutex);
                 state = WAIT_CRITICAL;
-                lockState = WAIT_CRITICAL;
                 pthread_mutex_unlock(&stateMutex);
             }
             break;
         case WAIT_CRITICAL:
-            while(canGoCritical == -1) canGoCritical = waitCriticalState(&objectId, &objectType);
+            canGoCritical = waitCriticalState(&objectId, &objectType);
+            if(canGoCritical == -1){
+                waitRandomTime(person.id);
+            }
             pthread_mutex_lock(&iterationsCounterMutex);
             int tempIterationsCounter = iterationsCounter;
             pthread_mutex_unlock(&iterationsCounterMutex);
@@ -211,9 +212,7 @@ void handleStates()
                 printf(ANSI_COLOR_MAGENTA "Im going to PrEPRING, FROM WAIT_CRITICAL" ANSI_COLOR_RESET "\n");
                 pthread_mutex_lock(&stateMutex);
                 state = PREPARING;
-                lockState = PREPARING;
                 pthread_mutex_unlock(&stateMutex);
-                break;
             }
 
             if (canGoCritical == true)
@@ -232,7 +231,6 @@ void handleStates()
                 rejectedRest = false;
                 pthread_mutex_lock(&stateMutex);
                 state = IN_CRITICAL;
-                lockState = IN_CRITICAL;
                 pthread_mutex_unlock(&stateMutex);
             }
             else if (canGoCritical == false)
@@ -241,7 +239,6 @@ void handleStates()
                 rejectedRest = true;
                 pthread_mutex_lock(&stateMutex);
                 state = REST;
-                lockState = REST;
                 pthread_mutex_unlock(&stateMutex);
                 //printf("\tREST, %d: process is rest\n", person.id);
             }
@@ -251,14 +248,12 @@ void handleStates()
             inCriticalState();
             pthread_mutex_lock(&stateMutex);
             state = AFTER_CRITICAL;
-            lockState = AFTER_CRITICAL;
             pthread_mutex_unlock(&stateMutex);
             break;
         case AFTER_CRITICAL:
             afterCriticalState(&ackObject);
             pthread_mutex_lock(&stateMutex);
             state = REST;
-            lockState = REST;
             pthread_mutex_unlock(&stateMutex);
             break;
         case REST:
@@ -269,7 +264,6 @@ void handleStates()
             {
                 pthread_mutex_lock(&stateMutex);
                 state = PREPARING;
-                lockState = PREPARING;
                 free(ackList);
                 free(rejectList);
                 pthread_mutex_unlock(&stateMutex);
@@ -280,13 +274,13 @@ void handleStates()
             break;
         }
     }
-    
+
     // free(sendObjects);
 }
 
 void *handleRequests()
 {
-    int objectListSize;
+    int objectListSize, lockState;
     while (true)
     {
         MPI_Status status;
@@ -299,7 +293,7 @@ void *handleRequests()
         if (status.MPI_ERROR == MPI_SUCCESS)
         {
             pthread_mutex_lock(&stateMutex);
-            int lockState = state;
+            lockState = state;
             pthread_mutex_unlock(&stateMutex);
             switch (lockState)
             {
@@ -948,60 +942,67 @@ void updateLamportClock()
 
 int waitCriticalState(int *objectId, int *objectType)
 {
-
     pthread_mutex_lock(&listSizeMutex);
-    int tempListSize = listSize;
+    int it = listSize;
     pthread_mutex_unlock(&listSizeMutex);
-    for (int i = 0; i < tempListSize; i++)
+    while (it > 0)
     {
-        pthread_mutex_lock(&listDeletingMutex);
-        int tempRejectListValue = rejectList[i];
-        pthread_mutex_unlock(&listDeletingMutex);
-        if (tempRejectListValue > 0)
+
+        pthread_mutex_lock(&listSizeMutex);
+        int tempListSize = listSize;
+        pthread_mutex_unlock(&listSizeMutex);
+        for (int i = 0; i < tempListSize; i++)
         {
-            // delete from array
             pthread_mutex_lock(&listDeletingMutex);
-            for (int j = i; j < tempListSize - 1; j++)
-            {
-                sendObjects[j] = sendObjects[j + 1];
-                rejectList[j] = rejectList[j + 1];
-                ackList[j] = ackList[j + 1];
-            }
-            tempListSize -= 1;
-            printf("\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person.id, tempListSize);
+            int tempRejectListValue = rejectList[i];
             pthread_mutex_unlock(&listDeletingMutex);
+            if (tempRejectListValue > 0)
+            {
+                // delete from array
+                pthread_mutex_lock(&listDeletingMutex);
+                for (int j = i; j < tempListSize - 1; j++)
+                {
+                    sendObjects[j] = sendObjects[j + 1];
+                    rejectList[j] = rejectList[j + 1];
+                    ackList[j] = ackList[j + 1];
+                }
+                tempListSize -= 1;
+                printf("\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person.id, tempListSize);
+                pthread_mutex_unlock(&listDeletingMutex);
 
-            pthread_mutex_lock(&listSizeMutex);
-            listSize = tempListSize;
-            pthread_mutex_unlock(&listSizeMutex);
+                pthread_mutex_lock(&listSizeMutex);
+                listSize = tempListSize;
+                pthread_mutex_unlock(&listSizeMutex);
+            }
         }
-    }
 
-    pthread_mutex_lock(&listSizeMutex);
-    tempListSize = listSize;
-    pthread_mutex_unlock(&listSizeMutex);
-    for (int i = 0; i < tempListSize; i++)
-    {
-        pthread_mutex_lock(&listDeletingMutex);
-        int tempAckListValue = ackList[i];
-        pthread_mutex_unlock(&listDeletingMutex);
-        // printf("ackList: %d, reszta gowna: %d\n", ackList[i],person.goodCount + person.badCount - 1);
-        if (tempAckListValue == (person.goodCount + person.badCount - 1))
+        pthread_mutex_lock(&listSizeMutex);
+        tempListSize = listSize;
+        pthread_mutex_unlock(&listSizeMutex);
+        for (int i = 0; i < tempListSize; i++)
         {
-            //printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
-            *objectId = sendObjects[i].id;
-            *objectType = sendObjects[i].objectType;
-            return true;
+            pthread_mutex_lock(&listDeletingMutex);
+            int tempAckListValue = ackList[i];
+            pthread_mutex_unlock(&listDeletingMutex);
+            // printf("ackList: %d, reszta gowna: %d\n", ackList[i],person.goodCount + person.badCount - 1);
+            if (tempAckListValue == (person.goodCount + person.badCount - 1))
+            {
+                //printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
+                *objectId = sendObjects[i].id;
+                *objectType = sendObjects[i].objectType;
+                return true;
+            }
         }
-    }
 
-    pthread_mutex_lock(&listSizeMutex);
-    tempListSize = listSize;
-    pthread_mutex_unlock(&listSizeMutex);
-    if (tempListSize == 0)
-    {
-        printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.id);
-        return false;
+        pthread_mutex_lock(&listSizeMutex);
+        tempListSize = listSize;
+        pthread_mutex_unlock(&listSizeMutex);
+        if (tempListSize == 0)
+        {
+            printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.id);
+            return false;
+        }
+        it--;
     }
     return -1;
 }
