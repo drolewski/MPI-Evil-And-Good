@@ -36,11 +36,8 @@ pthread_mutex_t objectPropsMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_t requestThread;
 MPI_Datatype MPI_REQ;
 
-Person init(int id)
+Person init(int id, Object *toiletList, Object *potList)
 {
-    struct Object toiletList[toiletNumber];
-    struct Object potList[potNumber];
-    
     for (int i = 0; i < potNumber; i++)
     {
         Object pot;
@@ -144,7 +141,9 @@ int main(int argc, char **argv)
     {
         int id;
         MPI_Recv(&id, 1, MPI_INT, 0, SYNCHR, MPI_COMM_WORLD, &status);
-        person = init(id);
+        struct Object toiletList[toiletNumber];
+        struct Object potList[potNumber];
+        person = init(id, toiletList, potList);
 
         //printf("Process: %d is Person: %d, %s\n", rank, person.id, person.personType - BAD ? "good" : "bad");
         MPI_Send(&id, 1, MPI_INT, 0, SYNCHR, MPI_COMM_WORLD);
