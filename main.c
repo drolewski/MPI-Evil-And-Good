@@ -5,10 +5,10 @@
 #include <pthread.h>
 #include <math.h>
 
-const int toiletNumber = 2;
-const int potNumber = 1;
-const int goodNumber = 2;
-const int badNumber = 2;
+const int toiletNumber = 3;
+const int potNumber = 3;
+const int goodNumber = 3;
+const int badNumber = 4;
 
 Person person;
 Object ackObject;
@@ -202,19 +202,19 @@ void handleStates()
         case WAIT_CRITICAL:
 
             canGoCritical = waitCriticalState(&objectId, &objectType);
-            
+
             pthread_mutex_lock(&iterationsCounterMutex);
             int tempIterationsCounter = iterationsCounter;
             pthread_mutex_unlock(&iterationsCounterMutex);
             if (tempIterationsCounter == 0 && rejectedRest)
             {
-                printf(ANSI_COLOR_MAGENTA"Im going to PrEPRING, FROM WAIT_CRITICAL"ANSI_COLOR_RESET"\n");
+                printf(ANSI_COLOR_MAGENTA "Im going to PrEPRING, FROM WAIT_CRITICAL" ANSI_COLOR_RESET "\n");
                 pthread_mutex_lock(&stateMutex);
                 state = PREPARING;
                 pthread_mutex_unlock(&stateMutex);
                 break;
             }
-            
+
             if (canGoCritical == true)
             {
 
@@ -967,6 +967,9 @@ int waitCriticalState(int *objectId, int *objectType)
         }
     }
 
+    pthread_mutex_lock(&listSizeMutex);
+    tempListSize = listSize;
+    pthread_mutex_unlock(&listSizeMutex);
     for (int i = 0; i < tempListSize; i++)
     {
         pthread_mutex_lock(&listDeletingMutex);
