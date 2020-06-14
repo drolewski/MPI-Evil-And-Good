@@ -165,11 +165,11 @@ int main(int argc, char **argv)
 
 void handleStates()
 {
-    int canGoCritical = false, objectId = -1, objectType = -1, rejectedRest = false;
+    int canGoCritical = false, objectId = -1, objectType = -1, rejectedRest = false, lockState;
     while (true)
     {
         pthread_mutex_lock(&stateMutex);
-        int lockState = state;
+        lockState = state;
         pthread_mutex_unlock(&stateMutex);
         switch (lockState)
         {
@@ -179,6 +179,7 @@ void handleStates()
             pthread_mutex_unlock(&iterationsCounterMutex);
             pthread_mutex_lock(&stateMutex);
             state = PREPARING;
+            lockState = PREPARING;
             pthread_mutex_unlock(&stateMutex);
             break;
         case PREPARING:
@@ -196,6 +197,7 @@ void handleStates()
                 pthread_mutex_unlock(&listSizeMutex);
                 pthread_mutex_lock(&stateMutex);
                 state = WAIT_CRITICAL;
+                lockState = WAIT_CRITICAL;
                 pthread_mutex_unlock(&stateMutex);
             }
             break;
@@ -211,6 +213,7 @@ void handleStates()
                 printf(ANSI_COLOR_MAGENTA "Im going to PrEPRING, FROM WAIT_CRITICAL" ANSI_COLOR_RESET "\n");
                 pthread_mutex_lock(&stateMutex);
                 state = PREPARING;
+                lockState = PREPARING;
                 pthread_mutex_unlock(&stateMutex);
                 break;
             }
@@ -231,6 +234,7 @@ void handleStates()
                 rejectedRest = false;
                 pthread_mutex_lock(&stateMutex);
                 state = IN_CRITICAL;
+                lockState = IN_CRITICAL;
                 pthread_mutex_unlock(&stateMutex);
             }
             else if (canGoCritical == false)
@@ -239,8 +243,13 @@ void handleStates()
                 rejectedRest = true;
                 pthread_mutex_lock(&stateMutex);
                 state = REST;
+                lockState = REST;
                 pthread_mutex_unlock(&stateMutex);
                 //printf("\tREST, %d: process is rest\n", person.id);
+            }
+            else
+            {
+                waitRandomTime("WAIT_CRITICAL");
             }
             //ZWOLNIĆ WSZYSTKO
             break;
@@ -248,12 +257,14 @@ void handleStates()
             inCriticalState();
             pthread_mutex_lock(&stateMutex);
             state = AFTER_CRITICAL;
+            lockState = AFTER_CRITICAL;
             pthread_mutex_unlock(&stateMutex);
             break;
         case AFTER_CRITICAL:
             afterCriticalState(&ackObject);
             pthread_mutex_lock(&stateMutex);
             state = REST;
+            lockState = REST;
             pthread_mutex_unlock(&stateMutex);
             break;
         case REST:
@@ -264,10 +275,14 @@ void handleStates()
             {
                 pthread_mutex_lock(&stateMutex);
                 state = PREPARING;
+                lockState = PREPARING;
                 free(ackList);
                 free(rejectList);
                 pthread_mutex_unlock(&stateMutex);
             }
+            break;
+        default:
+            printf("default");
             break;
         }
     }
