@@ -164,12 +164,6 @@ int main(int argc, char **argv)
 void handleStates()
 {
     int canGoCritical = false, objectId = -1, objectType = -1, rejectedRest = false;
-    pthread_mutex_lock(&listDeletingMutex);
-    rejectList = malloc(sizeof(int) * iterator);
-    ackList = malloc(sizeof(int) * iterator);
-    memset(ackList, 0, (sizeof(int) * iterator));
-    memset(rejectList, 0, (sizeof(int) * iterator));
-    pthread_mutex_unlock(&listDeletingMutex);
     while (true)
     {
         pthread_mutex_lock(&stateMutex);
@@ -190,6 +184,8 @@ void handleStates()
             if (iterator > 0)
             {
                 pthread_mutex_lock(&listDeletingMutex);
+                rejectList = malloc(sizeof(int) * iterator);
+                ackList = malloc(sizeof(int) * iterator);
                 memset(ackList, 0, (sizeof(int) * iterator));
                 memset(rejectList, 0, (sizeof(int) * iterator));
                 pthread_mutex_unlock(&listDeletingMutex);
@@ -263,7 +259,7 @@ void handleStates()
             pthread_mutex_lock(&iterationsCounterMutex);
             int tempRestIterations = iterationsCounter;
             pthread_mutex_unlock(&iterationsCounterMutex);
-            if (tempRestIterations <= 0)
+            if (tempRestIterations<= 0)
             {
                 pthread_mutex_lock(&stateMutex);
                 state = PREPARING;
@@ -668,7 +664,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 pthread_mutex_unlock(&listDeletingMutex);
             }
         }
-        break;
+            break;
     case TACK:
         if (!isPreviousRequest)
         {
@@ -792,7 +788,7 @@ void afterCriticalState(Object *object)
     {
         if (i != person.id)
         {
-            updateLamportClock();
+            updateLamportClock();   
             printf("\tAFTER_CRITICAL, %d: SEND ACKALL to id: %d about objectId: %d\n", person.id, i, request.objectId);
             MPI_Send(&request, 1, MPI_REQ, i, ACKALL, MPI_COMM_WORLD);
         }
