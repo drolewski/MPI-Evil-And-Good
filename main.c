@@ -5,10 +5,10 @@
 #include <pthread.h>
 #include <math.h>
 
-const int toiletNumber = 6;
-const int potNumber = 4;
-const int goodNumber = 6;
-const int badNumber = 6;
+const int toiletNumber = 2;
+const int potNumber = 1;
+const int goodNumber = 2;
+const int badNumber = 2;
 
 Person person;
 Object ackObject;
@@ -173,7 +173,7 @@ void handleStates()
         {
         case INIT:
             pthread_mutex_lock(&iterationsCounterMutex);
-            iterationsCounter = -1;
+            iterationsCounter = 0;
             pthread_mutex_unlock(&iterationsCounterMutex);
             pthread_mutex_lock(&stateMutex);
             state = PREPARING;
@@ -206,7 +206,7 @@ void handleStates()
                 pthread_mutex_lock(&iterationsCounterMutex);
                 int tempIterationsCounter = iterationsCounter;
                 pthread_mutex_unlock(&iterationsCounterMutex);
-                if (tempIterationsCounter == 0)
+                if (tempIterationsCounter == 0 && rejectedRest)
                 {
                     pthread_mutex_lock(&stateMutex);
                     state = PREPARING;
@@ -774,11 +774,14 @@ void afterCriticalState(Object *object)
     request.objectType = object->objectType;
     request.priority = person.lamportClock;
     updateLists(request, "AFTER_CRITICAL");
-    for (int i = 0; i <= (person.goodCount + person.badCount); i++)
+    for (int i = 1; i <= (person.goodCount + person.badCount); i++)
     {
-        updateLamportClock();
-        printf("\tAFTER_CRITICAL, %d: SEND ACKALL to id: %d about objectId: %d\n", person.id, i, request.objectId);
-        MPI_Send(&request, 1, MPI_REQ, i, ACKALL, MPI_COMM_WORLD);
+        if (i != person.id)
+        {
+            updateLamportClock();   
+            printf("\tAFTER_CRITICAL, %d: SEND ACKALL to id: %d about objectId: %d\n", person.id, i, request.objectId);
+            MPI_Send(&request, 1, MPI_REQ, i, ACKALL, MPI_COMM_WORLD);
+        }
     }
 }
 
