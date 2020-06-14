@@ -187,65 +187,9 @@ void handleStates()
                 pthread_mutex_unlock(&stateMutex);
             }
             break;
-        case WAIT_CRITICAL:   
-            
-    pthread_mutex_lock(&listSizeMutex);
-    int tempListSize = listSize;
-    pthread_mutex_unlock(&listSizeMutex);
-    for (int i = 0; i < tempListSize; i++)
-    {
-        pthread_mutex_lock(&listDeletingMutex);
-        int tempRejectListValue = rejectList[i];
-        pthread_mutex_unlock(&listDeletingMutex);
-        if (tempRejectListValue > 0)
-        {
-            // delete from array
-            pthread_mutex_lock(&listDeletingMutex);
-            for (int j = i; j < tempListSize - 1; j++)
-            {
-                sendObjects[j] = sendObjects[j + 1];
-                rejectList[j] = rejectList[j + 1];
-                ackList[j] = ackList[j + 1];
-            }
-            tempListSize -= 1;
-            printf("\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person.id, tempListSize);
-            pthread_mutex_unlock(&listDeletingMutex);
+        case WAIT_CRITICAL:
 
-            pthread_mutex_lock(&listSizeMutex);
-            listSize = tempListSize;
-            pthread_mutex_unlock(&listSizeMutex);
-        }
-    }
-
-    for (int i = 0; i < tempListSize; i++)
-    {
-        pthread_mutex_lock(&listDeletingMutex);
-        int tempAckListValue = ackList[i];
-        pthread_mutex_unlock(&listDeletingMutex);
-        // printf("ackList: %d, reszta gowna: %d\n", ackList[i],person.goodCount + person.badCount - 1);
-        if (tempAckListValue == (person.goodCount + person.badCount - 1))
-        {
-            //printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
-            pthread_mutex_lock(&objectPropsMutex);
-            objectId = sendObjects[i].id;
-            objectType = sendObjects[i].objectType;
-            pthread_mutex_unlock(&objectPropsMutex);
-            canGoCritical =  true;
-        }
-    }
-
-    pthread_mutex_lock(&listSizeMutex);
-    tempListSize = listSize;
-    pthread_mutex_unlock(&listSizeMutex);
-    
-    if (tempListSize == 0)
-    {
-        printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.id);
-        canGoCritical = false;
-    }
-
-
-
+            canGoCritical = waitCriticalState();
             if (canGoCritical != -1)
             {
                 // printf("XD?\n");
@@ -291,7 +235,6 @@ void handleStates()
                 pthread_mutex_unlock(&stateMutex);
                 //printf("\tREST, %d: process is rest\n", person.id);
             }
-        
             //ZWOLNIĆ WSZYSTKO
             break;
         case IN_CRITICAL:
@@ -988,58 +931,58 @@ void updateLamportClock()
 int waitCriticalState()
 {
 
-    // pthread_mutex_lock(&listSizeMutex);
-    // int tempListSize = listSize;
-    // pthread_mutex_unlock(&listSizeMutex);
-    // for (int i = 0; i < tempListSize; i++)
-    // {
-    //     pthread_mutex_lock(&listDeletingMutex);
-    //     int tempRejectListValue = rejectList[i];
-    //     pthread_mutex_unlock(&listDeletingMutex);
-    //     if (tempRejectListValue > 0)
-    //     {
-    //         // delete from array
-    //         pthread_mutex_lock(&listDeletingMutex);
-    //         for (int j = i; j < tempListSize - 1; j++)
-    //         {
-    //             sendObjects[j] = sendObjects[j + 1];
-    //             rejectList[j] = rejectList[j + 1];
-    //             ackList[j] = ackList[j + 1];
-    //         }
-    //         tempListSize -= 1;
-    //         printf("\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person.id, tempListSize);
-    //         pthread_mutex_unlock(&listDeletingMutex);
+    pthread_mutex_lock(&listSizeMutex);
+    int tempListSize = listSize;
+    pthread_mutex_unlock(&listSizeMutex);
+    for (int i = 0; i < tempListSize; i++)
+    {
+        pthread_mutex_lock(&listDeletingMutex);
+        int tempRejectListValue = rejectList[i];
+        pthread_mutex_unlock(&listDeletingMutex);
+        if (tempRejectListValue > 0)
+        {
+            // delete from array
+            pthread_mutex_lock(&listDeletingMutex);
+            for (int j = i; j < tempListSize - 1; j++)
+            {
+                sendObjects[j] = sendObjects[j + 1];
+                rejectList[j] = rejectList[j + 1];
+                ackList[j] = ackList[j + 1];
+            }
+            tempListSize -= 1;
+            printf("\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person.id, tempListSize);
+            pthread_mutex_unlock(&listDeletingMutex);
 
-    //         pthread_mutex_lock(&listSizeMutex);
-    //         listSize = tempListSize;
-    //         pthread_mutex_unlock(&listSizeMutex);
-    //     }
-    // }
+            pthread_mutex_lock(&listSizeMutex);
+            listSize = tempListSize;
+            pthread_mutex_unlock(&listSizeMutex);
+        }
+    }
 
-    // for (int i = 0; i < tempListSize; i++)
-    // {
-    //     pthread_mutex_lock(&listDeletingMutex);
-    //     int tempAckListValue = ackList[i];
-    //     pthread_mutex_unlock(&listDeletingMutex);
-    //     // printf("ackList: %d, reszta gowna: %d\n", ackList[i],person.goodCount + person.badCount - 1);
-    //     if (tempAckListValue == (person.goodCount + person.badCount - 1))
-    //     {
-    //         //printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
-    //         pthread_mutex_lock(&objectPropsMutex);
-    //         objectId = sendObjects[i].id;
-    //         objectType = sendObjects[i].objectType;
-    //         pthread_mutex_unlock(&objectPropsMutex);
-    //         return true;
-    //     }
-    // }
+    for (int i = 0; i < tempListSize; i++)
+    {
+        pthread_mutex_lock(&listDeletingMutex);
+        int tempAckListValue = ackList[i];
+        pthread_mutex_unlock(&listDeletingMutex);
+        // printf("ackList: %d, reszta gowna: %d\n", ackList[i],person.goodCount + person.badCount - 1);
+        if (tempAckListValue == (person.goodCount + person.badCount - 1))
+        {
+            //printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
+            pthread_mutex_lock(&objectPropsMutex);
+            objectId = sendObjects[i].id;
+            objectType = sendObjects[i].objectType;
+            pthread_mutex_unlock(&objectPropsMutex);
+            return true;
+        }
+    }
 
-    // pthread_mutex_lock(&listSizeMutex);
-    // tempListSize = listSize;
-    // pthread_mutex_unlock(&listSizeMutex);
-    // if (tempListSize == 0)
-    // {
-    //     printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.id);
-    //     return false;
-    // }
+    pthread_mutex_lock(&listSizeMutex);
+    tempListSize = listSize;
+    pthread_mutex_unlock(&listSizeMutex);
+    if (tempListSize == 0)
+    {
+        printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.id);
+        return false;
+    }
     return -1;
 }
