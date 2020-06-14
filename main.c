@@ -27,9 +27,12 @@ pthread_mutex_t avaliableObjectsCountMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t listSizeMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t iterationsCounterMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t preparingMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t messageListMutex = PTHREAD_MUTEX_INITIALIZER;
 
 pthread_t requestThread;
 MPI_Datatype MPI_REQ;
+
+MessageList *first = NULL;
 
 Person init(int id, Object *toiletList, Object *potList)
 {
@@ -78,7 +81,7 @@ void waitRandomTime(int id)
     int quantum = time(&tt);
     srand(quantum + id);
     double seconds = ((double)(rand() % 1000)) / 500;
-    //printf("Process: %d is waiting: %f\n", id, seconds);
+    // printf("Process: %d is waiting: %f\n", id, seconds);
     sleep(seconds);
 }
 
@@ -182,6 +185,13 @@ void handleStates()
             pthread_mutex_unlock(&stateMutex);
             break;
         case PREPARING:
+            pthread_mutex_lock(&messageListMutex);
+            if(first != NULL){
+                preparingRequestHandler(first->currentRequest);
+                MessageList *tmpFirst = first->nextMessage;
+                first = tmpFirst;
+            }
+            pthread_mutex_unlock(&messageListMutex);
             iterator = preparingState(sendObjects, rejectedRest);
             if (iterator > 0)
             {
@@ -200,12 +210,15 @@ void handleStates()
             }
             break;
         case WAIT_CRITICAL:
+            pthread_mutex_lock(&messageListMutex);
+            if(first != NULL){
+                waitCriticalRequestHandler(first->currentRequest, sendObjects);
+                MessageList *tmpFirst = first->nextMessage;
+                first = tmpFirst;
+            }
+            pthread_mutex_unlock(&messageListMutex);
             canGoCritical = waitCriticalState(&objectId, &objectType);
 
-            if (canGoCritical == -1)
-            {
-                waitRandomTime(person.id);
-            }
             pthread_mutex_lock(&iterationsCounterMutex);
             int tempIterationsCounter = iterationsCounter;
             pthread_mutex_unlock(&iterationsCounterMutex);
@@ -259,6 +272,11 @@ void handleStates()
             pthread_mutex_unlock(&stateMutex);
             break;
         case REST:
+            if(first != NULL){
+                restRequestHandler(first->currentRequest);
+                MessageList *tmpFirst = first->nextMessage;
+                first = tmpFirst;
+            }
             pthread_mutex_lock(&iterationsCounterMutex);
             int tempRestIterations = iterationsCounter;
             pthread_mutex_unlock(&iterationsCounterMutex);
@@ -288,58 +306,68 @@ void *handleRequests()
         MPI_Status status;
         Request request;
         MPI_Recv(&request, 1, MPI_REQ, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-        pthread_mutex_lock(&lamportMutex);
-        // printf("ObjectStatus: %d, succes: %d, tag: %d, request priority: %d, lamport: %d, whoami: %d\n", request.objectState, status.MPI_ERROR, status.MPI_TAG, request.priority, person.lamportClock, status.MPI_SOURCE);
-        person.lamportClock = request.priority > person.lamportClock ? request.priority + 1 : person.lamportClock + 1;
-        pthread_mutex_unlock(&lamportMutex);
         if (status.MPI_ERROR == MPI_SUCCESS)
         {
-            pthread_mutex_lock(&stateMutex);
-            lockState = state;
-            pthread_mutex_unlock(&stateMutex);
-            switch (lockState)
+
+            Request *tmpReq = malloc(sizeof(Request));
+            tmpReq = &request;
+            pthread_mutex_lock(&messageListMutex);
+            if (first == NULL)
             {
-            case PREPARING:
-                preparingRequestHandler(request);
-                break;
-            case WAIT_CRITICAL:
-                waitCriticalRequestHandler(request, sendObjects);
-                break;
-            case REST:
-                restRequestHandler(request);
-                break;
+                MessageList *tmpMsg = malloc(sizeof(MessageList));
+                tmpMsg->currentRequest = tmpReq;
+                tmpMsg->nextMessage = NULL;
+                first = tmpMsg;
             }
+            else
+            {
+                MessageList *tempMessage = first;
+                while (tempMessage->nextMessage != NULL)
+                {
+                    tempMessage = tempMessage->nextMessage;
+                }
+                MessageList *currentMessage = malloc(sizeof(MessageList));
+                currentMessage->currentRequest = tmpReq;
+                currentMessage->nextMessage = NULL;
+                tempMessage->nextMessage = currentMessage;
+            }
+            pthread_mutex_unlock(&messageListMutex);
+            pthread_mutex_lock(&lamportMutex);
+            // printf("ObjectStatus: %d, succes: %d, tag: %d, request priority: %d, lamport: %d, whoami: %d\n", request.objectState, status.MPI_ERROR, status.MPI_TAG, request.priority, person.lamportClock, status.MPI_SOURCE);
+            person.lamportClock = request.priority > person.lamportClock ? request.priority + 1 : person.lamportClock + 1;
+            pthread_mutex_unlock(&lamportMutex);
         }
     }
 }
 
-void preparingRequestHandler(Request request)
+void preparingRequestHandler(Request *request)
 {
     pthread_mutex_lock(&preparingMutex);
-    int receivedId = request.id;
-    switch (request.requestType)
+    printf("no tak: %d\n", first->currentRequest->id);
+    int receivedId = request->id;
+    switch (request->requestType)
     {
     case PREQ:
-        request.id = person.id;
-        request.requestType = PACK;
-        request.objectType = POT;
-        request.objectState = request.objectState;
-        request.objectId = request.objectId;
+        request->id = person.id;
+        request->requestType = PACK;
+        request->objectType = POT;
+        request->objectState = request->objectState;
+        request->objectId = request->objectId;
         updateLamportClock();
-        request.priority = request.priority;
-        printf("\tPREPARING, %d: Send PACK to: %d about %d\n", person.id, receivedId, request.objectId);
-        MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+        request->priority = request->priority;
+        printf("\tPREPARING, %d: Send PACK to: %d about %d\n", person.id, receivedId, request->objectId);
+        MPI_Send(request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
         break;
     case TREQ:
-        request.id = person.id;
-        request.objectId = request.objectId;
-        request.requestType = TACK;
-        request.objectType = TOILET;
-        request.objectState = request.objectState;
+        request->id = person.id;
+        request->objectId = request->objectId;
+        request->requestType = TACK;
+        request->objectType = TOILET;
+        request->objectState = request->objectState;
         updateLamportClock();
-        request.priority = request.priority;
-        printf("\tPREPARING, %d: Send TACK to: %d about %d\n", person.id, receivedId, request.objectId);
-        MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+        request->priority = request->priority;
+        printf("\tPREPARING, %d: Send TACK to: %d about %d\n", person.id, receivedId, request->objectId);
+        MPI_Send(request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
         break;
     case ACKALL:
         updateLists(request, "PREPARING");
@@ -351,34 +379,34 @@ void preparingRequestHandler(Request request)
     case REJECT:
         break;
     default:
-        printf(ANSI_COLOR_MAGENTA "PREPARING - request: %d, sendertId: %d, objectID: %d, objectType: %d, objectState: %d, priority: %d, my Priority: %d, my id: %d" ANSI_COLOR_RESET "\n", request.requestType, request.id, request.objectId, request.objectType, request.objectState, request.priority, person.priority, person.id);
+        printf(ANSI_COLOR_MAGENTA "PREPARING - request: %d, sendertId: %d, objectID: %d, objectType: %d, objectState: %d, priority: %d, my Priority: %d, my id: %d" ANSI_COLOR_RESET "\n", request->requestType, request->id, request->objectId, request->objectType, request->objectState, request->priority, person.priority, person.id);
         //printf("\tPREPARING, %d: Received ignore message.\n", person.id);
         break;
     }
     pthread_mutex_unlock(&preparingMutex);
 }
 
-void waitCriticalRequestHandler(Request request, Object *objectList)
+void waitCriticalRequestHandler(Request *request, Object *objectList)
 {
     int tempListSize;
-    int receivedId = request.id;
-    int isPreviousRequest = abs(request.priority - person.priority) >= 5;
-    switch (request.requestType)
+    int receivedId = request->id;
+    int isPreviousRequest = abs(request->priority - person.priority) >= 5;
+    switch (request->requestType)
     {
     case PREQ:
-        // printf("\tWAIT_CRITICAL, %d: Receive PREQ from id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
+        // printf("\tWAIT_CRITICAL, %d: Receive PREQ from id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
         // printf("receivedId: %d\n", receivedId);
         if ((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount))
         {
-            request.id = person.id;
-            request.requestType = PACK;
-            request.objectId = request.objectId;
-            request.objectState = request.objectState;
-            request.objectType = request.objectType;
+            request->id = person.id;
+            request->requestType = PACK;
+            request->objectId = request->objectId;
+            request->objectState = request->objectState;
+            request->objectType = request->objectType;
             updateLamportClock();
-            request.priority = request.priority;
-            printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-            MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+            request->priority = request->priority;
+            printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+            MPI_Send(request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
         }
         else
         {
@@ -397,15 +425,15 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
 
             if (arePotsInList == false)
             {
-                request.id = person.id;
-                request.requestType = PACK;
-                request.objectId = request.objectId;
-                request.objectState = request.objectState;
-                request.objectType = request.objectType;
+                request->id = person.id;
+                request->requestType = PACK;
+                request->objectId = request->objectId;
+                request->objectState = request->objectState;
+                request->objectType = request->objectType;
                 updateLamportClock();
-                request.priority = request.priority;
-                printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+                request->priority = request->priority;
+                printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+                MPI_Send(request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
             }
             else
             {
@@ -415,62 +443,62 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 pthread_mutex_unlock(&listSizeMutex);
                 for (int i = 0; i < tempListSize; i++)
                 {
-                    if (objectList[i].objectType == POT && objectList[i].id == request.objectId)
+                    if (objectList[i].objectType == POT && objectList[i].id == request->objectId)
                     {
                         arePotsWithIdInList = true;
 
-                        if (person.priority > request.priority) // request ma wyższy priorytet, tj. niższą wartość zmiennej priority
+                        if (person.priority > request->priority) // request ma wyższy priorytet, tj. niższą wartość zmiennej priority
                         {
-                            request.id = person.id;
-                            request.requestType = PACK;
-                            request.objectId = request.objectId;
-                            request.objectState = request.objectState;
-                            request.objectType = request.objectType;
+                            request->id = person.id;
+                            request->requestType = PACK;
+                            request->objectId = request->objectId;
+                            request->objectState = request->objectState;
+                            request->objectType = request->objectType;
                             updateLamportClock();
-                            request.priority = request.priority;
-                            printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                            MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+                            request->priority = request->priority;
+                            printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+                            MPI_Send(request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                             pthread_mutex_lock(&listDeletingMutex);
                             rejectList[i] += 1;
                             pthread_mutex_unlock(&listDeletingMutex);
                         }
-                        else if (person.priority < request.priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
+                        else if (person.priority < request->priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
                         {
-                            request.id = person.id;
-                            request.requestType = REJECT;
-                            request.objectId = request.objectId;
-                            request.objectState = request.objectState;
-                            request.objectType = request.objectType;
+                            request->id = person.id;
+                            request->requestType = REJECT;
+                            request->objectId = request->objectId;
+                            request->objectState = request->objectState;
+                            request->objectType = request->objectType;
                             updateLamportClock();
-                            request.priority = request.priority;
-                            printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                            MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
+                            request->priority = request->priority;
+                            printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+                            MPI_Send(request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                         }
                         else //równe priorytety
                         {
-                            if (person.id > request.id)
+                            if (person.id > request->id)
                             {
-                                request.id = person.id;
-                                request.requestType = REJECT;
-                                request.objectId = request.objectId;
-                                request.objectState = request.objectState;
-                                request.objectType = request.objectType;
+                                request->id = person.id;
+                                request->requestType = REJECT;
+                                request->objectId = request->objectId;
+                                request->objectState = request->objectState;
+                                request->objectType = request->objectType;
                                 updateLamportClock();
-                                request.priority = request.priority;
-                                printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                                MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
+                                request->priority = request->priority;
+                                printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+                                MPI_Send(request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                             }
                             else
                             {
-                                request.id = person.id;
-                                request.requestType = PACK;
-                                request.objectId = request.objectId;
-                                request.objectState = request.objectState;
-                                request.objectType = request.objectType;
+                                request->id = person.id;
+                                request->requestType = PACK;
+                                request->objectId = request->objectId;
+                                request->objectState = request->objectState;
+                                request->objectType = request->objectType;
                                 updateLamportClock();
-                                request.priority = request.priority;
-                                printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                                MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+                                request->priority = request->priority;
+                                printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+                                MPI_Send(request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                                 pthread_mutex_lock(&listDeletingMutex);
                                 rejectList[i] += 1;
                                 pthread_mutex_unlock(&listDeletingMutex);
@@ -480,33 +508,33 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 }
                 if (arePotsWithIdInList == false)
                 {
-                    request.id = person.id;
-                    request.requestType = PACK;
-                    request.objectId = request.objectId;
-                    request.objectState = request.objectState;
-                    request.objectType = request.objectType;
+                    request->id = person.id;
+                    request->requestType = PACK;
+                    request->objectId = request->objectId;
+                    request->objectState = request->objectState;
+                    request->objectType = request->objectType;
                     updateLamportClock();
-                    request.priority = request.priority;
-                    printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                    MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+                    request->priority = request->priority;
+                    printf("\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+                    MPI_Send(request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                 }
             }
         }
-        // printf("Lamport: %d, ReceivedId: %d, PersonId: %d, objectType: %d, ObjectState: %d, personType: %d, Person priorytet: %d, request priority: %d\n", person.lamportClock, receivedId, person.id, request.objectType, request.objectState, person.personType, person.priority, request.priority);
+        // printf("Lamport: %d, ReceivedId: %d, PersonId: %d, objectType: %d, ObjectState: %d, personType: %d, Person priorytet: %d, request priority: %d\n", person.lamportClock, receivedId, person.id, request->objectType, request->objectState, person.personType, person.priority, request->priority);
         break;
     case TREQ:
-        // printf("\tWAIT_CRITICAL, %d: Receive TREQ from id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
+        // printf("\tWAIT_CRITICAL, %d: Receive TREQ from id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
         if ((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount))
         {
-            request.id = person.id;
-            request.requestType = TACK;
-            request.objectId = request.objectId;
-            request.objectState = request.objectState;
-            request.objectType = request.objectType;
+            request->id = person.id;
+            request->requestType = TACK;
+            request->objectId = request->objectId;
+            request->objectState = request->objectState;
+            request->objectType = request->objectType;
             updateLamportClock();
-            request.priority = request.priority;
-            printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-            MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+            request->priority = request->priority;
+            printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+            MPI_Send(request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
         }
         else
         {
@@ -525,77 +553,77 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
 
             if (areToiletsInList == false)
             {
-                request.id = person.id;
-                request.requestType = TACK;
-                request.objectId = request.objectId;
-                request.objectState = request.objectState;
-                request.objectType = request.objectType;
+                request->id = person.id;
+                request->requestType = TACK;
+                request->objectId = request->objectId;
+                request->objectState = request->objectState;
+                request->objectType = request->objectType;
                 updateLamportClock();
-                request.priority = request.priority;
-                printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                request->priority = request->priority;
+                printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+                MPI_Send(request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
             }
             else
             {
                 int areToiletsWithIdInList = false;
                 for (int i = 0; i < listSize; i++)
                 {
-                    if (objectList[i].objectType == TOILET && objectList[i].id == request.objectId)
+                    if (objectList[i].objectType == TOILET && objectList[i].id == request->objectId)
                     {
                         areToiletsWithIdInList = true;
 
-                        if (person.priority > request.priority) // request ma wyższy priorytet, tj. niższą wartość zmiennej priority
+                        if (person.priority > request->priority) // request ma wyższy priorytet, tj. niższą wartość zmiennej priority
                         {
-                            request.id = person.id;
-                            request.requestType = TACK;
-                            request.objectId = request.objectId;
-                            request.objectState = request.objectState;
-                            request.objectType = request.objectType;
+                            request->id = person.id;
+                            request->requestType = TACK;
+                            request->objectId = request->objectId;
+                            request->objectState = request->objectState;
+                            request->objectType = request->objectType;
                             updateLamportClock();
-                            request.priority = request.priority;
-                            printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                            MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                            request->priority = request->priority;
+                            printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+                            MPI_Send(request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                             pthread_mutex_lock(&listDeletingMutex);
                             rejectList[i] += 1;
                             pthread_mutex_unlock(&listDeletingMutex);
                         }
-                        else if (person.priority < request.priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
+                        else if (person.priority < request->priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
                         {
-                            request.id = person.id;
-                            request.requestType = REJECT;
-                            request.objectId = request.objectId;
-                            request.objectState = request.objectState;
-                            request.objectType = request.objectType;
+                            request->id = person.id;
+                            request->requestType = REJECT;
+                            request->objectId = request->objectId;
+                            request->objectState = request->objectState;
+                            request->objectType = request->objectType;
                             updateLamportClock();
-                            request.priority = request.priority;
-                            printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                            MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
+                            request->priority = request->priority;
+                            printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+                            MPI_Send(request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                         }
                         else //równe priorytety
                         {
-                            if (person.id > request.id)
+                            if (person.id > request->id)
                             {
-                                request.id = person.id;
-                                request.requestType = REJECT;
-                                request.objectId = request.objectId;
-                                request.objectState = request.objectState;
-                                request.objectType = request.objectType;
+                                request->id = person.id;
+                                request->requestType = REJECT;
+                                request->objectId = request->objectId;
+                                request->objectState = request->objectState;
+                                request->objectType = request->objectType;
                                 updateLamportClock();
-                                request.priority = request.priority;
-                                printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                                MPI_Send(&request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
+                                request->priority = request->priority;
+                                printf("\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+                                MPI_Send(request, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                             }
                             else
                             {
-                                request.id = person.id;
-                                request.requestType = TACK;
-                                request.objectId = request.objectId;
-                                request.objectState = request.objectState;
-                                request.objectType = request.objectType;
+                                request->id = person.id;
+                                request->requestType = TACK;
+                                request->objectId = request->objectId;
+                                request->objectState = request->objectState;
+                                request->objectType = request->objectType;
                                 updateLamportClock();
-                                request.priority = request.priority;
-                                printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                                MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                                request->priority = request->priority;
+                                printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+                                MPI_Send(request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                                 pthread_mutex_lock(&listDeletingMutex);
                                 rejectList[i] += 1;
                                 pthread_mutex_unlock(&listDeletingMutex);
@@ -605,15 +633,15 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 }
                 if (areToiletsWithIdInList == false)
                 {
-                    request.id = person.id;
-                    request.requestType = TACK;
-                    request.objectId = request.objectId;
-                    request.objectState = request.objectState;
-                    request.objectType = request.objectType;
+                    request->id = person.id;
+                    request->requestType = TACK;
+                    request->objectId = request->objectId;
+                    request->objectState = request->objectState;
+                    request->objectType = request->objectType;
                     updateLamportClock();
-                    request.priority = request.priority;
-                    printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-                    MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+                    request->priority = request->priority;
+                    printf("\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+                    MPI_Send(request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                 }
             }
         }
@@ -628,12 +656,12 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             pthread_mutex_unlock(&listSizeMutex);
 
             pthread_mutex_lock(&listDeletingMutex);
-            // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
+            // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request->id, request->objectType, request->priority);
             for (int i = 0; i < tempListSize; i++)
             {
-                if (request.objectType == objectList[i].objectType)
+                if (request->objectType == objectList[i].objectType)
                 {
-                    if (request.objectId != objectList[i].id)
+                    if (request->objectId != objectList[i].id)
                     {
                         ackList[i] += 1;
                     }
@@ -657,10 +685,10 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             tempListSize = listSize;
             pthread_mutex_unlock(&listSizeMutex);
             pthread_mutex_lock(&listDeletingMutex);
-            // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
+            // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request->id, request->objectType, request->priority);
             for (int i = 0; i < tempListSize; i++)
             {
-                if (objectList[i].objectType == POT && objectList[i].id == request.objectId)
+                if (objectList[i].objectType == POT && objectList[i].id == request->objectId)
                 {
                     ackList[i] += 1;
                     pthread_mutex_lock(&iterationsCounterMutex);
@@ -674,15 +702,15 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
     case TACK:
         if (!isPreviousRequest)
         {
-            printf("\tWAIT_CRITICAL, %d: Receive TACK from: %d about: %d\n", person.id, receivedId, request.objectId);
+            printf("\tWAIT_CRITICAL, %d: Receive TACK from: %d about: %d\n", person.id, receivedId, request->objectId);
             pthread_mutex_lock(&listSizeMutex);
             tempListSize = listSize;
             pthread_mutex_unlock(&listSizeMutex);
             pthread_mutex_lock(&listDeletingMutex);
             for (int i = 0; i < tempListSize; i++)
             {
-                // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
-                if (objectList[i].objectType == TOILET && objectList[i].id == request.objectId)
+                // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request->id, request->objectType, request->priority);
+                if (objectList[i].objectType == TOILET && objectList[i].id == request->objectId)
                 {
                     ackList[i] += 1;
                     pthread_mutex_lock(&iterationsCounterMutex);
@@ -703,10 +731,10 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             pthread_mutex_lock(&listDeletingMutex);
             for (int i = 0; i < tempListSize; i++)
             {
-                if (objectList[i].id == request.objectId)
+                if (objectList[i].id == request->objectId)
                 {
                     rejectList[i] += 1;
-                    // person.priority = request.priority;
+                    // person.priority = request->priority;
                     pthread_mutex_lock(&iterationsCounterMutex);
                     iterationsCounter -= 1;
                     pthread_mutex_unlock(&iterationsCounterMutex);
@@ -721,30 +749,30 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
     }
 }
 
-void restRequestHandler(Request request)
+void restRequestHandler(Request *request)
 {
-    int receivedId = request.id;
-    switch (request.requestType)
+    int receivedId = request->id;
+    switch (request->requestType)
     {
     case PREQ:
-        request.id = person.id;
-        request.requestType = PACK;
-        request.objectId = request.objectId;
-        request.objectState = request.objectState;
-        request.objectType = request.objectType;
+        request->id = person.id;
+        request->requestType = PACK;
+        request->objectId = request->objectId;
+        request->objectState = request->objectState;
+        request->objectType = request->objectType;
         updateLamportClock();
-        printf("\tREST, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-        MPI_Send(&request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
+        printf("\tREST, %d: SEND PACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+        MPI_Send(request, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
         break;
     case TREQ:
-        request.id = person.id;
-        request.requestType = TACK;
-        request.objectId = request.objectId;
-        request.objectState = request.objectState;
-        request.objectType = request.objectType;
+        request->id = person.id;
+        request->requestType = TACK;
+        request->objectId = request->objectId;
+        request->objectState = request->objectState;
+        request->objectType = request->objectType;
         updateLamportClock();
-        printf("\tREST, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request.objectId);
-        MPI_Send(&request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
+        printf("\tREST, %d: SEND TACK to id: %d and objectId: %d\n", person.id, receivedId, request->objectId);
+        MPI_Send(request, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
         break;
     case ACKALL:
         updateLists(request, "REST");
@@ -789,7 +817,7 @@ void afterCriticalState(Object *object)
     //printf(ANSI_COLOR_MAGENTA "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", request.objectState == BROKEN ? "Broken" : "Repaired");
     request.objectType = object->objectType;
     request.priority = person.lamportClock;
-    updateLists(request, "AFTER_CRITICAL");
+    updateLists(&request, "AFTER_CRITICAL");
     for (int i = 1; i <= (person.goodCount + person.badCount); i++)
     {
         if (i != person.id)
@@ -895,40 +923,40 @@ void sendRequestForObjects(Object *ObjectList, int iterator, int rejectedRest)
     }
 }
 
-void updateLists(Request request, char *stateName)
+void updateLists(Request *request, char *stateName)
 {
-    int receivedId = request.id;
+    int receivedId = request->id;
     pthread_mutex_lock(&avaliableObjectsCountMutex);
-    if (request.objectType == POT)
+    if (request->objectType == POT)
     {
-        //printf("\t%s, %d: Receive ACK_ALL with pot: %d and state: %s\n", stateName, person.id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
-        person.potList[request.objectId - 1].objectState = request.objectState;
-        //printf(ANSI_COLOR_GREEN "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", request.objectState == BROKEN ? "Broken" : "Repaired");
+        //printf("\t%s, %d: Receive ACK_ALL with pot: %d and state: %s\n", stateName, person.id, receivedId, request->objectState - BROKEN ? "repaired" : "broken");
+        person.potList[request->objectId - 1].objectState = request->objectState;
+        //printf(ANSI_COLOR_GREEN "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", request->objectState == BROKEN ? "Broken" : "Repaired");
         if (person.personType == GOOD)
         {
-            person.avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
-            //printf(ANSI_COLOR_RED "JA: %d, OBj: %d, no dawaj: %d" ANSI_COLOR_RESET "\n", person.personType, request.objectType, request.objectState - BROKEN ? 1 : -1);
+            person.avaliableObjectsCount += request->objectState - BROKEN ? -1 : 1;
+            //printf(ANSI_COLOR_RED "JA: %d, OBj: %d, no dawaj: %d" ANSI_COLOR_RESET "\n", person.personType, request->objectType, request->objectState - BROKEN ? 1 : -1);
         }
         else
         {
-            person.avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
-            //printf(ANSI_COLOR_RED "JA: %d, OBj: %d, no dawaj: %d" ANSI_COLOR_RESET "\n", person.personType, request.objectType, request.objectState - BROKEN ? 1 : -1);
+            person.avaliableObjectsCount += request->objectState - BROKEN ? 1 : -1;
+            //printf(ANSI_COLOR_RED "JA: %d, OBj: %d, no dawaj: %d" ANSI_COLOR_RESET "\n", person.personType, request->objectType, request->objectState - BROKEN ? 1 : -1);
         }
     }
     else
     {
-        //printf("\t%s, %d: Receive ACK_ALL with toilet: %d and state: %s\n", stateName, person.id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
-        person.toiletList[request.objectId - 1].objectState = request.objectState;
-        //printf(ANSI_COLOR_GREEN "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", request.objectState == BROKEN ? "Broken" : "Repaired");
+        //printf("\t%s, %d: Receive ACK_ALL with toilet: %d and state: %s\n", stateName, person.id, receivedId, request->objectState - BROKEN ? "repaired" : "broken");
+        person.toiletList[request->objectId - 1].objectState = request->objectState;
+        //printf(ANSI_COLOR_GREEN "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", request->objectState == BROKEN ? "Broken" : "Repaired");
         if (person.personType == GOOD)
         {
-            person.avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
-            //printf(ANSI_COLOR_RED "JA: %d, OBj: %d, no dawaj: %d" ANSI_COLOR_RESET "\n", person.personType, request.objectType, request.objectState - BROKEN ? 1 : -1);
+            person.avaliableObjectsCount += request->objectState - BROKEN ? -1 : 1;
+            //printf(ANSI_COLOR_RED "JA: %d, OBj: %d, no dawaj: %d" ANSI_COLOR_RESET "\n", person.personType, request->objectType, request->objectState - BROKEN ? 1 : -1);
         }
         else
         {
-            person.avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
-            //printf(ANSI_COLOR_RED "JA: %d, OBj: %d, no dawaj: %d" ANSI_COLOR_RESET "\n", person.personType, request.objectType, request.objectState - BROKEN ? 1 : -1);
+            person.avaliableObjectsCount += request->objectState - BROKEN ? 1 : -1;
+            //printf(ANSI_COLOR_RED "JA: %d, OBj: %d, no dawaj: %d" ANSI_COLOR_RESET "\n", person.personType, request->objectType, request->objectState - BROKEN ? 1 : -1);
         }
     }
     //printf(ANSI_COLOR_CYAN "%s - Licz się koleżanko z moim zdaniem: %d jestem s**ą o imieniu: %s" ANSI_COLOR_RESET "\n", stateName, person.avaliableObjectsCount, person.personType == BAD ? "bad" : "good");
@@ -947,41 +975,44 @@ int waitCriticalState(int *objectId, int *objectType)
     pthread_mutex_lock(&listSizeMutex);
     int it = listSize;
     pthread_mutex_unlock(&listSizeMutex);
-    while (it > 0)
+    pthread_mutex_lock(&listSizeMutex);
+    int tempListSize = listSize;
+    pthread_mutex_unlock(&listSizeMutex);
+    for (int i = 0; i < tempListSize; i++)
     {
-
-        pthread_mutex_lock(&listSizeMutex);
-        int tempListSize = listSize;
-        pthread_mutex_unlock(&listSizeMutex);
-        for (int i = 0; i < tempListSize; i++)
+        pthread_mutex_lock(&listDeletingMutex);
+        int tempRejectListValue = rejectList[i];
+        pthread_mutex_unlock(&listDeletingMutex);
+        if (tempRejectListValue > 0)
         {
+            // delete from array
             pthread_mutex_lock(&listDeletingMutex);
-            int tempRejectListValue = rejectList[i];
-            pthread_mutex_unlock(&listDeletingMutex);
-            if (tempRejectListValue > 0)
+            for (int j = i; j < tempListSize - 1; j++)
             {
-                // delete from array
-                pthread_mutex_lock(&listDeletingMutex);
-                for (int j = i; j < tempListSize - 1; j++)
-                {
-                    sendObjects[j] = sendObjects[j + 1];
-                    rejectList[j] = rejectList[j + 1];
-                    ackList[j] = ackList[j + 1];
-                }
-                tempListSize -= 1;
-                printf("\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person.id, tempListSize);
-                pthread_mutex_unlock(&listDeletingMutex);
-
-                pthread_mutex_lock(&listSizeMutex);
-                listSize = tempListSize;
-                pthread_mutex_unlock(&listSizeMutex);
+                sendObjects[j] = sendObjects[j + 1];
+                rejectList[j] = rejectList[j + 1];
+                ackList[j] = ackList[j + 1];
             }
-        }
+            tempListSize -= 1;
+            printf("\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person.id, tempListSize);
+            pthread_mutex_unlock(&listDeletingMutex);
 
-        pthread_mutex_lock(&listSizeMutex);
-        tempListSize = listSize;
-        pthread_mutex_unlock(&listSizeMutex);
-        for (int i = 0; i < tempListSize; i++)
+            pthread_mutex_lock(&listSizeMutex);
+            listSize = tempListSize;
+            pthread_mutex_unlock(&listSizeMutex);
+        }
+    }
+
+    pthread_mutex_lock(&listSizeMutex);
+    tempListSize = listSize;
+    pthread_mutex_unlock(&listSizeMutex);
+    for (int i = 0; i < tempListSize; i++)
+    {
+        pthread_mutex_lock(&listDeletingMutex);
+        int tempAckListValue = ackList[i];
+        pthread_mutex_unlock(&listDeletingMutex);
+        // printf("ackList: %d, reszta gowna: %d\n", ackList[i],person.goodCount + person.badCount - 1);
+        if (tempAckListValue == (person.goodCount + person.badCount - 1))
         {
             pthread_mutex_lock(&listDeletingMutex);
             int tempAckListValue = ackList[i];
@@ -989,29 +1020,20 @@ int waitCriticalState(int *objectId, int *objectType)
             // printf("ackList: %d, reszta gowna: %d\n", ackList[i],person.goodCount + person.badCount - 1);
             if (tempAckListValue == (person.goodCount + person.badCount - 1))
             {
-                pthread_mutex_lock(&listDeletingMutex);
-                int tempAckListValue = ackList[i];
-                pthread_mutex_unlock(&listDeletingMutex);
-                // printf("ackList: %d, reszta gowna: %d\n", ackList[i],person.goodCount + person.badCount - 1);
-                if (tempAckListValue == (person.goodCount + person.badCount - 1))
-                {
-                    //printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
-                    *objectId = sendObjects[i].id;
-                    *objectType = sendObjects[i].objectType;
-                    return true;
-                }
+                //printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
+                *objectId = sendObjects[i].id;
+                *objectType = sendObjects[i].objectType;
+                return true;
             }
-
-            pthread_mutex_lock(&listSizeMutex);
-            tempListSize = listSize;
-            pthread_mutex_unlock(&listSizeMutex);
-            if (tempListSize == 0)
-            {
-                printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.id);
-                return false;
-            }
-            it--;
         }
-        return -1;
     }
+    pthread_mutex_lock(&listSizeMutex);
+    tempListSize = listSize;
+    pthread_mutex_unlock(&listSizeMutex);
+    if (tempListSize == 0)
+    {
+        printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.id);
+        return false;
+    }
+    return -1;
 }

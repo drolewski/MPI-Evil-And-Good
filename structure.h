@@ -80,6 +80,14 @@ typedef struct Person Person;
 
 typedef struct Request Request;
 
+
+struct MessageList
+{
+    Request *currentRequest;
+    struct MessageList *nextMessage;
+};
+typedef struct MessageList MessageList;
+
 extern MPI_Datatype MPI_REQ;
 
 #endif

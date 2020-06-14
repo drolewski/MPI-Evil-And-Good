@@ -7,19 +7,19 @@
 
 Person init(int id, Object *toiletList, Object *potList);
 
-void preparingRequestHandler(Request request);
+void preparingRequestHandler(Request *request);
 
-void waitCriticalRequestHandler(Request request, Object *objectList);
+void waitCriticalRequestHandler(Request *request, Object *objectList);
 
 void inCriticalState();
 
 void afterCriticalState(Object *object);
 
-void restRequestHandler(Request request);
+void restRequestHandler(Request *request);
 
 void* handleRequests();
 
-void updateLists(Request request, char* stateName);
+void updateLists(Request *request, char* stateName);
 
 void updateLamportClock();
 
