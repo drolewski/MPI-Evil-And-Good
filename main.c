@@ -248,7 +248,7 @@ void handleStates()
             pthread_mutex_unlock(&stateMutex);
             break;
         case AFTER_CRITICAL:
-            afterCriticalState(&ackObject);
+            afterCriticalState();
             pthread_mutex_lock(&stateMutex);
             state = REST;
             pthread_mutex_unlock(&stateMutex);
@@ -769,15 +769,15 @@ void inCriticalState()
     waitRandomTime(person.id);
 }
 
-void afterCriticalState(Object *object)
+void afterCriticalState()
 {
     Request request;
     request.id = person.id;
     request.requestType = ACKALL;
-    request.objectId = object->id;
-    request.objectState = object->objectState == BROKEN ? REPAIRED : BROKEN;
+    request.objectId = ackObject.id;
+    request.objectState = ackObject.objectState == BROKEN ? REPAIRED : BROKEN;
     //printf(ANSI_COLOR_MAGENTA "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", request.objectState == BROKEN ? "Broken" : "Repaired");
-    request.objectType = object->objectType;
+    request.objectType = ackObject.objectType;
     request.priority = person.lamportClock;
     updateLists(request, "AFTER_CRITICAL");
     for (int i = 1; i <= (person.goodCount + person.badCount); i++)

@@ -13,7 +13,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList);
 
 void inCriticalState();
 
-void afterCriticalState(Object *object);
+void afterCriticalState();
 
 void restRequestHandler(Request request);
 
