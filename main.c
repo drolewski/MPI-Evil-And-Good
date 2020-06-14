@@ -795,7 +795,7 @@ int preparingState(int rejectedRest)
     pthread_mutex_unlock(&avaliableObjectsCountMutex);
     if (availableObjectsCount > 0)
     {
-        int iterator = 0;
+        int iter = 0;
         if (person.personType - BAD)
         {
             // good
@@ -803,8 +803,8 @@ int preparingState(int rejectedRest)
             {
                 if (toiletList[i].objectState == BROKEN)
                 {
-                    sendObjects[iterator] = toiletList[i];
-                    iterator++;
+                    sendObjects[iter] = toiletList[i];
+                    iter++;
                 }
             }
             for (int i = 0; i < potNumber; i++)
@@ -812,8 +812,8 @@ int preparingState(int rejectedRest)
                 if (potList[i].objectState == BROKEN)
                 {
 
-                    sendObjects[iterator] = potList[i];
-                    iterator++;
+                    sendObjects[iter] = potList[i];
+                    iter++;
                 }
             }
         }
@@ -824,25 +824,25 @@ int preparingState(int rejectedRest)
             {
                 if (toiletList[i].objectState == REPAIRED)
                 {
-                    sendObjects[iterator] = toiletList[i];
-                    iterator++;
+                    sendObjects[iter] = toiletList[i];
+                    iter++;
                 }
             }
             for (int i = 0; i < potNumber; i++)
             {
                 if (potList[i].objectState == REPAIRED)
                 {
-                    sendObjects[iterator] = potList[i];
-                    iterator++;
+                    sendObjects[iter] = potList[i];
+                    iter++;
                 }
             }
         }
 
         pthread_mutex_lock(&preparingMutex);
-        sendRequestForObjects(iterator, rejectedRest);
+        sendRequestForObjects(iter, rejectedRest);
         pthread_mutex_unlock(&preparingMutex);
 
-        return iterator;
+        return iter;
     }
     else
         return -1;
