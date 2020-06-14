@@ -298,7 +298,7 @@ void *handleRequests()
 
 void preparingRequestHandler(Request request)
 {
-    thread_mutex_lock(&preparingMutex);
+    pthread_mutex_lock(&preparingMutex);
     int receivedId = request.id;
     switch (request.requestType)
     {
@@ -335,11 +335,11 @@ void preparingRequestHandler(Request request)
     case REJECT:
         break;
     default:
-        printf(ANSI_COLOR_MAGENTA "PREPARING - request: %d, sendertId: %d, objectID: %d, objectType: %d, objectState: %d, priority: %d, my Priority: %d, my id: %d" ANSI_COLOR_RESET "\n", request.requestType,request.id, request.objectId, request.objectType, request.objectState, request.priority, person.priority, person.id);
+        printf(ANSI_COLOR_MAGENTA "PREPARING - request: %d, sendertId: %d, objectID: %d, objectType: %d, objectState: %d, priority: %d, my Priority: %d, my id: %d" ANSI_COLOR_RESET "\n", request.requestType, request.id, request.objectId, request.objectType, request.objectState, request.priority, person.priority, person.id);
         //printf("\tPREPARING, %d: Received ignore message.\n", person.id);
         break;
     }
-    thread_mutex_unlock(&preparingMutex);
+    pthread_mutex_unlock(&preparingMutex);
 }
 
 void waitCriticalRequestHandler(Request request, Object *objectList)
@@ -841,7 +841,7 @@ void sendRequestForObjects(Object *ObjectList, int iterator, int rejectedRest)
                 int priority = rand() % 5;
                 updateLamportClock();
                 req.priority = person.priority + priority;
-                printf(ANSI_COLOR_YELLOW "\tPREPARING, %d: Send %s to: %d about %d" ANSI_COLOR_RESET "\n", person.id, req.objectState == TREQ ? TREQ : PREQ, j, req.objectId);
+                printf(ANSI_COLOR_YELLOW "\tPREPARING, %d: Send %s to: %d about %d" ANSI_COLOR_RESET "\n", person.id, req.objectState == TREQ ? "TREQ" : "PREQ", j, req.objectId);
                 pthread_mutex_lock(&iterationsCounterMutex);
                 iterationsCounter += 1;
                 pthread_mutex_unlock(&iterationsCounterMutex);
