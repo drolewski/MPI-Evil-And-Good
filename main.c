@@ -356,7 +356,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
 {
     int tempListSize;
     int receivedId = request.id;
-    int isPreviousRequest = abs(request.priority - person.priority) < 5;
+    int isPreviousRequest = abs(request.priority - person.priority) >= 5;
     switch (request.requestType)
     {
     case PREQ:
