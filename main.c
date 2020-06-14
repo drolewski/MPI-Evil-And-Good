@@ -201,7 +201,9 @@ void handleStates()
             break;
         case WAIT_CRITICAL:
             canGoCritical = waitCriticalState(&objectId, &objectType);
-            if(canGoCritical == -1){
+
+            if (canGoCritical == -1)
+            {
                 waitRandomTime(person.id);
             }
             pthread_mutex_lock(&iterationsCounterMutex);
@@ -987,22 +989,28 @@ int waitCriticalState(int *objectId, int *objectType)
             // printf("ackList: %d, reszta gowna: %d\n", ackList[i],person.goodCount + person.badCount - 1);
             if (tempAckListValue == (person.goodCount + person.badCount - 1))
             {
-                //printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
-                *objectId = sendObjects[i].id;
-                *objectType = sendObjects[i].objectType;
-                return true;
+                pthread_mutex_lock(&listDeletingMutex);
+                int tempAckListValue = ackList[i];
+                pthread_mutex_unlock(&listDeletingMutex);
+                // printf("ackList: %d, reszta gowna: %d\n", ackList[i],person.goodCount + person.badCount - 1);
+                if (tempAckListValue == (person.goodCount + person.badCount - 1))
+                {
+                    //printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
+                    *objectId = sendObjects[i].id;
+                    *objectType = sendObjects[i].objectType;
+                    return true;
+                }
             }
-        }
 
-        pthread_mutex_lock(&listSizeMutex);
-        tempListSize = listSize;
-        pthread_mutex_unlock(&listSizeMutex);
-        if (tempListSize == 0)
-        {
-            printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.id);
-            return false;
+            pthread_mutex_lock(&listSizeMutex);
+            tempListSize = listSize;
+            pthread_mutex_unlock(&listSizeMutex);
+            if (tempListSize == 0)
+            {
+                printf("\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.id);
+                return false;
+            }
+            it--;
         }
-        it--;
+        return -1;
     }
-    return -1;
-}
