@@ -202,9 +202,7 @@ void handleStates()
             }
             break;
         case WAIT_CRITICAL:
-
-            canGoCritical = waitCriticalState(&objectId, &objectType);
-
+            while(canGoCritical == -1) canGoCritical = waitCriticalState(&objectId, &objectType);
             pthread_mutex_lock(&iterationsCounterMutex);
             int tempIterationsCounter = iterationsCounter;
             pthread_mutex_unlock(&iterationsCounterMutex);
@@ -247,10 +245,6 @@ void handleStates()
                 pthread_mutex_unlock(&stateMutex);
                 //printf("\tREST, %d: process is rest\n", person.id);
             }
-            else
-            {
-                waitRandomTime("WAIT_CRITICAL");
-            }
             //ZWOLNIĆ WSZYSTKO
             break;
         case IN_CRITICAL:
@@ -286,6 +280,7 @@ void handleStates()
             break;
         }
     }
+    
     // free(sendObjects);
 }
 
