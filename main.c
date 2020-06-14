@@ -634,8 +634,8 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
         }
         break;
     case PACK:
-        // if (!isPreviousRequest)
-        // {
+        if (!isPreviousRequest)
+        {
             printf("\tWAIT_CRITICAL, %d: Receive PACK from: %d\n", person.id, receivedId);
             pthread_mutex_lock(&listSizeMutex);
             tempListSize = listSize;
@@ -653,11 +653,11 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 }
                 pthread_mutex_unlock(&listDeletingMutex);
             }
-        // }
+        }
             break;
     case TACK:
-        // if (!isPreviousRequest)
-        // {
+        if (!isPreviousRequest)
+        {
             printf("\tWAIT_CRITICAL, %d: Receive TACK from: %d about: %d\n", person.id, receivedId, request.objectId);
             pthread_mutex_lock(&listSizeMutex);
             tempListSize = listSize;
@@ -675,11 +675,11 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 }
             }
             pthread_mutex_unlock(&listDeletingMutex);
-        // }
+        }
         break;
     case REJECT:
-        // if (!isPreviousRequest)
-        // {
+        if (!isPreviousRequest)
+        {
             printf("\tWAIT_CRITICAL, %d: Receive REJECT from: %d\n", person.id, receivedId);
             pthread_mutex_lock(&listSizeMutex);
             tempListSize = listSize;
@@ -697,7 +697,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 }
                 pthread_mutex_unlock(&listDeletingMutex);
             }
-        // }
+        }
         break;
     default:
         //printf("\tWAIT_CRITICAL, %d: Received ignore message.\n", person.id);
