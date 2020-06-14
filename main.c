@@ -5,10 +5,10 @@
 #include <pthread.h>
 #include <math.h>
 
-const int toiletNumber = 3;
-const int potNumber = 2;
-const int goodNumber = 3;
-const int badNumber = 4;
+const int toiletNumber = 2;
+const int potNumber = 1;
+const int goodNumber = 2;
+const int badNumber = 2;
 
 Person person;
 Object ackObject;
@@ -632,10 +632,10 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                     {
                         rejectList[i] += 1;
                     }
+                    pthread_mutex_lock(&iterationsCounterMutex);
+                    iterationsCounter -= 1;
+                    pthread_mutex_unlock(&iterationsCounterMutex);
                 }
-                pthread_mutex_lock(&iterationsCounterMutex);
-                iterationsCounter -= 1;
-                pthread_mutex_unlock(&iterationsCounterMutex);
             }
             pthread_mutex_unlock(&listDeletingMutex);
         }
@@ -661,7 +661,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 pthread_mutex_unlock(&listDeletingMutex);
             }
         }
-            break;
+        break;
     case TACK:
         if (!isPreviousRequest)
         {
@@ -800,7 +800,7 @@ int preparingState(Object *objectList, int rejectedRest)
     pthread_mutex_unlock(&avaliableObjectsCountMutex);
     if (availableObjectsCount > 0)
     {
-        int iterator = 0;
+        int iter = 0;
         if (person.personType - BAD)
         {
             // good
@@ -808,8 +808,8 @@ int preparingState(Object *objectList, int rejectedRest)
             {
                 if (person.toiletList[i].objectState == BROKEN)
                 {
-                    objectList[iterator] = person.toiletList[i];
-                    iterator++;
+                    objectList[iter] = person.toiletList[i];
+                    iter++;
                 }
             }
             for (int i = 0; i < potNumber; i++)
@@ -817,8 +817,8 @@ int preparingState(Object *objectList, int rejectedRest)
                 if (person.potList[i].objectState == BROKEN)
                 {
 
-                    objectList[iterator] = person.potList[i];
-                    iterator++;
+                    objectList[iter] = person.potList[i];
+                    iter++;
                 }
             }
         }
@@ -829,25 +829,25 @@ int preparingState(Object *objectList, int rejectedRest)
             {
                 if (person.toiletList[i].objectState == REPAIRED)
                 {
-                    objectList[iterator] = person.toiletList[i];
-                    iterator++;
+                    objectList[iter] = person.toiletList[i];
+                    iter++;
                 }
             }
             for (int i = 0; i < potNumber; i++)
             {
                 if (person.potList[i].objectState == REPAIRED)
                 {
-                    objectList[iterator] = person.potList[i];
-                    iterator++;
+                    objectList[iter] = person.potList[i];
+                    iter++;
                 }
             }
         }
 
         pthread_mutex_lock(&preparingMutex);
-        sendRequestForObjects(sendObjects, iterator, rejectedRest);
+        sendRequestForObjects(sendObjects, iter, rejectedRest);
         pthread_mutex_unlock(&preparingMutex);
 
-        return iterator;
+        return iter;
     }
     else
         return -1;
