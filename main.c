@@ -25,6 +25,7 @@ pthread_mutex_t listDeletingMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t avaliableObjectsCountMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t listSizeMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t iterationsCounterMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t preparingMutex = PTHREAD_MUTEX_INITIALIZER;
 
 pthread_t requestThread;
 MPI_Datatype MPI_REQ;
@@ -299,6 +300,7 @@ void *handleRequests()
 
 void preparingRequestHandler(Request request)
 {
+    thread_mutex_lock(&preparingMutex);
     int receivedId = request.id;
     switch (request.requestType)
     {
@@ -327,10 +329,18 @@ void preparingRequestHandler(Request request)
     case ACKALL:
         updateLists(request, "PREPARING");
         break;
+    case PACK:
+
+        break;
+    case TACK:
+        break;
+    case REJECT:
+        break;
     default:
         //printf("\tPREPARING, %d: Received ignore message.\n", person.id);
         break;
     }
+    thread_mutex_unlock(&preparingMutex);
 }
 
 void waitCriticalRequestHandler(Request request, Object *objectList)
@@ -763,31 +773,6 @@ int preparingState(Object *objectList, int rejectedRest)
             {
                 if (person.toiletList[i].objectState == BROKEN)
                 {
-                    Request req;
-                    req.id = person.id;
-                    req.objectId = person.toiletList[i].id;
-                    req.requestType = TREQ;
-                    req.objectType = TOILET;
-                    req.objectState = person.toiletList[i].objectState;
-                    // printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", req.objectState == BROKEN ? "Broken" : req.objectState == REPAIRED ? "repaired" : "smieci");
-                    person.priority = rejectedRest ? person.priority : person.lamportClock;
-                    for (int j = 1; j <= (person.goodCount + person.badCount); j++)
-                    {
-                        if (j != person.id)
-                        {
-                            time_t tt;
-                            int quantum = time(&tt);
-                            srand(quantum + person.id);
-                            int priority = rand() % 10;
-                            updateLamportClock();
-                            req.priority = person.priority + priority;
-                            printf(ANSI_COLOR_YELLOW "\tPREPARING, %d: Send TREQ to: %d about %d" ANSI_COLOR_RESET "\n", person.id, j, req.objectId);
-                            pthread_mutex_lock(&iterationsCounterMutex);
-                            iterationsCounter += 1;
-                            pthread_mutex_unlock(&iterationsCounterMutex);
-                            MPI_Send(&req, 1, MPI_REQ, j, TREQ, MPI_COMM_WORLD);
-                        }
-                    }
                     objectList[iterator] = person.toiletList[i];
                     iterator++;
                 }
@@ -796,31 +781,7 @@ int preparingState(Object *objectList, int rejectedRest)
             {
                 if (person.potList[i].objectState == BROKEN)
                 {
-                    Request req;
-                    req.id = person.id;
-                    req.objectId = person.potList[i].id;
-                    req.requestType = PREQ;
-                    req.objectType = POT;
-                    req.objectState = person.toiletList[i].objectState;
-                    //printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", req.objectState == BROKEN ? "Broken" : req.objectState == REPAIRED ? "repaired" : "smieci");
-                    person.priority = rejectedRest ? person.priority : person.lamportClock;
-                    for (int j = 1; j <= (person.goodCount + person.badCount); j++)
-                    {
-                        if (j != person.id)
-                        {
-                            time_t tt;
-                            int quantum = time(&tt);
-                            srand(quantum + person.id);
-                            int priority = rand() % 10;
-                            updateLamportClock();
-                            req.priority = person.priority + priority;
-                            printf(ANSI_COLOR_YELLOW "\tPREPARING, %d: Send PREQ to: %d about %d" ANSI_COLOR_RESET "\n", person.id, j, req.objectId);
-                            pthread_mutex_lock(&iterationsCounterMutex);
-                            iterationsCounter += 1;
-                            pthread_mutex_unlock(&iterationsCounterMutex);
-                            MPI_Send(&req, 1, MPI_REQ, j, PREQ, MPI_COMM_WORLD);
-                        }
-                    }
+
                     objectList[iterator] = person.potList[i];
                     iterator++;
                 }
@@ -833,31 +794,6 @@ int preparingState(Object *objectList, int rejectedRest)
             {
                 if (person.toiletList[i].objectState == REPAIRED)
                 {
-                    Request req;
-                    req.id = person.id;
-                    req.objectId = person.toiletList[i].id;
-                    req.requestType = TREQ;
-                    req.objectType = TOILET;
-                    req.objectState = person.toiletList[i].objectState;
-                    //printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", req.objectState == BROKEN ? "Broken" : "Repaired");
-                    person.priority = rejectedRest ? person.priority : person.lamportClock;
-                    for (int j = 1; j <= (person.goodCount + person.badCount); j++)
-                    {
-                        if (j != person.id)
-                        {
-                            time_t tt;
-                            int quantum = time(&tt);
-                            srand(quantum + person.id);
-                            int priority = rand() % 10;
-                            updateLamportClock();
-                            req.priority = person.priority + priority;
-                            printf(ANSI_COLOR_YELLOW "\tPREPARING, %d: Send TREQ to: %d about %d" ANSI_COLOR_RESET "\n", person.id, j, req.objectId);
-                            pthread_mutex_lock(&iterationsCounterMutex);
-                            iterationsCounter += 1;
-                            pthread_mutex_unlock(&iterationsCounterMutex);
-                            MPI_Send(&req, 1, MPI_REQ, j, TREQ, MPI_COMM_WORLD);
-                        }
-                    }
                     objectList[iterator] = person.toiletList[i];
                     iterator++;
                 }
@@ -866,40 +802,53 @@ int preparingState(Object *objectList, int rejectedRest)
             {
                 if (person.potList[i].objectState == REPAIRED)
                 {
-                    Request req;
-                    req.id = person.id;
-                    req.objectId = person.potList[i].id;
-                    req.requestType = PREQ;
-                    req.objectType = POT;
-                    req.objectState = person.toiletList[i].objectState;
-                    // printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", req.objectState == BROKEN ? "Broken" : req.objectState == REPAIRED ? "repaired" : "smieci");
-                    person.priority = rejectedRest ? person.priority : person.lamportClock;
-                    for (int j = 1; j <= (person.goodCount + person.badCount); j++)
-                    {
-                        if (j != person.id)
-                        {
-                            time_t tt;
-                            int quantum = time(&tt);
-                            srand(quantum + person.id);
-                            int priority = rand() % 10;
-                            updateLamportClock();
-                            req.priority = person.priority + priority;
-                            printf(ANSI_COLOR_YELLOW "\tPREPARING, %d: Send PREQ to: %d about %d" ANSI_COLOR_RESET "\n", person.id, j, req.objectId);
-                            pthread_mutex_lock(&iterationsCounterMutex);
-                            iterationsCounter += 1;
-                            pthread_mutex_unlock(&iterationsCounterMutex);
-                            MPI_Send(&req, 1, MPI_REQ, j, PREQ, MPI_COMM_WORLD);
-                        }
-                    }
                     objectList[iterator] = person.potList[i];
                     iterator++;
                 }
             }
         }
+
+        pthread_mutex_lock(&preparingMutex);
+        sendRequestForObjects(sendObjects, iterator, rejectedRest);
+        pthread_mutex_unlock(&preparingMutex);
+
         return iterator;
     }
     else
         return -1;
+}
+
+void sendRequestForObjects(Object *ObjectList, int iterator, int rejectedRest)
+{
+    Request req;
+    person.priority = rejectedRest ? person.priority + 5 : person.lamportClock;
+
+    for (int i = 0; i < iterator; i++)
+    {
+        req.id = person.id;
+        req.objectId = ObjectList[i].id;
+        req.requestType = ObjectList[i].objectType == TOILET ? TREQ : PREQ;
+        req.objectType = ObjectList[i].objectType == TOILET ? TOILET : POT;
+        req.objectState = ObjectList[i].objectState;
+        // printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", req.objectState == BROKEN ? "Broken" : req.objectState == REPAIRED ? "repaired" : "smieci");
+        for (int j = 1; j <= (person.goodCount + person.badCount); j++)
+        {
+            if (j != person.id)
+            {
+                time_t tt;
+                int quantum = time(&tt);
+                srand(quantum + person.id);
+                int priority = rand() % 5;
+                updateLamportClock();
+                req.priority = person.priority + priority;
+                printf(ANSI_COLOR_YELLOW "\tPREPARING, %d: Send %s to: %d about %d" ANSI_COLOR_RESET "\n", person.id, req.objectState == TREQ ? TREQ : PREQ, j, req.objectId);
+                pthread_mutex_lock(&iterationsCounterMutex);
+                iterationsCounter += 1;
+                pthread_mutex_unlock(&iterationsCounterMutex);
+                MPI_Send(&req, 1, MPI_REQ, j, req.requestType, MPI_COMM_WORLD);
+            }
+        }
+    }
 }
 
 void updateLists(Request request, char *stateName)
