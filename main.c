@@ -735,6 +735,11 @@ void restRequestHandler(Request request)
         iterationsCounter--;
         pthread_mutex_unlock(&iterationsCounterMutex);
         break;
+    case REJECT:
+        pthread_mutex_lock(&iterationsCounterMutex);
+        iterationsCounter--;
+        pthread_mutex_unlock(&iterationsCounterMutex);
+        break;
     default:
         printf("\tREST, %d: Received ignore message.\n", person.id);
         break;
