@@ -202,6 +202,15 @@ void handleStates()
             if (canGoCritical != -1)
             {
                 // printf("XD?\n");
+                pthread_mutex_lock(&iterationsCounterMutex);
+                int tempIterationsCounter = iterationsCounter;
+                pthread_mutex_unlock(&iterationsCounterMutex);
+                if (tempIterationsCounter <= 0)
+                {
+                    pthread_mutex_lock(&stateMutex);
+                    state = PREPARING;
+                    pthread_mutex_unlock(&stateMutex);
+                }
             }
             //printf("\ncanGoToCritical: %d\n", canGoCritical);
             if (canGoCritical == true)
