@@ -1014,3 +1014,4 @@ int waitCriticalState(int *objectId, int *objectType)
         }
         return -1;
     }
+}
