@@ -5,6 +5,8 @@
 #include <pthread.h>
 #include <math.h>
 
+#define LISTSIZE 3
+
 const int toiletNumber = 2;
 const int potNumber = 1;
 const int goodNumber = 2;
@@ -13,10 +15,12 @@ const int badNumber = 2;
 Person person;
 Object ackObject;
 int state = INIT;
-int *ackList;
-int *rejectList;
+int ackList[LISTSIZE] = {0};
+int rejectList[LISTSIZE] = {0};
+int objectId = -1;
+int objectType = -1;
 int listSize;
-Object *sendObjects;
+Object sendObjects[LISTSIZE];
 int iterationsCounter;
 int iterator;
 
@@ -27,15 +31,13 @@ pthread_mutex_t avaliableObjectsCountMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t listSizeMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t iterationsCounterMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t preparingMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t objectPropsMutex = PTHREAD_MUTEX_INITIALIZER;
 
 pthread_t requestThread;
 MPI_Datatype MPI_REQ;
 
 Person init(int id, Object *toiletList, Object *potList)
 {
-    toiletList = malloc(sizeof(struct Object) * toiletNumber);
-    potList = malloc(sizeof(struct Object) * potNumber);
-
     for (int i = 0; i < potNumber; i++)
     {
         Object pot;
@@ -139,10 +141,9 @@ int main(int argc, char **argv)
     {
         int id;
         MPI_Recv(&id, 1, MPI_INT, 0, SYNCHR, MPI_COMM_WORLD, &status);
-        struct Object *toiletList;
-        struct Object *potList;
+        struct Object toiletList[toiletNumber];
+        struct Object potList[potNumber];
         person = init(id, toiletList, potList);
-        sendObjects = malloc(sizeof(struct Object) * (toiletNumber + potNumber));
 
         //printf("Process: %d is Person: %d, %s\n", rank, person.id, person.personType - BAD ? "good" : "bad");
         MPI_Send(&id, 1, MPI_INT, 0, SYNCHR, MPI_COMM_WORLD);
@@ -156,14 +157,13 @@ int main(int argc, char **argv)
     }
     free(person.toiletList);
     free(person.potList);
-    free(sendObjects);
     MPI_Type_free(&MPI_REQ);
     MPI_Finalize();
 }
 
 void handleStates()
 {
-    int canGoCritical = false, objectId = -1, objectType = -1, rejectedRest = false;
+    int canGoCritical = false, tempObjectId = -1, tempObjectType = -1, rejectedRest = false;
     while (true)
     {
         pthread_mutex_lock(&stateMutex);
@@ -183,12 +183,6 @@ void handleStates()
             iterator = preparingState(sendObjects, rejectedRest);
             if (iterator > 0)
             {
-                pthread_mutex_lock(&listDeletingMutex);
-                rejectList = malloc(sizeof(int) * iterator);
-                ackList = malloc(sizeof(int) * iterator);
-                memset(ackList, 0, (sizeof(int) * iterator));
-                memset(rejectList, 0, (sizeof(int) * iterator));
-                pthread_mutex_unlock(&listDeletingMutex);
                 pthread_mutex_lock(&listSizeMutex);
                 listSize = iterator;
                 pthread_mutex_unlock(&listSizeMutex);
@@ -199,7 +193,7 @@ void handleStates()
             break;
         case WAIT_CRITICAL:
 
-            canGoCritical = waitCriticalState(&objectId, &objectType);
+            canGoCritical = waitCriticalState();
             if (canGoCritical != -1)
             {
                 // printf("XD?\n");
@@ -216,15 +210,19 @@ void handleStates()
             //printf("\ncanGoToCritical: %d\n", canGoCritical);
             if (canGoCritical == true)
             {
+                pthread_mutex_lock(&objectPropsMutex);
+                tempObjectId = objectId;
+                tempObjectType = objectType;
+                pthread_mutex_unlock(&objectPropsMutex);
 
-                if (objectType == TOILET && objectId > 0)
+                if (tempObjectType == TOILET && tempObjectId > 0)
                 {
-                    ackObject = person.toiletList[objectId - 1];
-                    // printf("\t\ttak wiem noo: %d, typ: %d, %d, person: %d\n", ackObject.objectState, ackObject.objectType, ackObject.id, person.id);
+                    ackObject = person.toiletList[tempObjectId - 1];
+                    // printf("\t\ttak wiem noo: %d, typ: %d, %d, person: %d\n", ackObject.objectState, ackObject.tempObjectType, ackObject.id, person.id);
                 }
-                else if (objectType == POT && objectId > 0)
+                else if (tempObjectType == POT && tempObjectId > 0)
                 {
-                    ackObject = person.potList[objectId - 1];
+                    ackObject = person.potList[tempObjectId - 1];
                     // printf("\t\ttak wiem noo: %d, typ: %d, %d, person: %d\n", ackObject.objectState, ackObject.objectType, ackObject.id, person.id);
                 }
                 rejectedRest = false;
@@ -259,12 +257,10 @@ void handleStates()
             pthread_mutex_lock(&iterationsCounterMutex);
             int tempRestIterations = iterationsCounter;
             pthread_mutex_unlock(&iterationsCounterMutex);
-            if (tempRestIterations<= 0)
+            if (tempRestIterations <= 0)
             {
                 pthread_mutex_lock(&stateMutex);
                 state = PREPARING;
-                free(ackList);
-                free(rejectList);
                 pthread_mutex_unlock(&stateMutex);
             }
             break;
@@ -664,7 +660,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 pthread_mutex_unlock(&listDeletingMutex);
             }
         }
-            break;
+        break;
     case TACK:
         if (!isPreviousRequest)
         {
@@ -788,7 +784,7 @@ void afterCriticalState(Object *object)
     {
         if (i != person.id)
         {
-            updateLamportClock();   
+            updateLamportClock();
             printf("\tAFTER_CRITICAL, %d: SEND ACKALL to id: %d about objectId: %d\n", person.id, i, request.objectId);
             MPI_Send(&request, 1, MPI_REQ, i, ACKALL, MPI_COMM_WORLD);
         }
@@ -936,7 +932,7 @@ void updateLamportClock()
     pthread_mutex_unlock(&lamportMutex);
 }
 
-int waitCriticalState(int *objectId, int *objectType)
+int waitCriticalState()
 {
 
     pthread_mutex_lock(&listSizeMutex);
@@ -976,8 +972,10 @@ int waitCriticalState(int *objectId, int *objectType)
         if (tempAckListValue == (person.goodCount + person.badCount - 1))
         {
             //printf("\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
-            *objectId = sendObjects[i].id;
-            *objectType = sendObjects[i].objectType;
+            pthread_mutex_lock(&objectPropsMutex);
+            objectId = sendObjects[i].id;
+            objectType = sendObjects[i].objectType;
+            pthread_mutex_unlock(&objectPropsMutex);
             return true;
         }
     }

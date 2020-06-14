@@ -27,7 +27,7 @@ void handleStates();
 
 int preparingState(Object *objectList, int rejectedRest);
 
-int waitCriticalState(int *objectId, int *objectType);
+int waitCriticalState();
 
 void sendRequestForObjects(Object *ObjectList, int iterator, int rejectedRest);
 #endif
