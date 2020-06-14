@@ -159,6 +159,8 @@ int main(int argc, char **argv)
     free(sendObjects);
     MPI_Type_free(&MPI_REQ);
     MPI_Finalize();
+    pthread_exit(NULL);
+    return 0;
 }
 
 void handleStates()
@@ -200,18 +202,19 @@ void handleStates()
         case WAIT_CRITICAL:
 
             canGoCritical = waitCriticalState(&objectId, &objectType);
-            if (canGoCritical != -1)
+            
+            pthread_mutex_lock(&iterationsCounterMutex);
+            int tempIterationsCounter = iterationsCounter;
+            pthread_mutex_unlock(&iterationsCounterMutex);
+            if (tempIterationsCounter == 0 && rejectedRest)
             {
-                pthread_mutex_lock(&iterationsCounterMutex);
-                int tempIterationsCounter = iterationsCounter;
-                pthread_mutex_unlock(&iterationsCounterMutex);
-                if (tempIterationsCounter == 0 && rejectedRest)
-                {
-                    pthread_mutex_lock(&stateMutex);
-                    state = PREPARING;
-                    pthread_mutex_unlock(&stateMutex);
-                }
+                printf(ANSI_COLOR_MAGENTA"Im going to PrEPRING, FROM WAIT_CRITICAL"ANSI_COLOR_RESET"\n");
+                pthread_mutex_lock(&stateMutex);
+                state = PREPARING;
+                pthread_mutex_unlock(&stateMutex);
+                break;
             }
+            
             if (canGoCritical == true)
             {
 
