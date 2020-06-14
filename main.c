@@ -12,7 +12,6 @@ const int badNumber = 2;
 
 Person person;
 Object ackObject;
-int state = INIT;
 int *ackList;
 int *rejectList;
 int listSize;
@@ -20,7 +19,6 @@ Object *sendObjects;
 int iterationsCounter;
 int iterator;
 
-pthread_mutex_t stateMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t lamportMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t listDeletingMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t avaliableObjectsCountMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -168,21 +166,17 @@ int main(int argc, char **argv)
 
 void handleStates()
 {
-    int canGoCritical = -1, objectId = -1, objectType = -1, rejectedRest = false, lockState;
+    int state = INIT;
+    int canGoCritical = -1, objectId = -1, objectType = -1, rejectedRest = false;
     while (true)
     {
-        pthread_mutex_lock(&stateMutex);
-        lockState = state;
-        pthread_mutex_unlock(&stateMutex);
-        switch (lockState)
+        switch (state)
         {
         case INIT:
             pthread_mutex_lock(&iterationsCounterMutex);
             iterationsCounter = 0;
             pthread_mutex_unlock(&iterationsCounterMutex);
-            pthread_mutex_lock(&stateMutex);
             state = PREPARING;
-            pthread_mutex_unlock(&stateMutex);
             break;
         case PREPARING:
             pthread_mutex_lock(&messageListMutex);
@@ -204,9 +198,7 @@ void handleStates()
                 pthread_mutex_lock(&listSizeMutex);
                 listSize = iterator;
                 pthread_mutex_unlock(&listSizeMutex);
-                pthread_mutex_lock(&stateMutex);
                 state = WAIT_CRITICAL;
-                pthread_mutex_unlock(&stateMutex);
             }
             break;
         case WAIT_CRITICAL:
@@ -225,9 +217,7 @@ void handleStates()
             if (tempIterationsCounter == 0 && rejectedRest)
             {
                 printf(ANSI_COLOR_MAGENTA "Im going to PrEPRING, FROM WAIT_CRITICAL" ANSI_COLOR_RESET "\n");
-                pthread_mutex_lock(&stateMutex);
                 state = PREPARING;
-                pthread_mutex_unlock(&stateMutex);
             }
 
             if (canGoCritical == true)
@@ -244,32 +234,24 @@ void handleStates()
                     // printf("\t\ttak wiem noo: %d, typ: %d, %d, person: %d\n", ackObject.objectState, ackObject.objectType, ackObject.id, person.id);
                 }
                 rejectedRest = false;
-                pthread_mutex_lock(&stateMutex);
                 state = IN_CRITICAL;
-                pthread_mutex_unlock(&stateMutex);
             }
             else if (canGoCritical == false)
             {
                 // printf("\t\ttak wiem noo: %d, %d\n", objectId, objectType);
                 rejectedRest = true;
-                pthread_mutex_lock(&stateMutex);
                 state = REST;
-                pthread_mutex_unlock(&stateMutex);
                 //printf("\tREST, %d: process is rest\n", person.id);
             }
             //ZWOLNIĆ WSZYSTKO
             break;
         case IN_CRITICAL:
             inCriticalState();
-            pthread_mutex_lock(&stateMutex);
             state = AFTER_CRITICAL;
-            pthread_mutex_unlock(&stateMutex);
             break;
         case AFTER_CRITICAL:
             afterCriticalState(&ackObject);
-            pthread_mutex_lock(&stateMutex);
             state = REST;
-            pthread_mutex_unlock(&stateMutex);
             break;
         case REST:
             if(first != NULL){
@@ -282,11 +264,9 @@ void handleStates()
             pthread_mutex_unlock(&iterationsCounterMutex);
             if (tempRestIterations >= 0)
             {
-                pthread_mutex_lock(&stateMutex);
                 state = PREPARING;
                 free(ackList);
                 free(rejectList);
-                pthread_mutex_unlock(&stateMutex);
             }
             break;
         default:
@@ -343,7 +323,6 @@ void *handleRequests()
 void preparingRequestHandler(Request *request)
 {
     pthread_mutex_lock(&preparingMutex);
-    printf("no tak: %d\n", first->currentRequest->id);
     int receivedId = request->id;
     switch (request->requestType)
     {
