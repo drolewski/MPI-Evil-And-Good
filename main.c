@@ -259,7 +259,7 @@ void handleStates()
             pthread_mutex_lock(&iterationsCounterMutex);
             int tempRestIterations = iterationsCounter;
             pthread_mutex_unlock(&iterationsCounterMutex);
-            if (tempRestIterations <= 0)
+            if (tempRestIterations<= 0)
             {
                 pthread_mutex_lock(&stateMutex);
                 state = PREPARING;
@@ -625,7 +625,17 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
             for (int i = 0; i < tempListSize; i++)
             {
-                ackList[i] += 1;
+                if (request.objectType == objectList[i].objectType)
+                {
+                    if (request.objectId != objectList[i].id)
+                    {
+                        ackList[i] += 1;
+                    }
+                    else
+                    {
+                        rejectList[i] += 1;
+                    }
+                }
                 pthread_mutex_lock(&iterationsCounterMutex);
                 iterationsCounter -= 1;
                 pthread_mutex_unlock(&iterationsCounterMutex);
