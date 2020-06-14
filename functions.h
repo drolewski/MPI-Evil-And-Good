@@ -25,9 +25,9 @@ void updateLamportClock();
 
 void handleStates();
 
-int preparingState(Object *objectList, int rejectedRest);
+int preparingState(int rejectedRest);
 
 int waitCriticalState();
 
-void sendRequestForObjects(Object *ObjectList, int iterator, int rejectedRest);
+void sendRequestForObjects(int iterator, int rejectedRest);
 #endif

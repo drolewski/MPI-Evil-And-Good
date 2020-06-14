@@ -180,7 +180,7 @@ void handleStates()
             pthread_mutex_unlock(&stateMutex);
             break;
         case PREPARING:
-            iterator = preparingState(sendObjects, rejectedRest);
+            iterator = preparingState(rejectedRest);
             if (iterator > 0)
             {
                 pthread_mutex_lock(&listSizeMutex);
@@ -791,7 +791,7 @@ void afterCriticalState()
     }
 }
 
-int preparingState(Object *objectList, int rejectedRest)
+int preparingState(int rejectedRest)
 {
     pthread_mutex_lock(&avaliableObjectsCountMutex);
     int availableObjectsCount = person.avaliableObjectsCount;
@@ -807,7 +807,7 @@ int preparingState(Object *objectList, int rejectedRest)
             {
                 if (person.toiletList[i].objectState == BROKEN)
                 {
-                    objectList[iterator] = person.toiletList[i];
+                    sendObjects[iterator] = person.toiletList[i];
                     iterator++;
                 }
             }
@@ -816,7 +816,7 @@ int preparingState(Object *objectList, int rejectedRest)
                 if (person.potList[i].objectState == BROKEN)
                 {
 
-                    objectList[iterator] = person.potList[i];
+                    sendObjects[iterator] = person.potList[i];
                     iterator++;
                 }
             }
@@ -828,7 +828,7 @@ int preparingState(Object *objectList, int rejectedRest)
             {
                 if (person.toiletList[i].objectState == REPAIRED)
                 {
-                    objectList[iterator] = person.toiletList[i];
+                    sendObjects[iterator] = person.toiletList[i];
                     iterator++;
                 }
             }
@@ -836,14 +836,14 @@ int preparingState(Object *objectList, int rejectedRest)
             {
                 if (person.potList[i].objectState == REPAIRED)
                 {
-                    objectList[iterator] = person.potList[i];
+                    sendObjects[iterator] = person.potList[i];
                     iterator++;
                 }
             }
         }
 
         pthread_mutex_lock(&preparingMutex);
-        sendRequestForObjects(sendObjects, iterator, rejectedRest);
+        sendRequestForObjects(iterator, rejectedRest);
         pthread_mutex_unlock(&preparingMutex);
 
         return iterator;
@@ -852,7 +852,7 @@ int preparingState(Object *objectList, int rejectedRest)
         return -1;
 }
 
-void sendRequestForObjects(Object *ObjectList, int iterator, int rejectedRest)
+void sendRequestForObjects(int iterator, int rejectedRest)
 {
     Request req;
     person.priority = rejectedRest ? person.priority + 5 : person.lamportClock;
@@ -860,10 +860,10 @@ void sendRequestForObjects(Object *ObjectList, int iterator, int rejectedRest)
     for (int i = 0; i < iterator; i++)
     {
         req.id = person.id;
-        req.objectId = ObjectList[i].id;
-        req.requestType = ObjectList[i].objectType == TOILET ? TREQ : PREQ;
-        req.objectType = ObjectList[i].objectType == TOILET ? TOILET : POT;
-        req.objectState = ObjectList[i].objectState;
+        req.objectId = sendObjects[i].id;
+        req.requestType = sendObjects[i].objectType == TOILET ? TREQ : PREQ;
+        req.objectType = sendObjects[i].objectType == TOILET ? TOILET : POT;
+        req.objectState = sendObjects[i].objectState;
         // printf(ANSI_COLOR_YELLOW "Ja mam ten idealny stan: %s" ANSI_COLOR_RESET "\n", req.objectState == BROKEN ? "Broken" : req.objectState == REPAIRED ? "repaired" : "smieci");
         for (int j = 1; j <= (person.goodCount + person.badCount); j++)
         {
