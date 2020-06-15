@@ -249,12 +249,12 @@ void handleStates()
                 free(tmpFirst);
             }
             int tempRestIterations = iterationsCounter;
-            // if (tempRestIterations >= 0)
-            // {
+            if (tempRestIterations >= 0)
+            {
             state = PREPARING;
             free(ackList);
             free(rejectList);
-            // }
+            }
             break;
         default:
             printf("default");
