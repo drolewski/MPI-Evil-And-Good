@@ -519,25 +519,23 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
 
         updateLists(request, "WAIT_CRITICAL");
 
-        if (!((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount)))
-        {
-            int tempListSize = listSize;
-            for (int i = 0; i < tempListSize; i++)
-            {
-                if (request.objectType == objectList[i].objectType)
-                {
-                    if (request.objectId != objectList[i].id)
-                    {
-                        ackList[i] += 1;
-                    }
-                    else
-                    {
-                        rejectList[i] += 1;
-                    }
-                    iterationsCounter -= 1;
-                }
-            }
-        }
+        // if (!((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount))) // nie sa w tej samej grupie
+        // {
+        //     for (int i = 0; i < listSize; i++)
+        //     {
+        //         if (request.objectType == objectList[i].objectType)
+        //         {
+        //             if (request.objectId != objectList[i].id)
+        //             {
+        //                 ackList[i] += 1;
+        //             }
+        //             else
+        //             {
+        //                 rejectList[i] += 1;
+        //             }
+        //         }
+        //     }
+        // }
     }
     else if (deepRequest.requestType == PACK)
     {
@@ -818,11 +816,9 @@ int waitCriticalState(int *objectId, int *objectType)
     tempListSize = listSize;
     for (int i = 0; i < tempListSize; i++)
     {
-        int tempAckListValue = ackList[i];
-        if (tempAckListValue == (person.goodCount + person.badCount - 1))
+        if (ackList[i] == (person.goodCount + person.badCount - 1))
         {
-            int tempAckListValue = ackList[i];
-            if (tempAckListValue == (person.goodCount + person.badCount - 1))
+            if (ackList[i] == (person.goodCount + person.badCount - 1))
             {
                 printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL with avaliable objects: %d\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id, person.avaliableObjectsCount);
                 *objectId = sendObjects[i].id;
