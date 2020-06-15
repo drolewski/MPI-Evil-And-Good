@@ -736,7 +736,7 @@ void sendRequestForObjects(Object *ObjectList, int iterator, int rejectedRest)
         req.requestType = ObjectList[i].objectType == TOILET ? TREQ : PREQ;
         req.objectType = ObjectList[i].objectType == TOILET ? TOILET : POT;
         req.objectState = ObjectList[i].objectState;
-        printf("[%d]\tPREPARING, %d: Send %s to all about %d\n", person.lamportClock, person.id, req.objectState == TREQ ? "TREQ" : "PREQ", req.objectId);
+        // printf("[%d]\tPREPARING, %d: Send %s to all about %d\n", person.lamportClock, person.id, req.objectState == TREQ ? "TREQ" : "PREQ", req.objectId);
         for (int j = 1; j <= (person.goodCount + person.badCount); j++)
         {
             if (j != person.id)
