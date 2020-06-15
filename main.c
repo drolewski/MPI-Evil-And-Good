@@ -824,7 +824,7 @@ int waitCriticalState(int *objectId, int *objectType)
             int tempAckListValue = ackList[i];
             if (tempAckListValue == (person.goodCount + person.badCount - 1))
             {
-                printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
+                printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL with avaliable objects: %d\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id, person.avaliableObjectsCount);
                 *objectId = sendObjects[i].id;
                 *objectType = sendObjects[i].objectType;
                 return true;
