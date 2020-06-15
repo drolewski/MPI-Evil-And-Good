@@ -535,8 +535,8 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
         }
     }
     else if(deepRequest.requestType == PACK){
-        // if (!isPreviousRequest)
-        // {
+        if (!isPreviousRequest)
+        {
             printf("[%d]\tWAIT_CRITICAL, %d: Receive PACK from: %d\n", person.lamportClock, person.id, receivedId);
             tempListSize = listSize;
             for (int i = 0; i < tempListSize; i++)
@@ -547,13 +547,13 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                     iterationsCounter -= 1;
                 }
             }
-        // }
+        }
     }
     else if(deepRequest.requestType == TACK)
     {
 
-        // if (!isPreviousRequest)
-        // {
+        if (!isPreviousRequest)
+        {
             printf("[%d]\tWAIT_CRITICAL, %d: Receive TACK from: %d about: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
             tempListSize = listSize;
             for (int i = 0; i < tempListSize; i++)
@@ -564,13 +564,13 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                     iterationsCounter -= 1;
                 }
             }
-        // }
+        }
     }
     else if(deepRequest.requestType == REJECT)
     {
 
-        // if (!isPreviousRequest)
-        // {
+        if (!isPreviousRequest)
+        {
             printf("[%d]\tWAIT_CRITICAL, %d: Receive REJECT from: %d\n", person.lamportClock, person.id, receivedId);
             tempListSize = listSize;
             for (int i = 0; i < tempListSize; i++)
@@ -581,7 +581,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                     iterationsCounter -= 1;
                 }
             }
-        // }
+        }
     }else{
         printf("[%d]\tWAIT_CRITICAL, %d: Received ignore message. %d\n", person.lamportClock, person.id, deepRequest.requestType);
     }
