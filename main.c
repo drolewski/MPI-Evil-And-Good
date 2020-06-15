@@ -834,7 +834,7 @@ int waitCriticalState(int *objectId, int *objectType)
     tempListSize = listSize;
     if (tempListSize == 0)
     {
-        printf("[%d]\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.lamportClock, person.id);
+        // printf("[%d]\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.lamportClock, person.id);
         return false;
     }
     return -1;
