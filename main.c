@@ -644,7 +644,7 @@ void restRequestHandler(Request request)
     {
         iterationsCounter--;
     }else{
-        printf("\REST, %d: Received ignore message. %d\n", person.id, deepRequest.requestType);
+        printf("\tREST, %d: Received ignore message. %d\n", person.id, deepRequest.requestType);
     }
 }
 
