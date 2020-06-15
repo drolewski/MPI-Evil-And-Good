@@ -517,8 +517,6 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
         if (!((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount)))
         {
             int tempListSize = listSize;
-
-            // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
             for (int i = 0; i < tempListSize; i++)
             {
                 if (request.objectType == objectList[i].objectType)
@@ -541,7 +539,6 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
         {
             printf("[%d]\tWAIT_CRITICAL, %d: Receive PACK from: %d\n", person.lamportClock, person.id, receivedId);
             tempListSize = listSize;
-            // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
             for (int i = 0; i < tempListSize; i++)
             {
                 if (objectList[i].objectType == POT && objectList[i].id == request.objectId)
@@ -561,7 +558,6 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             tempListSize = listSize;
             for (int i = 0; i < tempListSize; i++)
             {
-                // printf(ANSI_COLOR_MAGENTA "skad: %d, objectType: %d, priorytet: %d" ANSI_COLOR_RESET "\n", request.id, request.objectType, request.priority);
                 if (objectList[i].objectType == TOILET && objectList[i].id == request.objectId)
                 {
                     ackList[i] += 1;
@@ -582,7 +578,6 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 if (objectList[i].id == request.objectId)
                 {
                     rejectList[i] += 1;
-                    // person.priority = request.priority;
                     iterationsCounter -= 1;
                 }
             }
