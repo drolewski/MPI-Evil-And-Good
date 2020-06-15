@@ -307,7 +307,7 @@ void preparingRequestHandler(Request request)
     {
         deepRequest.requestType = PACK;
         updateLamportClock();
-        printf("[%d]\tPREPARING, %d: Send PACK to: %d about %d\n", person.lamportclock,person.id, receivedId, request.objectId);
+        printf("[%d]\tPREPARING, %d: Send PACK to: %d about %d\n", person.lamportClock,person.id, receivedId, request.objectId);
         MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
     }else if(deepRequest.requestType == TREQ)
     {
