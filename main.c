@@ -5,10 +5,10 @@
 #include <pthread.h>
 #include <math.h>
 
-const int toiletNumber = 1;
+const int toiletNumber = 2;
 const int potNumber = 1;
-const int goodNumber = 3;
-const int badNumber = 3;
+const int goodNumber = 2;
+const int badNumber = 2;
 
 Person person;
 Object ackObject;
@@ -306,7 +306,6 @@ void preparingRequestHandler(Request request)
     deepRequest.priority = request.priority;
     deepRequest.requestType = request.requestType;
     int receivedId = request.id;
-    int isPreviousRequest = abs(request.priority - person.priority) >= 5;
     if (deepRequest.requestType == PREQ)
     {
         deepRequest.requestType = PACK;
@@ -323,10 +322,7 @@ void preparingRequestHandler(Request request)
     }
     else if (deepRequest.requestType == ACKALL)
     {
-        if (!isPreviousRequest)
-        {
-            updateLists(request, "PREPARING");
-        }
+        updateLists(request, "PREPARING");
     }
     else
     {
@@ -525,7 +521,8 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
 
         if (!((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount)))
         {
-            for (int i = 0; i < listSize; i++)
+            int tempListSize = listSize;
+            for (int i = 0; i < tempListSize; i++)
             {
                 if (request.objectType == objectList[i].objectType)
                 {
@@ -537,6 +534,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                     {
                         rejectList[i] += 1;
                     }
+                    iterationsCounter -= 1;
                 }
             }
         }
@@ -800,7 +798,8 @@ int waitCriticalState(int *objectId, int *objectType)
     int tempListSize = listSize;
     for (int i = 0; i < tempListSize; i++)
     {
-        if (rejectList[i] > 0)
+        int tempRejectListValue = rejectList[i];
+        if (tempRejectListValue > 0)
         {
             // delete from array
             for (int j = i; j < tempListSize - 1; j++)
@@ -819,9 +818,11 @@ int waitCriticalState(int *objectId, int *objectType)
     tempListSize = listSize;
     for (int i = 0; i < tempListSize; i++)
     {
-        if (ackList[i] == (person.goodCount + person.badCount - 1))
+        int tempAckListValue = ackList[i];
+        if (tempAckListValue == (person.goodCount + person.badCount - 1))
         {
-            if (ackList[i] == (person.goodCount + person.badCount - 1))
+            int tempAckListValue = ackList[i];
+            if (tempAckListValue == (person.goodCount + person.badCount - 1))
             {
                 printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
                 *objectId = sendObjects[i].id;
