@@ -83,7 +83,7 @@ typedef struct Request Request;
 
 struct MessageList
 {
-    Request *currentRequest;
+    Request currentRequest;
     struct MessageList *nextMessage;
 };
 typedef struct MessageList MessageList;
