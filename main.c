@@ -332,7 +332,7 @@ void preparingRequestHandler(Request request)
     }
     else
     {
-        printf("\tPREPARING, %d: Received ignore message.\n", person.id);
+        printf("\ttPREPARING, %d: Received ignore message. %d\n", person.id, deepRequest.requestType);
     }
 
 }
@@ -644,7 +644,7 @@ void restRequestHandler(Request request)
     {
         iterationsCounter--;
     }else{
-        printf("\tREST, %d: Received ignore message.\n", person.id);   
+        printf("\REST, %d: Received ignore message. %d\n", person.id, deepRequest.requestType);
     }
 }
 
