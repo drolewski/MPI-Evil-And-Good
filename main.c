@@ -172,7 +172,8 @@ void handleStates()
             break;
         case PREPARING:
             pthread_mutex_lock(&messageListMutex);
-            if(first != NULL){
+            if (first != NULL)
+            {
                 preparingRequestHandler(first->currentRequest);
                 MessageList *tmpFirst = first;
                 first = first->nextMessage;
@@ -192,7 +193,8 @@ void handleStates()
             break;
         case WAIT_CRITICAL:
             pthread_mutex_lock(&messageListMutex);
-            if(first != NULL){
+            if (first != NULL)
+            {
                 waitCriticalRequestHandler(first->currentRequest, sendObjects);
                 MessageList *tmpFirst = first;
                 first = first->nextMessage;
@@ -236,7 +238,8 @@ void handleStates()
             state = REST;
             break;
         case REST:
-            if(first != NULL){
+            if (first != NULL)
+            {
                 MessageList *tmpFirst = first;
                 first = first->nextMessage;
                 free(tmpFirst);
@@ -244,9 +247,9 @@ void handleStates()
             int tempRestIterations = iterationsCounter;
             if (tempRestIterations >= 0)
             {
-            state = PREPARING;
-            free(ackList);
-            free(rejectList);
+                state = PREPARING;
+                free(ackList);
+                free(rejectList);
             }
             break;
         default:
@@ -303,20 +306,21 @@ void preparingRequestHandler(Request request)
     deepRequest.priority = request.priority;
     deepRequest.requestType = request.requestType;
     int receivedId = request.id;
-    if(deepRequest.requestType == PREQ)
+    if (deepRequest.requestType == PREQ)
     {
         deepRequest.requestType = PACK;
         updateLamportClock();
         //printf("[%d]\tPREPARING, %d: Send PACK to: %d about %d\n", person.lamportClock,person.id, receivedId, request.objectId);
         MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
-    }else if(deepRequest.requestType == TREQ)
+    }
+    else if (deepRequest.requestType == TREQ)
     {
         deepRequest.requestType = TACK;
         updateLamportClock();
         //printf("[%d]\tPREPARING, %d: Send TACK to: %d about %d\n", person.lamportClock, person.id, receivedId, request.objectId);
         MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
     }
-    else if(deepRequest.requestType == ACKALL)
+    else if (deepRequest.requestType == ACKALL)
     {
         updateLists(request, "PREPARING");
     }
@@ -324,7 +328,6 @@ void preparingRequestHandler(Request request)
     {
         //printf("[%d]\tPREPARING, %d: Received ignore message. %d\n", person.lamportClock, person.id, deepRequest.requestType);
     }
-
 }
 
 void waitCriticalRequestHandler(Request request, Object *objectList)
@@ -339,7 +342,8 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
     deepRequest.requestType = request.requestType;
     int receivedId = request.id;
     int isPreviousRequest = abs(request.priority - person.priority) >= 5;
-    if(deepRequest.requestType == PREQ){
+    if (deepRequest.requestType == PREQ)
+    {
 
         //printf("[%d]\tWAIT_CRITICAL, %d: Receive PREQ from id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
         if ((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount))
@@ -397,7 +401,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                         else //równe priorytety
                         {
                             if (person.id > receivedId)
-                            {              
+                            {
                                 deepRequest.requestType = REJECT;
                                 updateLamportClock();
                                 //printf("[%d]\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
@@ -424,7 +428,8 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             }
         }
         // //printf("Lamport: %d, ReceivedId: %d, PersonId: %d, objectType: %d, ObjectState: %d, personType: %d, Person priorytet: %d, request priority: %d\n", person.lamportClock, receivedId, person.id, request.objectType, request.objectState, person.personType, person.priority, request.priority);
-    }else if(deepRequest.requestType == TREQ)
+    }
+    else if (deepRequest.requestType == TREQ)
     {
 
         //printf("[%d]\tWAIT_CRITICAL, %d: Receive TREQ from id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
@@ -509,7 +514,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             }
         }
     }
-    else if(deepRequest.requestType == ACKALL)
+    else if (deepRequest.requestType == ACKALL)
     {
 
         updateLists(request, "WAIT_CRITICAL");
@@ -534,9 +539,10 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             }
         }
     }
-    else if(deepRequest.requestType == PACK){
-        // if (!isPreviousRequest)
-        // {
+    else if (deepRequest.requestType == PACK)
+    {
+        if (!isPreviousRequest)
+        {
             //printf("[%d]\tWAIT_CRITICAL, %d: Receive PACK from: %d\n", person.lamportClock, person.id, receivedId);
             tempListSize = listSize;
             for (int i = 0; i < tempListSize; i++)
@@ -547,13 +553,13 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                     iterationsCounter -= 1;
                 }
             }
-        // }
+        }
     }
-    else if(deepRequest.requestType == TACK)
+    else if (deepRequest.requestType == TACK)
     {
 
-        // if (!isPreviousRequest)
-        // {
+        if (!isPreviousRequest)
+        {
             //printf("[%d]\tWAIT_CRITICAL, %d: Receive TACK from: %d about: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
             tempListSize = listSize;
             for (int i = 0; i < tempListSize; i++)
@@ -564,13 +570,13 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                     iterationsCounter -= 1;
                 }
             }
-        // }
+        }
     }
-    else if(deepRequest.requestType == REJECT)
+    else if (deepRequest.requestType == REJECT)
     {
 
-        // if (!isPreviousRequest)
-        // {
+        if (!isPreviousRequest)
+        {
             //printf("[%d]\tWAIT_CRITICAL, %d: Receive REJECT from: %d\n", person.lamportClock, person.id, receivedId);
             tempListSize = listSize;
             for (int i = 0; i < tempListSize; i++)
@@ -581,8 +587,10 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                     iterationsCounter -= 1;
                 }
             }
-        // }
-    }else{
+        }
+    }
+    else
+    {
         //printf("[%d]\tWAIT_CRITICAL, %d: Received ignore message. %d\n", person.lamportClock, person.id, deepRequest.requestType);
     }
 }
@@ -597,37 +605,39 @@ void restRequestHandler(Request request)
     deepRequest.priority = request.priority;
     deepRequest.requestType = request.requestType;
     int receivedId = request.id;
-    if(deepRequest.requestType == PREQ)
+    if (deepRequest.requestType == PREQ)
     {
         deepRequest.requestType = PACK;
         updateLamportClock();
         //printf("[%d]\tREST, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
         MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
     }
-    else if(deepRequest.requestType == TREQ)
+    else if (deepRequest.requestType == TREQ)
     {
         deepRequest.requestType = TACK;
         updateLamportClock();
         //printf("[%d]\tREST, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
         MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
     }
-    else if(deepRequest.requestType == REJECT)
+    else if (deepRequest.requestType == REJECT)
     {
         updateLists(request, "REST");
         iterationsCounter -= iterator;
     }
-    else if(deepRequest.requestType == PACK)
+    else if (deepRequest.requestType == PACK)
     {
         iterationsCounter--;
     }
-    else if(deepRequest.requestType == TACK)
+    else if (deepRequest.requestType == TACK)
     {
         iterationsCounter--;
     }
-    else if(deepRequest.requestType == REJECT)
+    else if (deepRequest.requestType == REJECT)
     {
         iterationsCounter--;
-    }else{
+    }
+    else
+    {
         //printf("[%d]\tREST, %d: Received ignore message. %d\n", person.lamportClock, person.id, deepRequest.requestType);
     }
 }
@@ -754,11 +764,17 @@ void updateLists(Request request, char *stateName)
         person.potList[request.objectId - 1].objectState = request.objectState;
         if (person.personType == GOOD)
         {
-            person.avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
+            if (person.avaliableObjectsCount < (potNumber + toiletNumber))
+            {
+                person.avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
+            }
         }
         else
         {
-            person.avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
+            if (person.avaliableObjectsCount < (potNumber + toiletNumber))
+            {
+                person.avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
+            }
         }
     }
     else
@@ -767,11 +783,17 @@ void updateLists(Request request, char *stateName)
         person.toiletList[request.objectId - 1].objectState = request.objectState;
         if (person.personType == GOOD)
         {
-            person.avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
+            if (person.avaliableObjectsCount < (potNumber + toiletNumber))
+            {
+                person.avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
+            }
         }
         else
         {
-            person.avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
+            if (person.avaliableObjectsCount < (potNumber + toiletNumber))
+            {
+                person.avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
+            }
         }
     }
 }
