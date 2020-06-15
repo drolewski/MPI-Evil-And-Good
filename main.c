@@ -599,7 +599,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             }
         }
     }else{
-        printf("\tWAIT_CRITICAL, %d: Received ignore message.\n", person.id);
+        printf("\tWAIT_CRITICAL, %d: Received ignore message. %d\n", person.id, deepRequest.requestType);
     }
 }
 
