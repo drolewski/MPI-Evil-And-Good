@@ -5,10 +5,10 @@
 #include <pthread.h>
 #include <math.h>
 
-const int toiletNumber = 2;
+const int toiletNumber = 1;
 const int potNumber = 1;
-const int goodNumber = 2;
-const int badNumber = 2;
+const int goodNumber = 3;
+const int badNumber = 3;
 
 Person person;
 Object ackObject;
@@ -306,6 +306,7 @@ void preparingRequestHandler(Request request)
     deepRequest.priority = request.priority;
     deepRequest.requestType = request.requestType;
     int receivedId = request.id;
+    int isPreviousRequest = abs(request.priority - person.priority) >= 5;
     if (deepRequest.requestType == PREQ)
     {
         deepRequest.requestType = PACK;
@@ -322,7 +323,10 @@ void preparingRequestHandler(Request request)
     }
     else if (deepRequest.requestType == ACKALL)
     {
-        updateLists(request, "PREPARING");
+        if (!isPreviousRequest)
+        {
+            updateLists(request, "PREPARING");
+        }
     }
     else
     {
