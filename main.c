@@ -240,6 +240,7 @@ void handleStates()
         case REST:
             if (first != NULL)
             {
+                restRequestHandler(first->currentRequest);
                 MessageList *tmpFirst = first;
                 first = first->nextMessage;
                 free(tmpFirst);
