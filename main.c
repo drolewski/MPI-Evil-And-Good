@@ -678,6 +678,7 @@ void afterCriticalState(Object *object)
 int preparingState(Object *objectList, int rejectedRest)
 {
     int availableObjectsCount = person.avaliableObjectsCount;
+    
     if (availableObjectsCount > 0)
     {
         int iter = 0;
@@ -814,35 +815,22 @@ void updateLamportClock()
 
 int waitCriticalState(int *objectId, int *objectType)
 {
-    int it = listSize;
-    int tempListSize = listSize;
-    for (int i = 0; i < tempListSize; i++)
-    {
-        int tempRejectListValue = rejectList[i];
-        if (tempRejectListValue > 0)
-        {
-            // delete from array
-            for (int j = i; j < tempListSize - 1; j++)
-            {
-                sendObjects[j] = sendObjects[j + 1];
-                rejectList[j] = rejectList[j + 1];
-                ackList[j] = ackList[j + 1];
-            }
-            tempListSize -= 1;
-            //printf("[%d]\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person.lamportClock, person.id, tempListSize);
+    int areAllRejected = true;
 
-            listSize = tempListSize;
+    for (int i = 0; i < listSize; i++)
+    {
+        if (rejectList[i] == 0)
+        {
+            areAllRejected = false;
+            break;
         }
     }
 
-    tempListSize = listSize;
-    for (int i = 0; i < tempListSize; i++)
+    for (int i = 0; i < listSize; i++)
     {
-        int tempAckListValue = ackList[i];
-        if (tempAckListValue == (person.goodCount + person.badCount - 1))
+        if (ackList[i] == (person.goodCount + person.badCount - 1))
         {
-            int tempAckListValue = ackList[i];
-            if (tempAckListValue == (person.goodCount + person.badCount - 1))
+            if (ackList[i] == (person.goodCount + person.badCount - 1))
             {
                 printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL, there are %d avaliableObjects\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "TOILET" : "POT", sendObjects[i].id, person.avaliableObjectsCount);
                 *objectId = sendObjects[i].id;
@@ -851,8 +839,8 @@ int waitCriticalState(int *objectId, int *objectType)
             }
         }
     }
-    tempListSize = listSize;
-    if (tempListSize == 0)
+
+    if (areAllRejected)
     {
         //printf("[%d]\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.lamportClock, person.id);
         return false;
