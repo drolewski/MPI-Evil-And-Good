@@ -76,6 +76,7 @@ typedef struct Person Person;
     int priority;
     int objectState;
     int objectType;
+    int lamportClock;
 };
 
 typedef struct Request Request;

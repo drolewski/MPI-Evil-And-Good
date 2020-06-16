@@ -79,17 +79,18 @@ void waitRandomTime(int id)
 
 void setupStructures()
 {
-    int nItems = 6;
-    int blockLengths[6] = {1, 1, 1, 1, 1, 1};
-    MPI_Datatype types[6] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT};
+    int nItems = 7;
+    int blockLengths[7] = {1, 1, 1, 1, 1, 1, 1};
+    MPI_Datatype types[7] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT};
 
-    MPI_Aint offsets[6];
+    MPI_Aint offsets[7];
     offsets[0] = offsetof(Request, id);
     offsets[1] = offsetof(Request, requestType);
     offsets[2] = offsetof(Request, objectId);
     offsets[3] = offsetof(Request, priority);
     offsets[4] = offsetof(Request, objectState);
     offsets[5] = offsetof(Request, objectType);
+    offsets[6] = offsetof(Request, lamportClock);
 
     MPI_Type_create_struct(nItems, blockLengths, offsets, types, &MPI_REQ);
     MPI_Type_commit(&MPI_REQ);
@@ -291,7 +292,7 @@ void *handleRequests()
             }
             pthread_mutex_unlock(&messageListMutex);
             pthread_mutex_lock(&lamportMutex);
-            person.lamportClock = request.priority > person.lamportClock ? request.priority + 1 : person.lamportClock + 1;
+            person.lamportClock = request.lamportClock > person.lamportClock ? request.lamportClock + 1 : person.lamportClock + 1;
             pthread_mutex_unlock(&lamportMutex);
         }
     }
@@ -305,6 +306,7 @@ void preparingRequestHandler(Request request)
     deepRequest.objectState = request.objectState;
     deepRequest.objectType = request.objectType;
     deepRequest.priority = request.priority;
+    deepRequest.lamportClock = person.lamportClock;
     deepRequest.requestType = request.requestType;
     int receivedId = request.id;
     if (deepRequest.requestType == PREQ)
@@ -340,6 +342,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
     deepRequest.objectState = request.objectState;
     deepRequest.objectType = request.objectType;
     deepRequest.priority = request.priority;
+    deepRequest.lamportClock = person.lamportClock;
     deepRequest.requestType = request.requestType;
     int receivedId = request.id;
     int isPreviousRequest = abs(request.priority - person.priority) >= 5;
@@ -604,6 +607,7 @@ void restRequestHandler(Request request)
     deepRequest.objectState = request.objectState;
     deepRequest.objectType = request.objectType;
     deepRequest.priority = request.priority;
+    deepRequest.lamportClock = person.lamportClock;
     deepRequest.requestType = request.requestType;
     int receivedId = request.id;
     if (deepRequest.requestType == PREQ)
@@ -657,6 +661,7 @@ void afterCriticalState(Object *object)
     request.objectId = object->id;
     request.objectState = object->objectState == BROKEN ? REPAIRED : BROKEN;
     request.objectType = object->objectType;
+    request.lamportClock = person.lamportClock;
     request.priority = person.lamportClock;
     updateLists(request, "AFTER_CRITICAL");
     for (int i = 1; i <= (person.goodCount + person.badCount); i++)
@@ -746,6 +751,7 @@ void sendRequestForObjects(Object *ObjectList, int iterator, int rejectedRest)
                 int quantum = time(&tt);
                 srand(quantum + person.id);
                 int priority = rand() % 5;
+                req.lamportClock = person.lamportClock;
                 updateLamportClock();
                 req.priority = person.priority + priority;
                 //printf(ANSI_COLOR_YELLOW "[%d]\tPREPARING, %d: Send %s to: %d about %d" ANSI_COLOR_RESET "\n", person.lamportClock, person.id, req.objectState == TREQ ? "TREQ" : "PREQ", j, req.objectId);
