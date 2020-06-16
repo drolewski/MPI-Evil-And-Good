@@ -86,6 +86,7 @@ struct MessageList
 {
     Request currentRequest;
     struct MessageList *nextMessage;
+    // int length;
 };
 typedef struct MessageList MessageList;
 

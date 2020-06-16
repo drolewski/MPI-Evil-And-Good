@@ -1,0 +1,1769 @@
+--------------------------------------------------------------------------
+WARNING: Linux kernel CMA support was requested via the
+btl_vader_single_copy_mechanism MCA variable, but CMA support is
+not available due to restrictive ptrace settings.
+
+The vader shared memory BTL will fall back on another single-copy
+mechanism if one is available. This may result in lower performance.
+
+  Local host: DESKTOP-JAGBSE6
+--------------------------------------------------------------------------
+SYNCHR Message SENT to: 1
+SYNCHR Message SENT to: 2
+SYNCHR Message SENT to: 3
+SYNCHR Message SENT to: 4
+SYNCHR Message SENT to: 5
+SYNCHR Message SENT to: 6
+SYNCHR Message Received from: 1
+SYNCHR Message Received from: 3
+SYNCHR Message Received from: 2
+SYNCHR Message Received from: 4
+SYNCHR Message Received from: 5
+SYNCHR Message Received from: 6
+
+SYNCHR done!
+
+[29]	WAIT_CRITICAL, 6: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 2 avaliableObjects
+[29]	IN_CRITICAL, 6: process is in cricital section
+[44]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 2 avaliableObjects
+[44]	IN_CRITICAL, 1: process is in cricital section
+[49]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[49]	IN_CRITICAL, 1: process is in cricital section
+[54]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[54]	IN_CRITICAL, 1: process is in cricital section
+[59]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[59]	IN_CRITICAL, 1: process is in cricital section
+[64]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[64]	IN_CRITICAL, 1: process is in cricital section
+[69]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[69]	IN_CRITICAL, 1: process is in cricital section
+[74]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[74]	IN_CRITICAL, 1: process is in cricital section
+[79]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[79]	IN_CRITICAL, 1: process is in cricital section
+[84]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[84]	IN_CRITICAL, 1: process is in cricital section
+[89]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[89]	IN_CRITICAL, 1: process is in cricital section
+[94]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[94]	IN_CRITICAL, 1: process is in cricital section
+[99]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[99]	IN_CRITICAL, 1: process is in cricital section
+[104]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[104]	IN_CRITICAL, 1: process is in cricital section
+[109]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[109]	IN_CRITICAL, 1: process is in cricital section
+[114]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[114]	IN_CRITICAL, 1: process is in cricital section
+[119]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[119]	IN_CRITICAL, 1: process is in cricital section
+[124]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[124]	IN_CRITICAL, 1: process is in cricital section
+[129]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[129]	IN_CRITICAL, 1: process is in cricital section
+[134]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[134]	IN_CRITICAL, 1: process is in cricital section
+[139]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[139]	IN_CRITICAL, 1: process is in cricital section
+[144]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[144]	IN_CRITICAL, 1: process is in cricital section
+[149]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[149]	IN_CRITICAL, 1: process is in cricital section
+[154]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[154]	IN_CRITICAL, 1: process is in cricital section
+[159]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[159]	IN_CRITICAL, 1: process is in cricital section
+[164]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[164]	IN_CRITICAL, 1: process is in cricital section
+[169]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[169]	IN_CRITICAL, 1: process is in cricital section
+[174]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[174]	IN_CRITICAL, 1: process is in cricital section
+[179]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[179]	IN_CRITICAL, 1: process is in cricital section
+[184]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[184]	IN_CRITICAL, 1: process is in cricital section
+[189]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[189]	IN_CRITICAL, 1: process is in cricital section
+[194]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[194]	IN_CRITICAL, 1: process is in cricital section
+[199]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[199]	IN_CRITICAL, 1: process is in cricital section
+[204]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[204]	IN_CRITICAL, 1: process is in cricital section
+[209]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[209]	IN_CRITICAL, 1: process is in cricital section
+[214]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[214]	IN_CRITICAL, 1: process is in cricital section
+[219]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[219]	IN_CRITICAL, 1: process is in cricital section
+[224]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[224]	IN_CRITICAL, 1: process is in cricital section
+[229]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[229]	IN_CRITICAL, 1: process is in cricital section
+[234]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[234]	IN_CRITICAL, 1: process is in cricital section
+[239]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[239]	IN_CRITICAL, 1: process is in cricital section
+[244]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[244]	IN_CRITICAL, 1: process is in cricital section
+[249]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[249]	IN_CRITICAL, 1: process is in cricital section
+[254]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[254]	IN_CRITICAL, 1: process is in cricital section
+[259]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[259]	IN_CRITICAL, 1: process is in cricital section
+[264]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[264]	IN_CRITICAL, 1: process is in cricital section
+[269]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[269]	IN_CRITICAL, 1: process is in cricital section
+[274]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[274]	IN_CRITICAL, 1: process is in cricital section
+[279]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[279]	IN_CRITICAL, 1: process is in cricital section
+[284]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[284]	IN_CRITICAL, 1: process is in cricital section
+[289]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[289]	IN_CRITICAL, 1: process is in cricital section
+[294]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[294]	IN_CRITICAL, 1: process is in cricital section
+[299]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[299]	IN_CRITICAL, 1: process is in cricital section
+[304]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[304]	IN_CRITICAL, 1: process is in cricital section
+[309]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[309]	IN_CRITICAL, 1: process is in cricital section
+[314]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[314]	IN_CRITICAL, 1: process is in cricital section
+[319]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[319]	IN_CRITICAL, 1: process is in cricital section
+[324]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[324]	IN_CRITICAL, 1: process is in cricital section
+[329]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[329]	IN_CRITICAL, 1: process is in cricital section
+[334]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[334]	IN_CRITICAL, 1: process is in cricital section
+[339]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[339]	IN_CRITICAL, 1: process is in cricital section
+[344]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[344]	IN_CRITICAL, 1: process is in cricital section
+[349]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[349]	IN_CRITICAL, 1: process is in cricital section
+[354]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[354]	IN_CRITICAL, 1: process is in cricital section
+[359]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[359]	IN_CRITICAL, 1: process is in cricital section
+[364]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[364]	IN_CRITICAL, 1: process is in cricital section
+[369]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[369]	IN_CRITICAL, 1: process is in cricital section
+[374]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[374]	IN_CRITICAL, 1: process is in cricital section
+[379]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[379]	IN_CRITICAL, 1: process is in cricital section
+[384]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[384]	IN_CRITICAL, 1: process is in cricital section
+[389]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[389]	IN_CRITICAL, 1: process is in cricital section
+[394]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[394]	IN_CRITICAL, 1: process is in cricital section
+[399]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[399]	IN_CRITICAL, 1: process is in cricital section
+[404]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[404]	IN_CRITICAL, 1: process is in cricital section
+[409]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[409]	IN_CRITICAL, 1: process is in cricital section
+[414]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[414]	IN_CRITICAL, 1: process is in cricital section
+[419]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[419]	IN_CRITICAL, 1: process is in cricital section
+[424]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[424]	IN_CRITICAL, 1: process is in cricital section
+[429]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[429]	IN_CRITICAL, 1: process is in cricital section
+[434]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[434]	IN_CRITICAL, 1: process is in cricital section
+[439]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[439]	IN_CRITICAL, 1: process is in cricital section
+[444]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[444]	IN_CRITICAL, 1: process is in cricital section
+[449]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[449]	IN_CRITICAL, 1: process is in cricital section
+[454]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[454]	IN_CRITICAL, 1: process is in cricital section
+[459]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[459]	IN_CRITICAL, 1: process is in cricital section
+[464]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[464]	IN_CRITICAL, 1: process is in cricital section
+[469]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[469]	IN_CRITICAL, 1: process is in cricital section
+[474]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[474]	IN_CRITICAL, 1: process is in cricital section
+[479]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[479]	IN_CRITICAL, 1: process is in cricital section
+[484]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[484]	IN_CRITICAL, 1: process is in cricital section
+[489]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[489]	IN_CRITICAL, 1: process is in cricital section
+[494]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[494]	IN_CRITICAL, 1: process is in cricital section
+[499]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[499]	IN_CRITICAL, 1: process is in cricital section
+[504]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[504]	IN_CRITICAL, 1: process is in cricital section
+[509]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[509]	IN_CRITICAL, 1: process is in cricital section
+[514]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[514]	IN_CRITICAL, 1: process is in cricital section
+[519]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[519]	IN_CRITICAL, 1: process is in cricital section
+[524]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[524]	IN_CRITICAL, 1: process is in cricital section
+[529]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[529]	IN_CRITICAL, 1: process is in cricital section
+[534]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[534]	IN_CRITICAL, 1: process is in cricital section
+[539]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[539]	IN_CRITICAL, 1: process is in cricital section
+[544]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[544]	IN_CRITICAL, 1: process is in cricital section
+[549]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[549]	IN_CRITICAL, 1: process is in cricital section
+[554]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[554]	IN_CRITICAL, 1: process is in cricital section
+[559]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[559]	IN_CRITICAL, 1: process is in cricital section
+[564]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[564]	IN_CRITICAL, 1: process is in cricital section
+[569]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[569]	IN_CRITICAL, 1: process is in cricital section
+[574]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[574]	IN_CRITICAL, 1: process is in cricital section
+[579]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[579]	IN_CRITICAL, 1: process is in cricital section
+[584]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[584]	IN_CRITICAL, 1: process is in cricital section
+[589]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[589]	IN_CRITICAL, 1: process is in cricital section
+[594]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[594]	IN_CRITICAL, 1: process is in cricital section
+[599]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[599]	IN_CRITICAL, 1: process is in cricital section
+[604]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[604]	IN_CRITICAL, 1: process is in cricital section
+[609]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[609]	IN_CRITICAL, 1: process is in cricital section
+[614]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[614]	IN_CRITICAL, 1: process is in cricital section
+[619]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[619]	IN_CRITICAL, 1: process is in cricital section
+[624]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[624]	IN_CRITICAL, 1: process is in cricital section
+[629]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[629]	IN_CRITICAL, 1: process is in cricital section
+[634]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[634]	IN_CRITICAL, 1: process is in cricital section
+[639]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[639]	IN_CRITICAL, 1: process is in cricital section
+[644]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[644]	IN_CRITICAL, 1: process is in cricital section
+[649]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[649]	IN_CRITICAL, 1: process is in cricital section
+[654]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[654]	IN_CRITICAL, 1: process is in cricital section
+[659]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[659]	IN_CRITICAL, 1: process is in cricital section
+[664]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[664]	IN_CRITICAL, 1: process is in cricital section
+[669]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[669]	IN_CRITICAL, 1: process is in cricital section
+[674]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[674]	IN_CRITICAL, 1: process is in cricital section
+[679]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[679]	IN_CRITICAL, 1: process is in cricital section
+[684]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[684]	IN_CRITICAL, 1: process is in cricital section
+[689]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[689]	IN_CRITICAL, 1: process is in cricital section
+[694]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[694]	IN_CRITICAL, 1: process is in cricital section
+[699]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[699]	IN_CRITICAL, 1: process is in cricital section
+[704]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[704]	IN_CRITICAL, 1: process is in cricital section
+[709]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[709]	IN_CRITICAL, 1: process is in cricital section
+[714]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[714]	IN_CRITICAL, 1: process is in cricital section
+[719]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[719]	IN_CRITICAL, 1: process is in cricital section
+[724]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[724]	IN_CRITICAL, 1: process is in cricital section
+[729]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[729]	IN_CRITICAL, 1: process is in cricital section
+[734]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[734]	IN_CRITICAL, 1: process is in cricital section
+[739]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[739]	IN_CRITICAL, 1: process is in cricital section
+[744]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[744]	IN_CRITICAL, 1: process is in cricital section
+[749]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[749]	IN_CRITICAL, 1: process is in cricital section
+[754]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[754]	IN_CRITICAL, 1: process is in cricital section
+[759]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[759]	IN_CRITICAL, 1: process is in cricital section
+[764]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[764]	IN_CRITICAL, 1: process is in cricital section
+[769]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[769]	IN_CRITICAL, 1: process is in cricital section
+[774]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[774]	IN_CRITICAL, 1: process is in cricital section
+[779]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[779]	IN_CRITICAL, 1: process is in cricital section
+[784]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[784]	IN_CRITICAL, 1: process is in cricital section
+[789]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[789]	IN_CRITICAL, 1: process is in cricital section
+[794]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[794]	IN_CRITICAL, 1: process is in cricital section
+[799]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[799]	IN_CRITICAL, 1: process is in cricital section
+[804]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[804]	IN_CRITICAL, 1: process is in cricital section
+[809]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[809]	IN_CRITICAL, 1: process is in cricital section
+[814]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[814]	IN_CRITICAL, 1: process is in cricital section
+[819]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[819]	IN_CRITICAL, 1: process is in cricital section
+[824]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[824]	IN_CRITICAL, 1: process is in cricital section
+[829]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[829]	IN_CRITICAL, 1: process is in cricital section
+[834]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[834]	IN_CRITICAL, 1: process is in cricital section
+[839]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[839]	IN_CRITICAL, 1: process is in cricital section
+[844]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[844]	IN_CRITICAL, 1: process is in cricital section
+[849]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[849]	IN_CRITICAL, 1: process is in cricital section
+[854]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[854]	IN_CRITICAL, 1: process is in cricital section
+[859]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[859]	IN_CRITICAL, 1: process is in cricital section
+[864]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[864]	IN_CRITICAL, 1: process is in cricital section
+[869]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[869]	IN_CRITICAL, 1: process is in cricital section
+[874]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[874]	IN_CRITICAL, 1: process is in cricital section
+[879]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[879]	IN_CRITICAL, 1: process is in cricital section
+[884]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[884]	IN_CRITICAL, 1: process is in cricital section
+[889]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[889]	IN_CRITICAL, 1: process is in cricital section
+[894]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[894]	IN_CRITICAL, 1: process is in cricital section
+[899]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[899]	IN_CRITICAL, 1: process is in cricital section
+[904]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[904]	IN_CRITICAL, 1: process is in cricital section
+[909]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[909]	IN_CRITICAL, 1: process is in cricital section
+[914]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[914]	IN_CRITICAL, 1: process is in cricital section
+[919]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[919]	IN_CRITICAL, 1: process is in cricital section
+[924]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[924]	IN_CRITICAL, 1: process is in cricital section
+[929]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[929]	IN_CRITICAL, 1: process is in cricital section
+[934]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[934]	IN_CRITICAL, 1: process is in cricital section
+[939]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[939]	IN_CRITICAL, 1: process is in cricital section
+[944]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[944]	IN_CRITICAL, 1: process is in cricital section
+[949]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[949]	IN_CRITICAL, 1: process is in cricital section
+[954]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[954]	IN_CRITICAL, 1: process is in cricital section
+[959]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[959]	IN_CRITICAL, 1: process is in cricital section
+[964]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[964]	IN_CRITICAL, 1: process is in cricital section
+[969]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[969]	IN_CRITICAL, 1: process is in cricital section
+[974]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[974]	IN_CRITICAL, 1: process is in cricital section
+[979]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[979]	IN_CRITICAL, 1: process is in cricital section
+[984]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[984]	IN_CRITICAL, 1: process is in cricital section
+[989]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[989]	IN_CRITICAL, 1: process is in cricital section
+[994]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[994]	IN_CRITICAL, 1: process is in cricital section
+[999]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[999]	IN_CRITICAL, 1: process is in cricital section
+[1004]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1004]	IN_CRITICAL, 1: process is in cricital section
+[1009]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1009]	IN_CRITICAL, 1: process is in cricital section
+[1014]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1014]	IN_CRITICAL, 1: process is in cricital section
+[1019]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1019]	IN_CRITICAL, 1: process is in cricital section
+[1024]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1024]	IN_CRITICAL, 1: process is in cricital section
+[1029]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1029]	IN_CRITICAL, 1: process is in cricital section
+[1034]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1034]	IN_CRITICAL, 1: process is in cricital section
+[1039]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1039]	IN_CRITICAL, 1: process is in cricital section
+[1044]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1044]	IN_CRITICAL, 1: process is in cricital section
+[1049]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1049]	IN_CRITICAL, 1: process is in cricital section
+[1054]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1054]	IN_CRITICAL, 1: process is in cricital section
+[1059]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1059]	IN_CRITICAL, 1: process is in cricital section
+[1064]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1064]	IN_CRITICAL, 1: process is in cricital section
+[1069]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1069]	IN_CRITICAL, 1: process is in cricital section
+[1074]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1074]	IN_CRITICAL, 1: process is in cricital section
+[1079]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1079]	IN_CRITICAL, 1: process is in cricital section
+[1084]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1084]	IN_CRITICAL, 1: process is in cricital section
+[1089]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1089]	IN_CRITICAL, 1: process is in cricital section
+[1094]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1094]	IN_CRITICAL, 1: process is in cricital section
+[1099]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1099]	IN_CRITICAL, 1: process is in cricital section
+[1104]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1104]	IN_CRITICAL, 1: process is in cricital section
+[1109]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1109]	IN_CRITICAL, 1: process is in cricital section
+[1114]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1114]	IN_CRITICAL, 1: process is in cricital section
+[1119]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1119]	IN_CRITICAL, 1: process is in cricital section
+[1124]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1124]	IN_CRITICAL, 1: process is in cricital section
+[1129]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1129]	IN_CRITICAL, 1: process is in cricital section
+[1134]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1134]	IN_CRITICAL, 1: process is in cricital section
+[1139]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1139]	IN_CRITICAL, 1: process is in cricital section
+[1144]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1144]	IN_CRITICAL, 1: process is in cricital section
+[1149]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1149]	IN_CRITICAL, 1: process is in cricital section
+[1154]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1154]	IN_CRITICAL, 1: process is in cricital section
+[1159]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1159]	IN_CRITICAL, 1: process is in cricital section
+[1164]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1164]	IN_CRITICAL, 1: process is in cricital section
+[1169]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1169]	IN_CRITICAL, 1: process is in cricital section
+[1174]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1174]	IN_CRITICAL, 1: process is in cricital section
+[1179]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1179]	IN_CRITICAL, 1: process is in cricital section
+[1184]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1184]	IN_CRITICAL, 1: process is in cricital section
+[1189]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1189]	IN_CRITICAL, 1: process is in cricital section
+[1194]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1194]	IN_CRITICAL, 1: process is in cricital section
+[1199]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1199]	IN_CRITICAL, 1: process is in cricital section
+[1204]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1204]	IN_CRITICAL, 1: process is in cricital section
+[1209]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1209]	IN_CRITICAL, 1: process is in cricital section
+[1214]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1214]	IN_CRITICAL, 1: process is in cricital section
+[1219]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1219]	IN_CRITICAL, 1: process is in cricital section
+[1224]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1224]	IN_CRITICAL, 1: process is in cricital section
+[1229]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1229]	IN_CRITICAL, 1: process is in cricital section
+[1234]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1234]	IN_CRITICAL, 1: process is in cricital section
+[1239]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1239]	IN_CRITICAL, 1: process is in cricital section
+[1244]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1244]	IN_CRITICAL, 1: process is in cricital section
+[1249]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1249]	IN_CRITICAL, 1: process is in cricital section
+[1254]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1254]	IN_CRITICAL, 1: process is in cricital section
+[1259]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1259]	IN_CRITICAL, 1: process is in cricital section
+[1264]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1264]	IN_CRITICAL, 1: process is in cricital section
+[1269]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1269]	IN_CRITICAL, 1: process is in cricital section
+[1274]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1274]	IN_CRITICAL, 1: process is in cricital section
+[1279]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1279]	IN_CRITICAL, 1: process is in cricital section
+[1284]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1284]	IN_CRITICAL, 1: process is in cricital section
+[1289]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1289]	IN_CRITICAL, 1: process is in cricital section
+[1294]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1294]	IN_CRITICAL, 1: process is in cricital section
+[1299]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1299]	IN_CRITICAL, 1: process is in cricital section
+[1304]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1304]	IN_CRITICAL, 1: process is in cricital section
+[1309]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1309]	IN_CRITICAL, 1: process is in cricital section
+[1314]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1314]	IN_CRITICAL, 1: process is in cricital section
+[1319]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1319]	IN_CRITICAL, 1: process is in cricital section
+[1324]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1324]	IN_CRITICAL, 1: process is in cricital section
+[1329]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1329]	IN_CRITICAL, 1: process is in cricital section
+[1334]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1334]	IN_CRITICAL, 1: process is in cricital section
+[1339]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1339]	IN_CRITICAL, 1: process is in cricital section
+[1344]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1344]	IN_CRITICAL, 1: process is in cricital section
+[1349]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1349]	IN_CRITICAL, 1: process is in cricital section
+[1354]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1354]	IN_CRITICAL, 1: process is in cricital section
+[1359]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1359]	IN_CRITICAL, 1: process is in cricital section
+[1364]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1364]	IN_CRITICAL, 1: process is in cricital section
+[1369]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1369]	IN_CRITICAL, 1: process is in cricital section
+[1374]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1374]	IN_CRITICAL, 1: process is in cricital section
+[1379]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1379]	IN_CRITICAL, 1: process is in cricital section
+[1384]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1384]	IN_CRITICAL, 1: process is in cricital section
+[1389]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1389]	IN_CRITICAL, 1: process is in cricital section
+[1394]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1394]	IN_CRITICAL, 1: process is in cricital section
+[1399]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1399]	IN_CRITICAL, 1: process is in cricital section
+[1404]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1404]	IN_CRITICAL, 1: process is in cricital section
+[1409]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1409]	IN_CRITICAL, 1: process is in cricital section
+[1414]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1414]	IN_CRITICAL, 1: process is in cricital section
+[1419]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1419]	IN_CRITICAL, 1: process is in cricital section
+[1424]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1424]	IN_CRITICAL, 1: process is in cricital section
+[1429]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1429]	IN_CRITICAL, 1: process is in cricital section
+[1434]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1434]	IN_CRITICAL, 1: process is in cricital section
+[1439]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1439]	IN_CRITICAL, 1: process is in cricital section
+[1444]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1444]	IN_CRITICAL, 1: process is in cricital section
+[1449]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1449]	IN_CRITICAL, 1: process is in cricital section
+[1454]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1454]	IN_CRITICAL, 1: process is in cricital section
+[1459]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1459]	IN_CRITICAL, 1: process is in cricital section
+[1464]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1464]	IN_CRITICAL, 1: process is in cricital section
+[1469]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1469]	IN_CRITICAL, 1: process is in cricital section
+[1474]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1474]	IN_CRITICAL, 1: process is in cricital section
+[1479]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1479]	IN_CRITICAL, 1: process is in cricital section
+[1484]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1484]	IN_CRITICAL, 1: process is in cricital section
+[1489]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1489]	IN_CRITICAL, 1: process is in cricital section
+[1494]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1494]	IN_CRITICAL, 1: process is in cricital section
+[1499]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1499]	IN_CRITICAL, 1: process is in cricital section
+[1504]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1504]	IN_CRITICAL, 1: process is in cricital section
+[1509]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1509]	IN_CRITICAL, 1: process is in cricital section
+[1514]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1514]	IN_CRITICAL, 1: process is in cricital section
+[1519]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1519]	IN_CRITICAL, 1: process is in cricital section
+[1524]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1524]	IN_CRITICAL, 1: process is in cricital section
+[1529]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1529]	IN_CRITICAL, 1: process is in cricital section
+[1534]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1534]	IN_CRITICAL, 1: process is in cricital section
+[1539]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1539]	IN_CRITICAL, 1: process is in cricital section
+[1544]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1544]	IN_CRITICAL, 1: process is in cricital section
+[1549]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1549]	IN_CRITICAL, 1: process is in cricital section
+[1554]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1554]	IN_CRITICAL, 1: process is in cricital section
+[1559]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1559]	IN_CRITICAL, 1: process is in cricital section
+[1564]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1564]	IN_CRITICAL, 1: process is in cricital section
+[1569]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1569]	IN_CRITICAL, 1: process is in cricital section
+[1574]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1574]	IN_CRITICAL, 1: process is in cricital section
+[1579]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1579]	IN_CRITICAL, 1: process is in cricital section
+[1584]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1584]	IN_CRITICAL, 1: process is in cricital section
+[1589]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1589]	IN_CRITICAL, 1: process is in cricital section
+[1594]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1594]	IN_CRITICAL, 1: process is in cricital section
+[1599]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1599]	IN_CRITICAL, 1: process is in cricital section
+[1604]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1604]	IN_CRITICAL, 1: process is in cricital section
+[1609]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1609]	IN_CRITICAL, 1: process is in cricital section
+[1614]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1614]	IN_CRITICAL, 1: process is in cricital section
+[1619]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1619]	IN_CRITICAL, 1: process is in cricital section
+[1624]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1624]	IN_CRITICAL, 1: process is in cricital section
+[1629]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1629]	IN_CRITICAL, 1: process is in cricital section
+[1634]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1634]	IN_CRITICAL, 1: process is in cricital section
+[1639]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1639]	IN_CRITICAL, 1: process is in cricital section
+[1644]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1644]	IN_CRITICAL, 1: process is in cricital section
+[1649]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1649]	IN_CRITICAL, 1: process is in cricital section
+[1654]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1654]	IN_CRITICAL, 1: process is in cricital section
+[1659]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1659]	IN_CRITICAL, 1: process is in cricital section
+[1664]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1664]	IN_CRITICAL, 1: process is in cricital section
+[1669]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1669]	IN_CRITICAL, 1: process is in cricital section
+[1674]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1674]	IN_CRITICAL, 1: process is in cricital section
+[1679]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1679]	IN_CRITICAL, 1: process is in cricital section
+[1684]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1684]	IN_CRITICAL, 1: process is in cricital section
+[1689]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1689]	IN_CRITICAL, 1: process is in cricital section
+[1694]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1694]	IN_CRITICAL, 1: process is in cricital section
+[1699]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1699]	IN_CRITICAL, 1: process is in cricital section
+[1704]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1704]	IN_CRITICAL, 1: process is in cricital section
+[1709]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1709]	IN_CRITICAL, 1: process is in cricital section
+[1714]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1714]	IN_CRITICAL, 1: process is in cricital section
+[1719]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1719]	IN_CRITICAL, 1: process is in cricital section
+[1724]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1724]	IN_CRITICAL, 1: process is in cricital section
+[1729]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1729]	IN_CRITICAL, 1: process is in cricital section
+[1734]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1734]	IN_CRITICAL, 1: process is in cricital section
+[1739]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1739]	IN_CRITICAL, 1: process is in cricital section
+[1744]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1744]	IN_CRITICAL, 1: process is in cricital section
+[1749]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1749]	IN_CRITICAL, 1: process is in cricital section
+[1754]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1754]	IN_CRITICAL, 1: process is in cricital section
+[1759]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1759]	IN_CRITICAL, 1: process is in cricital section
+[1764]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1764]	IN_CRITICAL, 1: process is in cricital section
+[1769]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1769]	IN_CRITICAL, 1: process is in cricital section
+[1774]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1774]	IN_CRITICAL, 1: process is in cricital section
+[1779]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1779]	IN_CRITICAL, 1: process is in cricital section
+[1784]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1784]	IN_CRITICAL, 1: process is in cricital section
+[1789]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1789]	IN_CRITICAL, 1: process is in cricital section
+[1794]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1794]	IN_CRITICAL, 1: process is in cricital section
+[1799]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1799]	IN_CRITICAL, 1: process is in cricital section
+[1804]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1804]	IN_CRITICAL, 1: process is in cricital section
+[1809]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1809]	IN_CRITICAL, 1: process is in cricital section
+[1814]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1814]	IN_CRITICAL, 1: process is in cricital section
+[1819]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1819]	IN_CRITICAL, 1: process is in cricital section
+[1824]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1824]	IN_CRITICAL, 1: process is in cricital section
+[1829]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1829]	IN_CRITICAL, 1: process is in cricital section
+[1834]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1834]	IN_CRITICAL, 1: process is in cricital section
+[1839]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1839]	IN_CRITICAL, 1: process is in cricital section
+[1844]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1844]	IN_CRITICAL, 1: process is in cricital section
+[1849]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1849]	IN_CRITICAL, 1: process is in cricital section
+[1854]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1854]	IN_CRITICAL, 1: process is in cricital section
+[1859]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1859]	IN_CRITICAL, 1: process is in cricital section
+[1864]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1864]	IN_CRITICAL, 1: process is in cricital section
+[1869]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1869]	IN_CRITICAL, 1: process is in cricital section
+[1874]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1874]	IN_CRITICAL, 1: process is in cricital section
+[1879]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1879]	IN_CRITICAL, 1: process is in cricital section
+[1884]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1884]	IN_CRITICAL, 1: process is in cricital section
+[1889]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1889]	IN_CRITICAL, 1: process is in cricital section
+[1894]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1894]	IN_CRITICAL, 1: process is in cricital section
+[1899]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1899]	IN_CRITICAL, 1: process is in cricital section
+[1904]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1904]	IN_CRITICAL, 1: process is in cricital section
+[1909]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1909]	IN_CRITICAL, 1: process is in cricital section
+[1914]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1914]	IN_CRITICAL, 1: process is in cricital section
+[1919]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1919]	IN_CRITICAL, 1: process is in cricital section
+[1924]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1924]	IN_CRITICAL, 1: process is in cricital section
+[1929]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1929]	IN_CRITICAL, 1: process is in cricital section
+[1934]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1934]	IN_CRITICAL, 1: process is in cricital section
+[1939]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1939]	IN_CRITICAL, 1: process is in cricital section
+[1944]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1944]	IN_CRITICAL, 1: process is in cricital section
+[1949]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1949]	IN_CRITICAL, 1: process is in cricital section
+[1954]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1954]	IN_CRITICAL, 1: process is in cricital section
+[1959]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1959]	IN_CRITICAL, 1: process is in cricital section
+[1964]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1964]	IN_CRITICAL, 1: process is in cricital section
+[1969]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1969]	IN_CRITICAL, 1: process is in cricital section
+[1974]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1974]	IN_CRITICAL, 1: process is in cricital section
+[1979]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1979]	IN_CRITICAL, 1: process is in cricital section
+[1984]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1984]	IN_CRITICAL, 1: process is in cricital section
+[1989]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1989]	IN_CRITICAL, 1: process is in cricital section
+[1994]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1994]	IN_CRITICAL, 1: process is in cricital section
+[1999]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[1999]	IN_CRITICAL, 1: process is in cricital section
+[2004]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2004]	IN_CRITICAL, 1: process is in cricital section
+[2009]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2009]	IN_CRITICAL, 1: process is in cricital section
+[2014]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2014]	IN_CRITICAL, 1: process is in cricital section
+[2019]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2019]	IN_CRITICAL, 1: process is in cricital section
+[2024]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2024]	IN_CRITICAL, 1: process is in cricital section
+[2029]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2029]	IN_CRITICAL, 1: process is in cricital section
+[2034]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2034]	IN_CRITICAL, 1: process is in cricital section
+[2039]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2039]	IN_CRITICAL, 1: process is in cricital section
+[2044]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2044]	IN_CRITICAL, 1: process is in cricital section
+[2049]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2049]	IN_CRITICAL, 1: process is in cricital section
+[2054]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2054]	IN_CRITICAL, 1: process is in cricital section
+[2059]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2059]	IN_CRITICAL, 1: process is in cricital section
+[2064]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2064]	IN_CRITICAL, 1: process is in cricital section
+[2069]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2069]	IN_CRITICAL, 1: process is in cricital section
+[2074]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2074]	IN_CRITICAL, 1: process is in cricital section
+[2079]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2079]	IN_CRITICAL, 1: process is in cricital section
+[2084]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2084]	IN_CRITICAL, 1: process is in cricital section
+[2089]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2089]	IN_CRITICAL, 1: process is in cricital section
+[2094]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2094]	IN_CRITICAL, 1: process is in cricital section
+[2099]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2099]	IN_CRITICAL, 1: process is in cricital section
+[2104]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2104]	IN_CRITICAL, 1: process is in cricital section
+[2109]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2109]	IN_CRITICAL, 1: process is in cricital section
+[2114]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2114]	IN_CRITICAL, 1: process is in cricital section
+[2119]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2119]	IN_CRITICAL, 1: process is in cricital section
+[2124]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2124]	IN_CRITICAL, 1: process is in cricital section
+[2129]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2129]	IN_CRITICAL, 1: process is in cricital section
+[2134]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2134]	IN_CRITICAL, 1: process is in cricital section
+[2139]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2139]	IN_CRITICAL, 1: process is in cricital section
+[2144]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2144]	IN_CRITICAL, 1: process is in cricital section
+[2149]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2149]	IN_CRITICAL, 1: process is in cricital section
+[2154]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2154]	IN_CRITICAL, 1: process is in cricital section
+[2159]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2159]	IN_CRITICAL, 1: process is in cricital section
+[2164]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2164]	IN_CRITICAL, 1: process is in cricital section
+[2169]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2169]	IN_CRITICAL, 1: process is in cricital section
+[2174]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2174]	IN_CRITICAL, 1: process is in cricital section
+[2179]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2179]	IN_CRITICAL, 1: process is in cricital section
+[2184]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2184]	IN_CRITICAL, 1: process is in cricital section
+[2189]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2189]	IN_CRITICAL, 1: process is in cricital section
+[2194]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2194]	IN_CRITICAL, 1: process is in cricital section
+[2199]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2199]	IN_CRITICAL, 1: process is in cricital section
+[2204]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2204]	IN_CRITICAL, 1: process is in cricital section
+[2209]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2209]	IN_CRITICAL, 1: process is in cricital section
+[2214]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2214]	IN_CRITICAL, 1: process is in cricital section
+[2219]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2219]	IN_CRITICAL, 1: process is in cricital section
+[2224]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2224]	IN_CRITICAL, 1: process is in cricital section
+[2229]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2229]	IN_CRITICAL, 1: process is in cricital section
+[2234]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2234]	IN_CRITICAL, 1: process is in cricital section
+[2239]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2239]	IN_CRITICAL, 1: process is in cricital section
+[2244]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2244]	IN_CRITICAL, 1: process is in cricital section
+[2249]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2249]	IN_CRITICAL, 1: process is in cricital section
+[2254]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2254]	IN_CRITICAL, 1: process is in cricital section
+[2259]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2259]	IN_CRITICAL, 1: process is in cricital section
+[2264]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2264]	IN_CRITICAL, 1: process is in cricital section
+[2269]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2269]	IN_CRITICAL, 1: process is in cricital section
+[2274]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2274]	IN_CRITICAL, 1: process is in cricital section
+[2279]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2279]	IN_CRITICAL, 1: process is in cricital section
+[2284]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2284]	IN_CRITICAL, 1: process is in cricital section
+[2289]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2289]	IN_CRITICAL, 1: process is in cricital section
+[2294]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2294]	IN_CRITICAL, 1: process is in cricital section
+[2299]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2299]	IN_CRITICAL, 1: process is in cricital section
+[2304]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2304]	IN_CRITICAL, 1: process is in cricital section
+[2309]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2309]	IN_CRITICAL, 1: process is in cricital section
+[2314]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2314]	IN_CRITICAL, 1: process is in cricital section
+[2319]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2319]	IN_CRITICAL, 1: process is in cricital section
+[2324]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2324]	IN_CRITICAL, 1: process is in cricital section
+[2329]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2329]	IN_CRITICAL, 1: process is in cricital section
+[2334]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2334]	IN_CRITICAL, 1: process is in cricital section
+[2339]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2339]	IN_CRITICAL, 1: process is in cricital section
+[2344]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2344]	IN_CRITICAL, 1: process is in cricital section
+[2349]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2349]	IN_CRITICAL, 1: process is in cricital section
+[2354]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2354]	IN_CRITICAL, 1: process is in cricital section
+[2359]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2359]	IN_CRITICAL, 1: process is in cricital section
+[2364]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2364]	IN_CRITICAL, 1: process is in cricital section
+[2369]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2369]	IN_CRITICAL, 1: process is in cricital section
+[2374]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2374]	IN_CRITICAL, 1: process is in cricital section
+[2379]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2379]	IN_CRITICAL, 1: process is in cricital section
+[2384]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2384]	IN_CRITICAL, 1: process is in cricital section
+[2389]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2389]	IN_CRITICAL, 1: process is in cricital section
+[2394]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2394]	IN_CRITICAL, 1: process is in cricital section
+[2399]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2399]	IN_CRITICAL, 1: process is in cricital section
+[2404]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2404]	IN_CRITICAL, 1: process is in cricital section
+[2409]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2409]	IN_CRITICAL, 1: process is in cricital section
+[2414]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2414]	IN_CRITICAL, 1: process is in cricital section
+[2419]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2419]	IN_CRITICAL, 1: process is in cricital section
+[2424]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2424]	IN_CRITICAL, 1: process is in cricital section
+[2429]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2429]	IN_CRITICAL, 1: process is in cricital section
+[2434]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2434]	IN_CRITICAL, 1: process is in cricital section
+[2439]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2439]	IN_CRITICAL, 1: process is in cricital section
+[2444]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2444]	IN_CRITICAL, 1: process is in cricital section
+[2449]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2449]	IN_CRITICAL, 1: process is in cricital section
+[2454]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2454]	IN_CRITICAL, 1: process is in cricital section
+[2459]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2459]	IN_CRITICAL, 1: process is in cricital section
+[2464]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2464]	IN_CRITICAL, 1: process is in cricital section
+[2469]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2469]	IN_CRITICAL, 1: process is in cricital section
+[2474]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2474]	IN_CRITICAL, 1: process is in cricital section
+[2479]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2479]	IN_CRITICAL, 1: process is in cricital section
+[2484]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2484]	IN_CRITICAL, 1: process is in cricital section
+[2489]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2489]	IN_CRITICAL, 1: process is in cricital section
+[2494]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2494]	IN_CRITICAL, 1: process is in cricital section
+[2499]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2499]	IN_CRITICAL, 1: process is in cricital section
+[2504]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2504]	IN_CRITICAL, 1: process is in cricital section
+[2509]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2509]	IN_CRITICAL, 1: process is in cricital section
+[2514]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2514]	IN_CRITICAL, 1: process is in cricital section
+[2519]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2519]	IN_CRITICAL, 1: process is in cricital section
+[2524]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2524]	IN_CRITICAL, 1: process is in cricital section
+[2529]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2529]	IN_CRITICAL, 1: process is in cricital section
+[2534]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2534]	IN_CRITICAL, 1: process is in cricital section
+[2539]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2539]	IN_CRITICAL, 1: process is in cricital section
+[2544]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2544]	IN_CRITICAL, 1: process is in cricital section
+[2549]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2549]	IN_CRITICAL, 1: process is in cricital section
+[2554]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2554]	IN_CRITICAL, 1: process is in cricital section
+[2559]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2559]	IN_CRITICAL, 1: process is in cricital section
+[2564]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2564]	IN_CRITICAL, 1: process is in cricital section
+[2569]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2569]	IN_CRITICAL, 1: process is in cricital section
+[2574]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2574]	IN_CRITICAL, 1: process is in cricital section
+[2579]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2579]	IN_CRITICAL, 1: process is in cricital section
+[2584]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2584]	IN_CRITICAL, 1: process is in cricital section
+[2589]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2589]	IN_CRITICAL, 1: process is in cricital section
+[2594]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2594]	IN_CRITICAL, 1: process is in cricital section
+[2599]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2599]	IN_CRITICAL, 1: process is in cricital section
+[2604]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2604]	IN_CRITICAL, 1: process is in cricital section
+[2609]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2609]	IN_CRITICAL, 1: process is in cricital section
+[2614]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2614]	IN_CRITICAL, 1: process is in cricital section
+[2619]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2619]	IN_CRITICAL, 1: process is in cricital section
+[2624]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2624]	IN_CRITICAL, 1: process is in cricital section
+[2629]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2629]	IN_CRITICAL, 1: process is in cricital section
+[2634]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2634]	IN_CRITICAL, 1: process is in cricital section
+[2639]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2639]	IN_CRITICAL, 1: process is in cricital section
+[2644]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2644]	IN_CRITICAL, 1: process is in cricital section
+[2649]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2649]	IN_CRITICAL, 1: process is in cricital section
+[2654]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2654]	IN_CRITICAL, 1: process is in cricital section
+[2659]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2659]	IN_CRITICAL, 1: process is in cricital section
+[2664]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2664]	IN_CRITICAL, 1: process is in cricital section
+[2669]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2669]	IN_CRITICAL, 1: process is in cricital section
+[2674]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2674]	IN_CRITICAL, 1: process is in cricital section
+[2679]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2679]	IN_CRITICAL, 1: process is in cricital section
+[2684]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2684]	IN_CRITICAL, 1: process is in cricital section
+[2689]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2689]	IN_CRITICAL, 1: process is in cricital section
+[2694]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2694]	IN_CRITICAL, 1: process is in cricital section
+[2699]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2699]	IN_CRITICAL, 1: process is in cricital section
+[2704]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2704]	IN_CRITICAL, 1: process is in cricital section
+[2709]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2709]	IN_CRITICAL, 1: process is in cricital section
+[2714]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2714]	IN_CRITICAL, 1: process is in cricital section
+[2719]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2719]	IN_CRITICAL, 1: process is in cricital section
+[2724]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2724]	IN_CRITICAL, 1: process is in cricital section
+[2729]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2729]	IN_CRITICAL, 1: process is in cricital section
+[2734]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2734]	IN_CRITICAL, 1: process is in cricital section
+[2739]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2739]	IN_CRITICAL, 1: process is in cricital section
+[2744]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2744]	IN_CRITICAL, 1: process is in cricital section
+[2749]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2749]	IN_CRITICAL, 1: process is in cricital section
+[2754]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2754]	IN_CRITICAL, 1: process is in cricital section
+[2759]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2759]	IN_CRITICAL, 1: process is in cricital section
+[2764]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2764]	IN_CRITICAL, 1: process is in cricital section
+[2769]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2769]	IN_CRITICAL, 1: process is in cricital section
+[2774]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2774]	IN_CRITICAL, 1: process is in cricital section
+[2779]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2779]	IN_CRITICAL, 1: process is in cricital section
+[2784]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2784]	IN_CRITICAL, 1: process is in cricital section
+[2789]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2789]	IN_CRITICAL, 1: process is in cricital section
+[2794]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2794]	IN_CRITICAL, 1: process is in cricital section
+[2799]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2799]	IN_CRITICAL, 1: process is in cricital section
+[2804]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2804]	IN_CRITICAL, 1: process is in cricital section
+[2809]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2809]	IN_CRITICAL, 1: process is in cricital section
+[2814]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2814]	IN_CRITICAL, 1: process is in cricital section
+[2819]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2819]	IN_CRITICAL, 1: process is in cricital section
+[2824]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2824]	IN_CRITICAL, 1: process is in cricital section
+[2829]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2829]	IN_CRITICAL, 1: process is in cricital section
+[2834]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2834]	IN_CRITICAL, 1: process is in cricital section
+[2839]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2839]	IN_CRITICAL, 1: process is in cricital section
+[2844]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2844]	IN_CRITICAL, 1: process is in cricital section
+[2849]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2849]	IN_CRITICAL, 1: process is in cricital section
+[2854]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2854]	IN_CRITICAL, 1: process is in cricital section
+[2859]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2859]	IN_CRITICAL, 1: process is in cricital section
+[2864]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2864]	IN_CRITICAL, 1: process is in cricital section
+[2869]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2869]	IN_CRITICAL, 1: process is in cricital section
+[2874]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2874]	IN_CRITICAL, 1: process is in cricital section
+[2879]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2879]	IN_CRITICAL, 1: process is in cricital section
+[2884]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2884]	IN_CRITICAL, 1: process is in cricital section
+[2889]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2889]	IN_CRITICAL, 1: process is in cricital section
+[2894]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2894]	IN_CRITICAL, 1: process is in cricital section
+[2899]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2899]	IN_CRITICAL, 1: process is in cricital section
+[2904]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2904]	IN_CRITICAL, 1: process is in cricital section
+[2909]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2909]	IN_CRITICAL, 1: process is in cricital section
+[2914]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2914]	IN_CRITICAL, 1: process is in cricital section
+[2919]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2919]	IN_CRITICAL, 1: process is in cricital section
+[2924]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2924]	IN_CRITICAL, 1: process is in cricital section
+[2929]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2929]	IN_CRITICAL, 1: process is in cricital section
+[2934]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2934]	IN_CRITICAL, 1: process is in cricital section
+[2939]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2939]	IN_CRITICAL, 1: process is in cricital section
+[2944]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2944]	IN_CRITICAL, 1: process is in cricital section
+[2949]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2949]	IN_CRITICAL, 1: process is in cricital section
+[2954]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2954]	IN_CRITICAL, 1: process is in cricital section
+[2959]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2959]	IN_CRITICAL, 1: process is in cricital section
+[2964]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2964]	IN_CRITICAL, 1: process is in cricital section
+[2969]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2969]	IN_CRITICAL, 1: process is in cricital section
+[2974]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2974]	IN_CRITICAL, 1: process is in cricital section
+[2979]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2979]	IN_CRITICAL, 1: process is in cricital section
+[2984]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2984]	IN_CRITICAL, 1: process is in cricital section
+[2989]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2989]	IN_CRITICAL, 1: process is in cricital section
+[2994]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2994]	IN_CRITICAL, 1: process is in cricital section
+[2999]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[2999]	IN_CRITICAL, 1: process is in cricital section
+[3004]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3004]	IN_CRITICAL, 1: process is in cricital section
+[3009]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3009]	IN_CRITICAL, 1: process is in cricital section
+[3014]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3014]	IN_CRITICAL, 1: process is in cricital section
+[3019]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3019]	IN_CRITICAL, 1: process is in cricital section
+[3024]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3024]	IN_CRITICAL, 1: process is in cricital section
+[3029]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3029]	IN_CRITICAL, 1: process is in cricital section
+[3034]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3034]	IN_CRITICAL, 1: process is in cricital section
+[3039]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3039]	IN_CRITICAL, 1: process is in cricital section
+[3044]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3044]	IN_CRITICAL, 1: process is in cricital section
+[3049]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3049]	IN_CRITICAL, 1: process is in cricital section
+[3054]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3054]	IN_CRITICAL, 1: process is in cricital section
+[3059]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3059]	IN_CRITICAL, 1: process is in cricital section
+[3064]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3064]	IN_CRITICAL, 1: process is in cricital section
+[3069]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3069]	IN_CRITICAL, 1: process is in cricital section
+[3074]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3074]	IN_CRITICAL, 1: process is in cricital section
+[3079]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3079]	IN_CRITICAL, 1: process is in cricital section
+[3084]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3084]	IN_CRITICAL, 1: process is in cricital section
+[3089]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3089]	IN_CRITICAL, 1: process is in cricital section
+[3094]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3094]	IN_CRITICAL, 1: process is in cricital section
+[3099]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3099]	IN_CRITICAL, 1: process is in cricital section
+[3104]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3104]	IN_CRITICAL, 1: process is in cricital section
+[3109]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3109]	IN_CRITICAL, 1: process is in cricital section
+[3114]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3114]	IN_CRITICAL, 1: process is in cricital section
+[3119]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3119]	IN_CRITICAL, 1: process is in cricital section
+[3124]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3124]	IN_CRITICAL, 1: process is in cricital section
+[3129]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3129]	IN_CRITICAL, 1: process is in cricital section
+[3134]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3134]	IN_CRITICAL, 1: process is in cricital section
+[3139]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3139]	IN_CRITICAL, 1: process is in cricital section
+[3144]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3144]	IN_CRITICAL, 1: process is in cricital section
+[3149]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3149]	IN_CRITICAL, 1: process is in cricital section
+[3154]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3154]	IN_CRITICAL, 1: process is in cricital section
+[3159]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3159]	IN_CRITICAL, 1: process is in cricital section
+[3164]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3164]	IN_CRITICAL, 1: process is in cricital section
+[3169]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3169]	IN_CRITICAL, 1: process is in cricital section
+[3174]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3174]	IN_CRITICAL, 1: process is in cricital section
+[3179]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3179]	IN_CRITICAL, 1: process is in cricital section
+[3184]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3184]	IN_CRITICAL, 1: process is in cricital section
+[3189]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3189]	IN_CRITICAL, 1: process is in cricital section
+[3194]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3194]	IN_CRITICAL, 1: process is in cricital section
+[3199]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3199]	IN_CRITICAL, 1: process is in cricital section
+[3204]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3204]	IN_CRITICAL, 1: process is in cricital section
+[3209]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3209]	IN_CRITICAL, 1: process is in cricital section
+[3214]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3214]	IN_CRITICAL, 1: process is in cricital section
+[3219]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3219]	IN_CRITICAL, 1: process is in cricital section
+[3224]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3224]	IN_CRITICAL, 1: process is in cricital section
+[3229]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3229]	IN_CRITICAL, 1: process is in cricital section
+[3234]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3234]	IN_CRITICAL, 1: process is in cricital section
+[3239]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3239]	IN_CRITICAL, 1: process is in cricital section
+[3244]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3244]	IN_CRITICAL, 1: process is in cricital section
+[3249]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3249]	IN_CRITICAL, 1: process is in cricital section
+[3254]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3254]	IN_CRITICAL, 1: process is in cricital section
+[3259]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3259]	IN_CRITICAL, 1: process is in cricital section
+[3264]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3264]	IN_CRITICAL, 1: process is in cricital section
+[3269]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3269]	IN_CRITICAL, 1: process is in cricital section
+[3274]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3274]	IN_CRITICAL, 1: process is in cricital section
+[3279]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3279]	IN_CRITICAL, 1: process is in cricital section
+[3284]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3284]	IN_CRITICAL, 1: process is in cricital section
+[3289]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3289]	IN_CRITICAL, 1: process is in cricital section
+[3294]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3294]	IN_CRITICAL, 1: process is in cricital section
+[3299]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3299]	IN_CRITICAL, 1: process is in cricital section
+[3304]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3304]	IN_CRITICAL, 1: process is in cricital section
+[3309]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3309]	IN_CRITICAL, 1: process is in cricital section
+[3314]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3314]	IN_CRITICAL, 1: process is in cricital section
+[3319]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3319]	IN_CRITICAL, 1: process is in cricital section
+[3324]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3324]	IN_CRITICAL, 1: process is in cricital section
+[3329]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3329]	IN_CRITICAL, 1: process is in cricital section
+[3334]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3334]	IN_CRITICAL, 1: process is in cricital section
+[3339]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3339]	IN_CRITICAL, 1: process is in cricital section
+[3344]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3344]	IN_CRITICAL, 1: process is in cricital section
+[3349]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3349]	IN_CRITICAL, 1: process is in cricital section
+[3354]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3354]	IN_CRITICAL, 1: process is in cricital section
+[3359]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3359]	IN_CRITICAL, 1: process is in cricital section
+[3364]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3364]	IN_CRITICAL, 1: process is in cricital section
+[3369]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3369]	IN_CRITICAL, 1: process is in cricital section
+[3374]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3374]	IN_CRITICAL, 1: process is in cricital section
+[3379]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3379]	IN_CRITICAL, 1: process is in cricital section
+[3384]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3384]	IN_CRITICAL, 1: process is in cricital section
+[3389]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3389]	IN_CRITICAL, 1: process is in cricital section
+[3394]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3394]	IN_CRITICAL, 1: process is in cricital section
+[3399]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3399]	IN_CRITICAL, 1: process is in cricital section
+[3404]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3404]	IN_CRITICAL, 1: process is in cricital section
+[3409]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3409]	IN_CRITICAL, 1: process is in cricital section
+[3414]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3414]	IN_CRITICAL, 1: process is in cricital section
+[3419]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3419]	IN_CRITICAL, 1: process is in cricital section
+[3424]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3424]	IN_CRITICAL, 1: process is in cricital section
+[3429]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3429]	IN_CRITICAL, 1: process is in cricital section
+[3434]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3434]	IN_CRITICAL, 1: process is in cricital section
+[3439]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3439]	IN_CRITICAL, 1: process is in cricital section
+[3444]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3444]	IN_CRITICAL, 1: process is in cricital section
+[3449]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3449]	IN_CRITICAL, 1: process is in cricital section
+[3454]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3454]	IN_CRITICAL, 1: process is in cricital section
+[3459]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3459]	IN_CRITICAL, 1: process is in cricital section
+[3464]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3464]	IN_CRITICAL, 1: process is in cricital section
+[3469]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3469]	IN_CRITICAL, 1: process is in cricital section
+[3474]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3474]	IN_CRITICAL, 1: process is in cricital section
+[3479]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3479]	IN_CRITICAL, 1: process is in cricital section
+[3484]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3484]	IN_CRITICAL, 1: process is in cricital section
+[3489]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3489]	IN_CRITICAL, 1: process is in cricital section
+[3494]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3494]	IN_CRITICAL, 1: process is in cricital section
+[3499]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3499]	IN_CRITICAL, 1: process is in cricital section
+[3504]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3504]	IN_CRITICAL, 1: process is in cricital section
+[3509]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3509]	IN_CRITICAL, 1: process is in cricital section
+[3514]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3514]	IN_CRITICAL, 1: process is in cricital section
+[3519]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3519]	IN_CRITICAL, 1: process is in cricital section
+[3524]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3524]	IN_CRITICAL, 1: process is in cricital section
+[3529]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3529]	IN_CRITICAL, 1: process is in cricital section
+[3534]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3534]	IN_CRITICAL, 1: process is in cricital section
+[3539]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3539]	IN_CRITICAL, 1: process is in cricital section
+[3544]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3544]	IN_CRITICAL, 1: process is in cricital section
+[3549]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3549]	IN_CRITICAL, 1: process is in cricital section
+[3554]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3554]	IN_CRITICAL, 1: process is in cricital section
+[3559]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3559]	IN_CRITICAL, 1: process is in cricital section
+[3564]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3564]	IN_CRITICAL, 1: process is in cricital section
+[3569]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3569]	IN_CRITICAL, 1: process is in cricital section
+[3574]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3574]	IN_CRITICAL, 1: process is in cricital section
+[3579]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3579]	IN_CRITICAL, 1: process is in cricital section
+[3584]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3584]	IN_CRITICAL, 1: process is in cricital section
+[3589]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3589]	IN_CRITICAL, 1: process is in cricital section
+[3594]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3594]	IN_CRITICAL, 1: process is in cricital section
+[3599]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3599]	IN_CRITICAL, 1: process is in cricital section
+[3604]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3604]	IN_CRITICAL, 1: process is in cricital section
+[3609]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3609]	IN_CRITICAL, 1: process is in cricital section
+[3614]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3614]	IN_CRITICAL, 1: process is in cricital section
+[3619]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3619]	IN_CRITICAL, 1: process is in cricital section
+[3624]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3624]	IN_CRITICAL, 1: process is in cricital section
+[3629]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3629]	IN_CRITICAL, 1: process is in cricital section
+[3634]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3634]	IN_CRITICAL, 1: process is in cricital section
+[3639]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3639]	IN_CRITICAL, 1: process is in cricital section
+[3644]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3644]	IN_CRITICAL, 1: process is in cricital section
+[3649]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3649]	IN_CRITICAL, 1: process is in cricital section
+[3654]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3654]	IN_CRITICAL, 1: process is in cricital section
+[3659]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3659]	IN_CRITICAL, 1: process is in cricital section
+[3664]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3664]	IN_CRITICAL, 1: process is in cricital section
+[3669]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3669]	IN_CRITICAL, 1: process is in cricital section
+[3674]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3674]	IN_CRITICAL, 1: process is in cricital section
+[3679]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3679]	IN_CRITICAL, 1: process is in cricital section
+[3684]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3684]	IN_CRITICAL, 1: process is in cricital section
+[3689]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3689]	IN_CRITICAL, 1: process is in cricital section
+[3694]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3694]	IN_CRITICAL, 1: process is in cricital section
+[3699]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3699]	IN_CRITICAL, 1: process is in cricital section
+[3704]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3704]	IN_CRITICAL, 1: process is in cricital section
+[3709]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3709]	IN_CRITICAL, 1: process is in cricital section
+[3714]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3714]	IN_CRITICAL, 1: process is in cricital section
+[3719]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3719]	IN_CRITICAL, 1: process is in cricital section
+[3724]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3724]	IN_CRITICAL, 1: process is in cricital section
+[3729]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3729]	IN_CRITICAL, 1: process is in cricital section
+[3734]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3734]	IN_CRITICAL, 1: process is in cricital section
+[3739]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3739]	IN_CRITICAL, 1: process is in cricital section
+[3744]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3744]	IN_CRITICAL, 1: process is in cricital section
+[3749]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3749]	IN_CRITICAL, 1: process is in cricital section
+[3754]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3754]	IN_CRITICAL, 1: process is in cricital section
+[3759]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3759]	IN_CRITICAL, 1: process is in cricital section
+[3764]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3764]	IN_CRITICAL, 1: process is in cricital section
+[3769]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3769]	IN_CRITICAL, 1: process is in cricital section
+[3774]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3774]	IN_CRITICAL, 1: process is in cricital section
+[3779]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3779]	IN_CRITICAL, 1: process is in cricital section
+[3784]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3784]	IN_CRITICAL, 1: process is in cricital section
+[3789]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3789]	IN_CRITICAL, 1: process is in cricital section
+[3794]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3794]	IN_CRITICAL, 1: process is in cricital section
+[3799]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3799]	IN_CRITICAL, 1: process is in cricital section
+[3804]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3804]	IN_CRITICAL, 1: process is in cricital section
+[3809]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3809]	IN_CRITICAL, 1: process is in cricital section
+[3814]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3814]	IN_CRITICAL, 1: process is in cricital section
+[3819]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3819]	IN_CRITICAL, 1: process is in cricital section
+[3824]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3824]	IN_CRITICAL, 1: process is in cricital section
+[3829]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3829]	IN_CRITICAL, 1: process is in cricital section
+[3834]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3834]	IN_CRITICAL, 1: process is in cricital section
+[3839]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3839]	IN_CRITICAL, 1: process is in cricital section
+[3844]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3844]	IN_CRITICAL, 1: process is in cricital section
+[3849]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3849]	IN_CRITICAL, 1: process is in cricital section
+[3854]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3854]	IN_CRITICAL, 1: process is in cricital section
+[3859]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3859]	IN_CRITICAL, 1: process is in cricital section
+[3864]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3864]	IN_CRITICAL, 1: process is in cricital section
+[3869]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3869]	IN_CRITICAL, 1: process is in cricital section
+[3874]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3874]	IN_CRITICAL, 1: process is in cricital section
+[3879]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3879]	IN_CRITICAL, 1: process is in cricital section
+[3884]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3884]	IN_CRITICAL, 1: process is in cricital section
+[3889]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3889]	IN_CRITICAL, 1: process is in cricital section
+[3894]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3894]	IN_CRITICAL, 1: process is in cricital section
+[3899]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3899]	IN_CRITICAL, 1: process is in cricital section
+[3904]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3904]	IN_CRITICAL, 1: process is in cricital section
+[3909]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3909]	IN_CRITICAL, 1: process is in cricital section
+[3914]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3914]	IN_CRITICAL, 1: process is in cricital section
+[3919]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3919]	IN_CRITICAL, 1: process is in cricital section
+[3924]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3924]	IN_CRITICAL, 1: process is in cricital section
+[3929]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3929]	IN_CRITICAL, 1: process is in cricital section
+[3934]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3934]	IN_CRITICAL, 1: process is in cricital section
+[3939]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3939]	IN_CRITICAL, 1: process is in cricital section
+[3944]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3944]	IN_CRITICAL, 1: process is in cricital section
+[3949]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3949]	IN_CRITICAL, 1: process is in cricital section
+[3954]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3954]	IN_CRITICAL, 1: process is in cricital section
+[3959]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3959]	IN_CRITICAL, 1: process is in cricital section
+[3964]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3964]	IN_CRITICAL, 1: process is in cricital section
+[3969]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3969]	IN_CRITICAL, 1: process is in cricital section
+[3974]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3974]	IN_CRITICAL, 1: process is in cricital section
+[3979]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3979]	IN_CRITICAL, 1: process is in cricital section
+[3984]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3984]	IN_CRITICAL, 1: process is in cricital section
+[3989]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3989]	IN_CRITICAL, 1: process is in cricital section
+[3994]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3994]	IN_CRITICAL, 1: process is in cricital section
+[3999]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[3999]	IN_CRITICAL, 1: process is in cricital section
+[4004]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4004]	IN_CRITICAL, 1: process is in cricital section
+[4009]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4009]	IN_CRITICAL, 1: process is in cricital section
+[4014]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4014]	IN_CRITICAL, 1: process is in cricital section
+[4019]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4019]	IN_CRITICAL, 1: process is in cricital section
+[4024]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4024]	IN_CRITICAL, 1: process is in cricital section
+[4029]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4029]	IN_CRITICAL, 1: process is in cricital section
+[4034]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4034]	IN_CRITICAL, 1: process is in cricital section
+[4039]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4039]	IN_CRITICAL, 1: process is in cricital section
+[4044]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4044]	IN_CRITICAL, 1: process is in cricital section
+[4049]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4049]	IN_CRITICAL, 1: process is in cricital section
+[4054]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4054]	IN_CRITICAL, 1: process is in cricital section
+[4059]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4059]	IN_CRITICAL, 1: process is in cricital section
+[4064]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4064]	IN_CRITICAL, 1: process is in cricital section
+[4069]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4069]	IN_CRITICAL, 1: process is in cricital section
+[4074]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4074]	IN_CRITICAL, 1: process is in cricital section
+[4079]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4079]	IN_CRITICAL, 1: process is in cricital section
+[4084]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4084]	IN_CRITICAL, 1: process is in cricital section
+[4089]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4089]	IN_CRITICAL, 1: process is in cricital section
+[4094]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4094]	IN_CRITICAL, 1: process is in cricital section
+[4099]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4099]	IN_CRITICAL, 1: process is in cricital section
+[4104]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4104]	IN_CRITICAL, 1: process is in cricital section
+[4109]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4109]	IN_CRITICAL, 1: process is in cricital section
+[4114]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4114]	IN_CRITICAL, 1: process is in cricital section
+[4119]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4119]	IN_CRITICAL, 1: process is in cricital section
+[4124]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4124]	IN_CRITICAL, 1: process is in cricital section
+[4129]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4129]	IN_CRITICAL, 1: process is in cricital section
+[4134]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4134]	IN_CRITICAL, 1: process is in cricital section
+[4139]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4139]	IN_CRITICAL, 1: process is in cricital section
+[4144]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4144]	IN_CRITICAL, 1: process is in cricital section
+[4149]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4149]	IN_CRITICAL, 1: process is in cricital section
+[4154]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4154]	IN_CRITICAL, 1: process is in cricital section
+[4159]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4159]	IN_CRITICAL, 1: process is in cricital section
+[4164]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4164]	IN_CRITICAL, 1: process is in cricital section
+[4169]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4169]	IN_CRITICAL, 1: process is in cricital section
+[4174]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4174]	IN_CRITICAL, 1: process is in cricital section
+[4179]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4179]	IN_CRITICAL, 1: process is in cricital section
+[4184]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4184]	IN_CRITICAL, 1: process is in cricital section
+[4189]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4189]	IN_CRITICAL, 1: process is in cricital section
+[4194]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4194]	IN_CRITICAL, 1: process is in cricital section
+[4199]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4199]	IN_CRITICAL, 1: process is in cricital section
+[4204]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4204]	IN_CRITICAL, 1: process is in cricital section
+[4209]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4209]	IN_CRITICAL, 1: process is in cricital section
+[4214]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4214]	IN_CRITICAL, 1: process is in cricital section
+[4219]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4219]	IN_CRITICAL, 1: process is in cricital section
+[4224]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4224]	IN_CRITICAL, 1: process is in cricital section
+[4229]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4229]	IN_CRITICAL, 1: process is in cricital section
+[4234]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4234]	IN_CRITICAL, 1: process is in cricital section
+[4239]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4239]	IN_CRITICAL, 1: process is in cricital section
+[4244]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4244]	IN_CRITICAL, 1: process is in cricital section
+[4249]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4249]	IN_CRITICAL, 1: process is in cricital section
+[4254]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4254]	IN_CRITICAL, 1: process is in cricital section
+[4259]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4259]	IN_CRITICAL, 1: process is in cricital section
+[4264]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4264]	IN_CRITICAL, 1: process is in cricital section
+[4269]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4269]	IN_CRITICAL, 1: process is in cricital section
+[4274]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4274]	IN_CRITICAL, 1: process is in cricital section
+[4279]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4279]	IN_CRITICAL, 1: process is in cricital section
+[4284]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4284]	IN_CRITICAL, 1: process is in cricital section
+[4289]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4289]	IN_CRITICAL, 1: process is in cricital section
+[4294]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4294]	IN_CRITICAL, 1: process is in cricital section
+[4299]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4299]	IN_CRITICAL, 1: process is in cricital section
+[4304]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4304]	IN_CRITICAL, 1: process is in cricital section
+[4309]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4309]	IN_CRITICAL, 1: process is in cricital section
+[4314]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4314]	IN_CRITICAL, 1: process is in cricital section
+[4319]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4319]	IN_CRITICAL, 1: process is in cricital section
+[4324]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4324]	IN_CRITICAL, 1: process is in cricital section
+[4329]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4329]	IN_CRITICAL, 1: process is in cricital section
+[4334]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4334]	IN_CRITICAL, 1: process is in cricital section
+[4339]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4339]	IN_CRITICAL, 1: process is in cricital section
+[4344]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4344]	IN_CRITICAL, 1: process is in cricital section
+[4349]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4349]	IN_CRITICAL, 1: process is in cricital section
+[4354]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4354]	IN_CRITICAL, 1: process is in cricital section
+[4359]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4359]	IN_CRITICAL, 1: process is in cricital section
+[4364]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4364]	IN_CRITICAL, 1: process is in cricital section
+[4369]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4369]	IN_CRITICAL, 1: process is in cricital section
+[4374]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4374]	IN_CRITICAL, 1: process is in cricital section
+[4379]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4379]	IN_CRITICAL, 1: process is in cricital section
+[4384]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4384]	IN_CRITICAL, 1: process is in cricital section
+[4389]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4389]	IN_CRITICAL, 1: process is in cricital section
+[4394]	WAIT_CRITICAL, 1: ACK for TOILET 1 is given, going to IN_CRITICAL, there are 1 avaliableObjects
+[4394]	IN_CRITICAL, 1: process is in cricital section
