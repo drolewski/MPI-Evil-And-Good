@@ -332,13 +332,6 @@ void preparingRequestHandler(Request request)
     else if (deepRequest.requestType == ACKALL)
     {
         updateLists(request, "PREPARING");
-        // for (int i = 0; i < listSize; i++)
-        // {
-        //     if (sendObjects[i].objectType == request.objectType && sendObjects[i].id == request.objectId)
-        //     {
-        //         sendObjects[i].objectState = request.objectState;
-        //     }
-        // }
         for (int i = 0; i < listSize; i++)
         {
             if (request.objectType == sendObjects[i].objectType)
@@ -346,13 +339,13 @@ void preparingRequestHandler(Request request)
                 if (request.objectId != sendObjects[i].id)
                 {
                     // if ((person.personType == GOOD && request.objectState == BROKEN && sendObjects[i].objectState == BROKEN) || (person.personType == BAD && request.objectState == REPAIRED && sendObjects[i].objectState == REPAIRED))
-                    // {
-                        if(ackList[i][request.id - 1] == 1){
-                            ackList[i][request.id - 1] = 0;
-                            rejectList[i][request.id - 1] = 1;
-                        }else{
-                            ackList[i][request.id - 1] = 1;
-                        }
+                    // // {
+                    //     if(ackList[i][request.id - 1] == 1){
+                    //         ackList[i][request.id - 1] = 0;
+                    //         rejectList[i][request.id - 1] = 1;
+                    //     }else{
+                    ackList[i][request.id - 1] = 1;
+                    // }
                     //     rejectList[i][request.id - 1] = 0;
                     // }
                     // else
@@ -368,6 +361,13 @@ void preparingRequestHandler(Request request)
                 }
             }
         }
+        for (int i = 0; i < listSize; i++)
+        {
+            if (sendObjects[i].objectType == request.objectType && sendObjects[i].id == request.objectId)
+            {
+                sendObjects[i].objectState = request.objectState;
+            }
+        }
     }
     else if (deepRequest.requestType == PACK)
     {
@@ -378,8 +378,8 @@ void preparingRequestHandler(Request request)
             {
                 // if ((person.personType == GOOD && request.objectState == BROKEN && sendObjects[i].objectState == BROKEN) || (person.personType == BAD && request.objectState == REPAIRED && sendObjects[i].objectState == REPAIRED))
                 // {
-                    ackList[i][request.id - 1] = 1;
-                    // rejectList[i][request.id - 1] = 0;
+                ackList[i][request.id - 1] = 1;
+                // rejectList[i][request.id - 1] = 0;
                 // }
                 // else
                 // {
@@ -398,8 +398,8 @@ void preparingRequestHandler(Request request)
             {
                 // if ((person.personType == GOOD && request.objectState == BROKEN && sendObjects[i].objectState == BROKEN) || (person.personType == BAD && request.objectState == REPAIRED && sendObjects[i].objectState == REPAIRED))
                 // {
-                    ackList[i][request.id - 1] = 1;
-                    // rejectList[i][request.id - 1] = 0;
+                ackList[i][request.id - 1] = 1;
+                // rejectList[i][request.id - 1] = 0;
                 // }
                 // else
                 // {
@@ -627,14 +627,17 @@ void waitCriticalRequestHandler(Request request)
                 {
                     // if ((person.personType == GOOD && request.objectState == BROKEN && sendObjects[i].objectState == BROKEN) || (person.personType == BAD && request.objectState == REPAIRED && sendObjects[i].objectState == REPAIRED))
                     // {
-                        if(ackList[i][request.id - 1] == 1){
-                            ackList[i][request.id - 1] = 0;
-                            rejectList[i][request.id - 1] = 1;
-                        }else{
-                            ackList[i][request.id - 1] = 1;
-                        }
-                        
-                        // rejectList[i][request.id - 1] = 0;
+                    if (ackList[i][request.id - 1] == 1)
+                    {
+                        ackList[i][request.id - 1] = 0;
+                        rejectList[i][request.id - 1] = 1;
+                    }
+                    else
+                    {
+                        ackList[i][request.id - 1] = 1;
+                    }
+
+                    // rejectList[i][request.id - 1] = 0;
                     // }
                     // else
                     // {
@@ -661,8 +664,8 @@ void waitCriticalRequestHandler(Request request)
             {
                 // if ((person.personType == GOOD && request.objectState == BROKEN && sendObjects[i].objectState == BROKEN) || (person.personType == BAD && request.objectState == REPAIRED && sendObjects[i].objectState == REPAIRED))
                 // {
-                    ackList[i][request.id - 1] = 1;
-                    // rejectList[i][request.id - 1] = 0;
+                ackList[i][request.id - 1] = 1;
+                // rejectList[i][request.id - 1] = 0;
                 // }
                 // else
                 // {
@@ -684,13 +687,13 @@ void waitCriticalRequestHandler(Request request)
             {
                 // if ((person.personType == GOOD && request.objectState == BROKEN && sendObjects[i].objectState == BROKEN) || (person.personType == BAD && request.objectState == REPAIRED && sendObjects[i].objectState == REPAIRED))
                 // {
-                    ackList[i][request.id - 1] = 1;
-                    // rejectList[i][request.id - 1] = 0;
+                ackList[i][request.id - 1] = 1;
+                // rejectList[i][request.id - 1] = 0;
                 // }
                 // else
                 // {
-                    // ackList[i][request.id - 1] = 0;
-                    rejectList[i][request.id - 1] = 1;
+                // ackList[i][request.id - 1] = 0;
+                // rejectList[i][request.id - 1] = 1;
                 // }
             }
         }
@@ -777,12 +780,15 @@ void restRequestHandler(Request request, int objectId, int objectType)
                 {
                     // if ((person.personType == GOOD && request.objectState == BROKEN && sendObjects[i].objectState == BROKEN) || (person.personType == BAD && request.objectState == REPAIRED && sendObjects[i].objectState == REPAIRED))
                     // {
-                        if(ackList[i][request.id - 1] == 1){
-                            ackList[i][request.id - 1] = 0;
-                            rejectList[i][request.id - 1] = 1;
-                        }else{
-                            ackList[i][request.id - 1] = 1;
-                        }
+                    if (ackList[i][request.id - 1] == 1)
+                    {
+                        ackList[i][request.id - 1] = 0;
+                        rejectList[i][request.id - 1] = 1;
+                    }
+                    else
+                    {
+                        ackList[i][request.id - 1] = 1;
+                    }
                     //     rejectList[i][request.id - 1] = 0;
                     // }
                     // else
@@ -810,8 +816,8 @@ void restRequestHandler(Request request, int objectId, int objectType)
             {
                 // if ((person.personType == GOOD && request.objectState == BROKEN && sendObjects[i].objectState == BROKEN) || (person.personType == BAD && request.objectState == REPAIRED && sendObjects[i].objectState == REPAIRED))
                 // {
-                    ackList[i][request.id - 1] = 1;
-                    // rejectList[i][request.id - 1] = 0;
+                ackList[i][request.id - 1] = 1;
+                // rejectList[i][request.id - 1] = 0;
                 // }
                 // else
                 // {
@@ -833,7 +839,7 @@ void restRequestHandler(Request request, int objectId, int objectType)
             {
                 // if ((person.personType == GOOD && request.objectState == BROKEN && sendObjects[i].objectState == BROKEN) || (person.personType == BAD && request.objectState == REPAIRED && sendObjects[i].objectState == REPAIRED))
                 // {
-                    ackList[i][request.id - 1] = 1;
+                ackList[i][request.id - 1] = 1;
                 //     rejectList[i][request.id - 1] = 0;
                 // }
                 // else
@@ -877,17 +883,7 @@ void afterCriticalState(Object *object)
     request.id = person.id;
     request.requestType = ACKALL;
     request.objectId = object->id;
-    for(int i = 0; i < ARRAY_COL; i++){
-        if(object->objectType== TOILET){
-            if(object->id == person.toiletList[i].id){
-                request.objectState = person.toiletList[i].objectState== BROKEN ? REPAIRED : BROKEN;
-            }
-        }else{
-                if(object->id == person.potList[i].id){
-                request.objectState = person.potList[i].objectState== BROKEN ? REPAIRED : BROKEN;
-            }
-        }
-    }
+    request.objectState = person.id <= goodNumber ? REPAIRED : BROKEN;
     request.objectType = object->objectType;
     request.lamportClock = person.lamportClock;
     request.priority = person.lamportClock;
@@ -901,11 +897,18 @@ void afterCriticalState(Object *object)
             MPI_Send(&request, 1, MPI_REQ, i, ACKALL, MPI_COMM_WORLD);
         }
     }
-
-    sendObjects[object->id - 1].id = -1;
-    sendObjects[object->id - 1].noInList = -1;
-    sendObjects[object->id - 1].objectState = -1;
-    sendObjects[object->id - 1].objectType = -1;
+int id = -1;
+for (int i =0 ; i< listSize;i++)
+{
+    if(sendObjects[i].objectType == object->objectType && sendObjects[i].id == object->id) id = i;
+}
+if(id>-1)
+{
+    sendObjects[id].id = -1;
+    sendObjects[id].noInList = -1;
+    sendObjects[id].objectState = -1;
+    sendObjects[id].objectType = -1;
+}
 }
 
 int preparingState(int rejectedRest)
@@ -927,16 +930,17 @@ int preparingState(int rejectedRest)
                 for (int j = i; j < listSize - 1; j++)
                 {
                     sendObjects[j] = sendObjects[j + 1];
-                    sendObjects[j + 1].id = -1;
-                    sendObjects[j + 1].noInList = -1;
-                    sendObjects[j + 1].objectState = -1;
-                    sendObjects[j + 1].objectType = -1;
                     for (int k = 0; k < ARRAY_ROW; k++)
                     {
                         rejectList[j][k] = rejectList[j + 1][k];
                         ackList[j][k] = ackList[j + 1][k];
                     }
                 }
+
+                sendObjects[listSize - 1].id = -1;
+                sendObjects[listSize - 1].noInList = -1;
+                sendObjects[listSize - 1].objectState = -1;
+                sendObjects[listSize - 1].objectType = -1;
                 listSize--;
             }
         }
@@ -1092,6 +1096,7 @@ void updateLists(Request request, char *stateName)
         person.potList[request.objectId - 1].objectState = request.objectState;
         if (person.personType == GOOD)
         {
+         
             person.avaliableObjectsCount = toiletNumber + potNumber - listSize; // ????
         }
         else
@@ -1135,11 +1140,17 @@ int waitCriticalState(int *objectId, int *objectType)
         if (rejectCounter == 0)
         {
             areAllRejected = false;
+            return false;
             break;
         }
     }
 
-    
+    // if (areAllRejected)
+    // {
+    //     //printf("[%d]\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.lamportClock, person.id);
+    //     return false;
+    // }
+
     for (int i = 0; i < listSize; i++)
     {
         int ackCounter = 0;
@@ -1148,12 +1159,14 @@ int waitCriticalState(int *objectId, int *objectType)
             ackCounter += ackList[i][j];
         }
 
-        if (ackCounter == (person.goodCount + person.badCount - 1))
+        if (ackCounter == (person.goodCount + person.badCount - 1) && rejectList[i] == 0)
         {
             if (sendObjects[i].objectType == TOILET)
             {
-                for(int j = 0; j < ARRAY_COL; j++){
-                    if(sendObjects[i].objectType == person.toiletList[j].objectType && sendObjects[i].id == person.toiletList[j].id){
+                for (int j = 0; j < ARRAY_COL; j++)
+                {
+                    if (sendObjects[i].objectType == person.toiletList[j].objectType && sendObjects[i].id == person.toiletList[j].id)
+                    {
 
                         if (sendObjects[i].objectState == person.toiletList[j].objectState)
                         {
@@ -1167,8 +1180,10 @@ int waitCriticalState(int *objectId, int *objectType)
             }
             else
             {
-                for(int j = 0; j < ARRAY_COL; j++){
-                    if(sendObjects[i].objectType == person.potList[j].objectType && sendObjects[i].id == person.potList[j].id){
+                for (int j = 0; j < ARRAY_COL; j++)
+                {
+                    if (sendObjects[i].objectType == person.potList[j].objectType && sendObjects[i].id == person.potList[j].id)
+                    {
 
                         if (sendObjects[i].objectState == person.potList[j].objectState)
                         {
@@ -1182,10 +1197,6 @@ int waitCriticalState(int *objectId, int *objectType)
             }
         }
     }
-    if (areAllRejected)
-    {
-        //printf("[%d]\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.lamportClock, person.id);
-        return false;
-    }
+
     return -1;
 }
