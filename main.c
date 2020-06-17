@@ -237,7 +237,9 @@ void handleStates()
             }
             break;
         case IN_CRITICAL:
+            pthread_mutex_lock(&messageListMutex);
             inCriticalState();
+            pthread_mutex_unlock(&messageListMutex);
             state = AFTER_CRITICAL;
             break;
         case AFTER_CRITICAL:
