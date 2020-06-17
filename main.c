@@ -6,11 +6,11 @@
 #include <math.h>
 
 const int toiletNumber = 2;
-const int potNumber = 1;
+const int potNumber = 2;
 const int goodNumber = 3;
 const int badNumber = 3;
 
-#define ARRAY_COL 3
+#define ARRAY_COL 4
 #define ARRAY_ROW 6
 
 Person person;
@@ -998,7 +998,16 @@ int preparingState(int rejectedRest)
     if (avaliableObjects > 0)
     {
         int iter = 0;
-        Object *objectList = malloc(sizeof(Object) * (avaliableObjects));
+        Object *objectList = malloc(sizeof(Object) * (ARRAY_COL));
+
+        for (int i = 0; i <= ARRAY_COL; i++)
+        {
+            objectList[i].id = -1;
+            objectList[i].noInList = -1;
+            objectList[i].objectState = -1;
+            objectList[i].objectType = -1;
+        }
+
         if (person.personType - BAD)
         {
             // good
@@ -1098,6 +1107,7 @@ int preparingState(int rejectedRest)
                     rejectList[i][k] = 0;
                 }
             }
+            if(objectList[j].id == -1) break;
         }
         free(objectList);
         // listSize = result;
@@ -1207,6 +1217,8 @@ int waitCriticalState(int *objectId, int *objectType)
         return false;
     }
 
+    int objectsVisited[ARRAY_COL] = {0};
+    int objectIterator = 0;
     for (int i = 0; i < listSize; i++)
     {
         if (sendObjects[i].id != -1)
@@ -1219,7 +1231,7 @@ int waitCriticalState(int *objectId, int *objectType)
                 rejectCounter += rejectList[i][j];
             }
             // if (ackCounter + rejectCounter > (person.goodCount + person.badCount - 1))
-                // printf("JEBAĆ PIS %d, %d\n", ackCounter, rejectCounter);
+            // printf("JEBAĆ PIS %d, %d\n", ackCounter, rejectCounter);
 
             //  printf("[%d]\tWAIT_CRITICAL, %d:  %d , there are %d avaliableObjects; ackList = %d, rejectList = %d\n", person.lamportClock, person.id,  sendObjects[i].id, person.avaliableObjectsCount, ackCounter, rejectCounter);
             if (ackCounter == (person.goodCount + person.badCount - 1) && rejectCounter == 0)
