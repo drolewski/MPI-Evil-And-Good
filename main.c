@@ -6,12 +6,12 @@
 #include <math.h>
 
 #define toiletNumber 2
-#define potNumber 2
+#define potNumber 1
 const int goodNumber = 3;
-const int badNumber = 3;
+const int badNumber = 7;
 
-#define ARRAY_COL 4
-#define ARRAY_ROW 6
+#define ARRAY_COL 3
+#define ARRAY_ROW 10
 
 Person person;
 Object ackObject;
@@ -197,7 +197,9 @@ void handleStates()
                 free(tmpFirst);
             }
             pthread_mutex_unlock(&messageListMutex);
+            pthread_mutex_lock(&messageListMutex);
             int tempListASD = preparingState(rejectedRest);
+            pthread_mutex_unlock(&messageListMutex);
             if (tempListASD > 0)
             {
                 state = WAIT_CRITICAL;
@@ -243,7 +245,9 @@ void handleStates()
             state = AFTER_CRITICAL;
             break;
         case AFTER_CRITICAL:
+            pthread_mutex_lock(&messageListMutex);
             afterCriticalState(&ackObject);
+            pthread_mutex_unlock(&messageListMutex);
             state = REST;
             // printf("%d\t%d: Going to REST\n", person.lamportClock, person.id);
 
