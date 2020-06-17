@@ -5,8 +5,8 @@
 #include <pthread.h>
 #include <math.h>
 
-const int toiletNumber = 2;
-const int potNumber = 2;
+#define toiletNumber 2
+#define potNumber 2
 const int goodNumber = 3;
 const int badNumber = 3;
 
@@ -1000,13 +1000,13 @@ int preparingState(int rejectedRest)
         int iter = 0;
         Object *objectList = malloc(sizeof(Object) * (ARRAY_COL));
 
-        for (int i = 0; i <= ARRAY_COL; i++)
-        {
-            objectList[i].id = -1;
-            objectList[i].noInList = -1;
-            objectList[i].objectState = -1;
-            objectList[i].objectType = -1;
-        }
+        // for (int i = 0; i <= ARRAY_COL; i++)
+        // {
+        //     objectList[i].id = -1;
+        //     objectList[i].noInList = -1;
+        //     objectList[i].objectState = -1;
+        //     objectList[i].objectType = -1;
+        // }
 
         if (person.personType - BAD)
         {
@@ -1107,7 +1107,7 @@ int preparingState(int rejectedRest)
                     rejectList[i][k] = 0;
                 }
             }
-            if(objectList[j].id == -1) break;
+            // if(objectList[j].id == -1) break;
         }
         free(objectList);
         // listSize = result;
