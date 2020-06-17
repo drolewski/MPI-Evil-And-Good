@@ -5,12 +5,12 @@
 #include <pthread.h>
 #include <math.h>
 
-const int toiletNumber = 1;
+const int toiletNumber = 2;
 const int potNumber = 1;
 const int goodNumber = 3;
 const int badNumber = 3;
 
-#define ARRAY_COL 2
+#define ARRAY_COL 3
 #define ARRAY_ROW 6
 
 Person person;
@@ -201,7 +201,7 @@ void handleStates()
             if (tempListASD > 0)
             {
                 state = WAIT_CRITICAL;
-                printf("%d\t%d: Going to WAIT_CRITICAL\n", person.lamportClock, person.id);
+                // printf("%d\t%d: Going to WAIT_CRITICAL\n", person.lamportClock, person.id);
             }
             break;
         case WAIT_CRITICAL:
@@ -233,7 +233,7 @@ void handleStates()
             {
                 rejectedRest = true;
                 state = REST;
-                printf("%d\t%d: Going to REST with rejectedRest\n", person.lamportClock, person.id);
+                // printf("%d\t%d: Going to REST with rejectedRest\n", person.lamportClock, person.id);
             }
             break;
         case IN_CRITICAL:
@@ -243,7 +243,7 @@ void handleStates()
         case AFTER_CRITICAL:
             afterCriticalState(&ackObject);
             state = REST;
-                printf("%d\t%d: Going to REST\n", person.lamportClock, person.id);
+            // printf("%d\t%d: Going to REST\n", person.lamportClock, person.id);
 
             break;
         case REST:
@@ -260,8 +260,7 @@ void handleStates()
             if (first == NULL)
             {
                 state = PREPARING;
-                printf("%d\t%d: Going to PREPARING\n", person.lamportClock, person.id);
-
+                // printf("%d\t%d: Going to PREPARING\n", person.lamportClock, person.id);
             }
             pthread_mutex_unlock(&messageListMutex);
             break;
@@ -1088,7 +1087,7 @@ int preparingState(int rejectedRest)
 
         sendRequestForObjects(objectList, iter, rejectedRest);
         int result = listSize + iter;
-        for (int i = 0, j = 0; i < listSize; i++)
+        for (int i = 0, j = 0; i < listSize && j < iter; i++)
         {
             if (sendObjects[i].id == -1)
             {
@@ -1170,7 +1169,8 @@ void updateLists(Request request, char *stateName)
     }
     for (int i = 0; i < listSize; i++)
     {
-        if(sendObjects[i].id == request.objectId && sendObjects[i].objectType == request.objectType) sendObjects[i].objectState = request.objectState;
+        if (sendObjects[i].id == request.objectId && sendObjects[i].objectType == request.objectType)
+            sendObjects[i].objectState = request.objectState;
     }
 }
 
@@ -1187,6 +1187,8 @@ int waitCriticalState(int *objectId, int *objectType)
     int neededState = person.personType == GOOD ? BROKEN : REPAIRED;
     for (int i = 0; i < listSize; i++)
     {
+        if (sendObjects[i].id == -1)
+            break;
         int rejectCounter = 0;
         for (int j = 0; j < (goodNumber + badNumber); j++)
         {
@@ -1216,9 +1218,11 @@ int waitCriticalState(int *objectId, int *objectType)
                 ackCounter += ackList[i][j];
                 rejectCounter += rejectList[i][j];
             }
-            //  printf("[%d]\tWAIT_CRITICAL, %d:  %d , there are %d avaliableObjects; ackList = %d, rejectList = %d\n", person.lamportClock, person.id,  sendObjects[i].id, person.avaliableObjectsCount, ackCounter, rejectCounter);
+            // if (ackCounter + rejectCounter > (person.goodCount + person.badCount - 1))
+                // printf("JEBAĆ PIS %d, %d\n", ackCounter, rejectCounter);
 
-            if (ackCounter >= (person.goodCount + person.badCount - 1) && rejectCounter == 0)
+            //  printf("[%d]\tWAIT_CRITICAL, %d:  %d , there are %d avaliableObjects; ackList = %d, rejectList = %d\n", person.lamportClock, person.id,  sendObjects[i].id, person.avaliableObjectsCount, ackCounter, rejectCounter);
+            if (ackCounter == (person.goodCount + person.badCount - 1) && rejectCounter == 0)
             {
                 if (sendObjects[i].objectType == TOILET)
                 {
@@ -1229,7 +1233,7 @@ int waitCriticalState(int *objectId, int *objectType)
 
                             if (sendObjects[i].objectState == person.toiletList[j].objectState && sendObjects[i].objectState == neededState)
                             {
-                                printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL, there are %d avaliableObjects; ackList = %d, rejectList = %d\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "TOILET" : "POT", sendObjects[i].id, person.avaliableObjectsCount, ackCounter, rejectCounter);
+                                printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL; ackList = %d, rejectList = %d\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "TOILET" : "POT", sendObjects[i].id, ackCounter, rejectCounter);
                                 *objectId = sendObjects[i].id;
                                 *objectType = sendObjects[i].objectType;
                                 return true;
