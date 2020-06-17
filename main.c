@@ -5,17 +5,20 @@
 #include <pthread.h>
 #include <math.h>
 
-const int toiletNumber = 2;
+const int toiletNumber = 1;
 const int potNumber = 1;
-const int goodNumber = 2;
-const int badNumber = 2;
+const int goodNumber = 3;
+const int badNumber = 3;
+
+#define ARRAY_SIZE 2
 
 Person person;
 Object ackObject;
-int *ackList;
-int *rejectList;
+int ackList[ARRAY_SIZE];
+int rejectList[ARRAY_SIZE];
 int listSize;
-Object *sendObjects;
+Object sendObjects[ARRAY_SIZE];
+int objectTypeIsChanged[ARRAY_SIZE];
 int iterationsCounter;
 int iterator;
 
@@ -73,23 +76,24 @@ void waitRandomTime(int id)
     int quantum = time(&tt);
     srand(quantum + id);
     double seconds = ((double)(rand() % 1000)) / 500;
-    printf("Process: %d is waiting: %f\n", id, seconds);
+    //printf("Process: %d is waiting: %f\n", id, seconds);
     sleep(seconds);
 }
 
 void setupStructures()
 {
-    int nItems = 6;
-    int blockLengths[6] = {1, 1, 1, 1, 1, 1};
-    MPI_Datatype types[6] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT};
+    int nItems = 7;
+    int blockLengths[7] = {1, 1, 1, 1, 1, 1, 1};
+    MPI_Datatype types[7] = {MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT, MPI_INT};
 
-    MPI_Aint offsets[6];
+    MPI_Aint offsets[7];
     offsets[0] = offsetof(Request, id);
     offsets[1] = offsetof(Request, requestType);
     offsets[2] = offsetof(Request, objectId);
     offsets[3] = offsetof(Request, priority);
     offsets[4] = offsetof(Request, objectState);
     offsets[5] = offsetof(Request, objectType);
+    offsets[6] = offsetof(Request, lamportClock);
 
     MPI_Type_create_struct(nItems, blockLengths, offsets, types, &MPI_REQ);
     MPI_Type_commit(&MPI_REQ);
@@ -113,7 +117,7 @@ int main(int argc, char **argv)
     {
         for (int i = 1; i <= (goodNumber + badNumber); i++)
         {
-            printf("SYNCHR Message SENT to: %d\n", i);
+            //printf("SYNCHR Message SENT to: %d\n", i);
             MPI_Send(&i, 1, MPI_INT, i, SYNCHR, MPI_COMM_WORLD);
         }
         int counter = 0;
@@ -121,10 +125,10 @@ int main(int argc, char **argv)
         {
             int sourceId;
             MPI_Recv(&sourceId, 1, MPI_INT, MPI_ANY_SOURCE, SYNCHR, MPI_COMM_WORLD, &status);
-            printf("SYNCHR Message Received from: %d\n", sourceId);
+            //printf("SYNCHR Message Received from: %d\n", sourceId);
             counter++;
         }
-        printf("\nSYNCHR done!\n\n");
+        //printf("\nSYNCHR done!\n\n");
         for (int i = 1; i <= (goodNumber + badNumber); i++)
         {
             MPI_Send(&i, 1, MPI_INT, i, SYNCHR, MPI_COMM_WORLD);
@@ -137,9 +141,15 @@ int main(int argc, char **argv)
         struct Object *toiletList;
         struct Object *potList;
         person = init(rank, toiletList, potList);
-        sendObjects = malloc(sizeof(struct Object) * (toiletNumber + potNumber));
+        for (int i = 0; i < ARRAY_SIZE; i++)
+        {
+            sendObjects[i].id = -1;
+            sendObjects[i].noInList = -1;
+            sendObjects[i].objectState = -1;
+            sendObjects[i].objectType = -1;
+        }
 
-        printf("Process: %d is Person: %d, %s\n", rank, person.id, person.personType - BAD ? "good" : "bad");
+        //printf("Process: %d is Person: %d, %s\n", rank, person.id, person.personType - BAD ? "good" : "bad");
         MPI_Send(&id, 1, MPI_INT, 0, SYNCHR, MPI_COMM_WORLD);
         MPI_Recv(&id, 1, MPI_INT, 0, SYNCHR, MPI_COMM_WORLD, &status);
         waitRandomTime(id);
@@ -151,7 +161,6 @@ int main(int argc, char **argv)
     }
     free(person.toiletList);
     free(person.potList);
-    free(sendObjects);
     MPI_Type_free(&MPI_REQ);
     MPI_Finalize();
     pthread_exit(NULL);
@@ -168,31 +177,34 @@ void handleStates()
         {
         case INIT:
             iterationsCounter = 0;
+            for (int i = 0; i < ARRAY_SIZE; i++)
+            {
+                ackList[i] = 0;
+                rejectList[i] = 0;
+                objectTypeIsChanged[i] = false;
+            }
             state = PREPARING;
             break;
         case PREPARING:
             pthread_mutex_lock(&messageListMutex);
-            if(first != NULL){
+            if (first != NULL)
+            {
                 preparingRequestHandler(first->currentRequest);
                 MessageList *tmpFirst = first;
                 first = first->nextMessage;
                 free(tmpFirst);
             }
             pthread_mutex_unlock(&messageListMutex);
-            iterator = preparingState(sendObjects, rejectedRest);
+            iterator = preparingState(rejectedRest);
             if (iterator > 0)
             {
-                rejectList = malloc(sizeof(int) * iterator);
-                ackList = malloc(sizeof(int) * iterator);
-                memset(ackList, 0, (sizeof(int) * iterator));
-                memset(rejectList, 0, (sizeof(int) * iterator));
-                listSize = iterator;
                 state = WAIT_CRITICAL;
             }
             break;
         case WAIT_CRITICAL:
             pthread_mutex_lock(&messageListMutex);
-            if(first != NULL){
+            if (first != NULL)
+            {
                 waitCriticalRequestHandler(first->currentRequest, sendObjects);
                 MessageList *tmpFirst = first;
                 first = first->nextMessage;
@@ -200,16 +212,8 @@ void handleStates()
             }
             pthread_mutex_unlock(&messageListMutex);
             canGoCritical = waitCriticalState(&objectId, &objectType);
-
-            int tempIterationsCounter = iterationsCounter;
-            if (tempIterationsCounter == 0 && rejectedRest)
-            {
-                state = PREPARING;
-            }
-
             if (canGoCritical == true)
             {
-
                 if (objectType == TOILET && objectId > 0)
                 {
                     ackObject = person.toiletList[objectId - 1];
@@ -236,21 +240,19 @@ void handleStates()
             state = REST;
             break;
         case REST:
-            if(first != NULL){
+            pthread_mutex_lock(&messageListMutex);
+            if (first != NULL)
+            {
+                restRequestHandler(first->currentRequest);
                 MessageList *tmpFirst = first;
                 first = first->nextMessage;
                 free(tmpFirst);
             }
-            int tempRestIterations = iterationsCounter;
-            if (tempRestIterations >= 0)
-            {
+            pthread_mutex_unlock(&messageListMutex);
             state = PREPARING;
-            free(ackList);
-            free(rejectList);
-            }
             break;
         default:
-            printf("default");
+            //printf("default");
             break;
         }
     }
@@ -287,7 +289,7 @@ void *handleRequests()
             }
             pthread_mutex_unlock(&messageListMutex);
             pthread_mutex_lock(&lamportMutex);
-            person.lamportClock = request.priority > person.lamportClock ? request.priority + 1 : person.lamportClock + 1;
+            person.lamportClock = request.lamportClock > person.lamportClock ? request.lamportClock + 1 : person.lamportClock + 1;
             pthread_mutex_unlock(&lamportMutex);
         }
     }
@@ -303,28 +305,78 @@ void preparingRequestHandler(Request request)
     deepRequest.priority = request.priority;
     deepRequest.requestType = request.requestType;
     int receivedId = request.id;
-    if(deepRequest.requestType == PREQ)
+    if (deepRequest.requestType == PREQ)
     {
         deepRequest.requestType = PACK;
         updateLamportClock();
-        printf("[%d]\tPREPARING, %d: Send PACK to: %d about %d\n", person.lamportClock,person.id, receivedId, request.objectId);
+        //printf("[%d]\tPREPARING, %d: Send PACK to: %d about %d\n", person.lamportClock, person.id, receivedId, request.objectId);
         MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
-    }else if(deepRequest.requestType == TREQ)
+    }
+    else if (deepRequest.requestType == TREQ)
     {
         deepRequest.requestType = TACK;
         updateLamportClock();
-        printf("[%d]\tPREPARING, %d: Send TACK to: %d about %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+        //printf("[%d]\tPREPARING, %d: Send TACK to: %d about %d\n", person.lamportClock, person.id, receivedId, request.objectId);
         MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
     }
-    else if(deepRequest.requestType == ACKALL)
+    else if (deepRequest.requestType == ACKALL)
     {
         updateLists(request, "PREPARING");
+        for (int i = 0; i < listSize; i++)
+        {
+            if (sendObjects[i].objectType == POT)
+            {
+                if (sendObjects[i].objectState != person.potList[sendObjects[i].id - 1].objectState)
+                {
+                    objectTypeIsChanged[i] = true;
+                }
+            }
+            else
+            {
+                if (sendObjects[i].objectState != person.toiletList[sendObjects[i].id - 1].objectState)
+                {
+                    objectTypeIsChanged[i] = true;
+                }
+            }
+        }
+    }
+    else if (deepRequest.requestType == PACK)
+    {
+        for (int i = 0; i < listSize; i++)
+        {
+            if (sendObjects[i].objectType == request.objectType && request.objectId == sendObjects[i].id)
+            {
+                ackList[i]++;
+            }
+        }
+        //printf("[%d]\tPREPARING, %d: Received ignore message. %d\n", person.lamportClock, person.id, deepRequest.requestType);
+    }
+    else if (deepRequest.requestType == TACK)
+    {
+        for (int i = 0; i < listSize; i++)
+        {
+            if (sendObjects[i].objectType == request.objectType && request.objectId == sendObjects[i].id)
+            {
+                ackList[i]++;
+            }
+        }
+        //printf("[%d]\tPREPARING, %d: Received ignore message. %d\n", person.lamportClock, person.id, deepRequest.requestType);
+    }
+    else if (deepRequest.requestType == REJECT)
+    {
+        for (int i = 0; i < listSize; i++)
+        {
+            if (sendObjects[i].objectType == request.objectType && request.objectId == sendObjects[i].id)
+            {
+                rejectList[i]++;
+            }
+        }
+        //printf("[%d]\tPREPARING, %d: Received ignore message. %d\n", person.lamportClock, person.id, deepRequest.requestType);
     }
     else
     {
-        printf("[%d]\tPREPARING, %d: Received ignore message. %d\n", person.lamportClock, person.id, deepRequest.requestType);
+        //default
     }
-
 }
 
 void waitCriticalRequestHandler(Request request, Object *objectList)
@@ -339,14 +391,15 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
     deepRequest.requestType = request.requestType;
     int receivedId = request.id;
     int isPreviousRequest = abs(request.priority - person.priority) >= 5;
-    if(deepRequest.requestType == PREQ){
+    if (deepRequest.requestType == PREQ)
+    {
 
-        printf("[%d]\tWAIT_CRITICAL, %d: Receive PREQ from id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+        //printf("[%d]\tWAIT_CRITICAL, %d: Receive PREQ from id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
         if ((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount))
         {
             deepRequest.requestType = PACK;
             updateLamportClock();
-            printf("[%d]\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+            //printf("[%d]\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
             MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
         }
         else
@@ -366,7 +419,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             {
                 deepRequest.requestType = PACK;
                 updateLamportClock();
-                printf("[%d]\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+                //printf("[%d]\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
                 MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
             }
             else
@@ -383,33 +436,31 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                         {
                             deepRequest.requestType = PACK;
                             updateLamportClock();
-                            printf("[%d]\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+                            //printf("[%d]\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
                             MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
-                            rejectList[i] += 1;
                         }
                         else if (person.priority < request.priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
                         {
                             deepRequest.requestType = REJECT;
                             updateLamportClock();
-                            printf("[%d]\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+                            //printf("[%d]\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
                             MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                         }
                         else //równe priorytety
                         {
                             if (person.id > receivedId)
-                            {              
+                            {
                                 deepRequest.requestType = REJECT;
                                 updateLamportClock();
-                                printf("[%d]\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+                                //printf("[%d]\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
                                 MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                             }
                             else
                             {
                                 deepRequest.requestType = PACK;
                                 updateLamportClock();
-                                printf("[%d]\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+                                //printf("[%d]\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
                                 MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
-                                rejectList[i] += 1;
                             }
                         }
                     }
@@ -418,21 +469,22 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 {
                     deepRequest.requestType = PACK;
                     updateLamportClock();
-                    printf("[%d]\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+                    //printf("[%d]\tWAIT_CRITICAL, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
                     MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
                 }
             }
         }
-        // printf("Lamport: %d, ReceivedId: %d, PersonId: %d, objectType: %d, ObjectState: %d, personType: %d, Person priorytet: %d, request priority: %d\n", person.lamportClock, receivedId, person.id, request.objectType, request.objectState, person.personType, person.priority, request.priority);
-    }else if(deepRequest.requestType == TREQ)
+        // //printf("Lamport: %d, ReceivedId: %d, PersonId: %d, objectType: %d, ObjectState: %d, personType: %d, Person priorytet: %d, request priority: %d\n", person.lamportClock, receivedId, person.id, request.objectType, request.objectState, person.personType, person.priority, request.priority);
+    }
+    else if (deepRequest.requestType == TREQ)
     {
 
-        printf("[%d]\tWAIT_CRITICAL, %d: Receive TREQ from id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+        //printf("[%d]\tWAIT_CRITICAL, %d: Receive TREQ from id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
         if ((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount))
         {
             deepRequest.requestType = TACK;
             updateLamportClock();
-            printf("[%d]\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+            //printf("[%d]\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
             MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
         }
         else
@@ -452,7 +504,7 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
             {
                 deepRequest.requestType = TACK;
                 updateLamportClock();
-                printf("[%d]\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+                //printf("[%d]\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
                 MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
             }
             else
@@ -468,15 +520,14 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                         {
                             deepRequest.requestType = TACK;
                             updateLamportClock();
-                            printf("[%d]\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+                            //printf("[%d]\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
                             MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
-                            rejectList[i] += 1;
                         }
                         else if (person.priority < deepRequest.priority) // request ma niższy priorytet, tj. wyższą wartość zmiennej priority
                         {
                             deepRequest.requestType = REJECT;
                             updateLamportClock();
-                            printf("[%d]\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+                            //printf("[%d]\tWAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
                             MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                         }
                         else //równe priorytety
@@ -485,16 +536,15 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                             {
                                 deepRequest.requestType = REJECT;
                                 updateLamportClock();
-                                printf("[%d]\t addsd asdasd WAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+                                //printf("[%d]\t addsd asdasd WAIT_CRITICAL, %d: SEND REJECT to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
                                 MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, REJECT, MPI_COMM_WORLD);
                             }
                             else
                             {
                                 deepRequest.requestType = TACK;
                                 updateLamportClock();
-                                printf("[%d]\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+                                //printf("[%d]\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
                                 MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
-                                rejectList[i] += 1;
                             }
                         }
                     }
@@ -503,87 +553,67 @@ void waitCriticalRequestHandler(Request request, Object *objectList)
                 {
                     deepRequest.requestType = TACK;
                     updateLamportClock();
-                    printf("[%d]\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+                    //printf("[%d]\tWAIT_CRITICAL, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
                     MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
                 }
             }
         }
     }
-    else if(deepRequest.requestType == ACKALL)
+    else if (deepRequest.requestType == ACKALL)
     {
-
         updateLists(request, "WAIT_CRITICAL");
-
-        if (!((receivedId > person.goodCount && person.id <= person.goodCount) || (receivedId <= person.goodCount && person.id > person.goodCount)))
+        for (int i = 0; i < listSize; i++)
         {
-            int tempListSize = listSize;
-            for (int i = 0; i < tempListSize; i++)
+            if (sendObjects[i].objectType == POT)
             {
-                if (request.objectType == objectList[i].objectType)
+                if (sendObjects[i].objectState != person.potList[sendObjects[i].id - 1].objectState)
                 {
-                    if (request.objectId != objectList[i].id)
-                    {
-                        ackList[i] += 1;
-                    }
-                    else
-                    {
-                        rejectList[i] += 1;
-                    }
-                    iterationsCounter -= 1;
+                    objectTypeIsChanged[i] = true;
+                }
+            }
+            else
+            {
+                if (sendObjects[i].objectState != person.toiletList[sendObjects[i].id - 1].objectState)
+                {
+                    objectTypeIsChanged[i] = true;
                 }
             }
         }
     }
-    else if(deepRequest.requestType == PACK){
-        // if (!isPreviousRequest)
-        // {
-            printf("[%d]\tWAIT_CRITICAL, %d: Receive PACK from: %d\n", person.lamportClock, person.id, receivedId);
-            tempListSize = listSize;
-            for (int i = 0; i < tempListSize; i++)
+    else if (deepRequest.requestType == PACK)
+    {
+        for (int i = 0; i < listSize; i++)
+        {
+            if (sendObjects[i].objectType == request.objectType && request.objectId == sendObjects[i].id)
             {
-                if (objectList[i].objectType == POT && objectList[i].id == request.objectId)
-                {
-                    ackList[i] += 1;
-                    iterationsCounter -= 1;
-                }
+                ackList[i]++;
             }
-        // }
+        }
     }
-    else if(deepRequest.requestType == TACK)
+    else if (deepRequest.requestType == TACK)
     {
 
-        // if (!isPreviousRequest)
-        // {
-            printf("[%d]\tWAIT_CRITICAL, %d: Receive TACK from: %d about: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
-            tempListSize = listSize;
-            for (int i = 0; i < tempListSize; i++)
+        for (int i = 0; i < listSize; i++)
+        {
+            if (sendObjects[i].objectType == request.objectType && request.objectId == sendObjects[i].id)
             {
-                if (objectList[i].objectType == TOILET && objectList[i].id == request.objectId)
-                {
-                    ackList[i] += 1;
-                    iterationsCounter -= 1;
-                }
+                ackList[i]++;
             }
-        // }
+        }
     }
-    else if(deepRequest.requestType == REJECT)
+    else if (deepRequest.requestType == REJECT)
     {
-
-        // if (!isPreviousRequest)
-        // {
-            printf("[%d]\tWAIT_CRITICAL, %d: Receive REJECT from: %d\n", person.lamportClock, person.id, receivedId);
-            tempListSize = listSize;
-            for (int i = 0; i < tempListSize; i++)
+        for (int i = 0; i < listSize; i++)
+        {
+            if (sendObjects[i].objectType == request.objectType && request.objectId == sendObjects[i].id)
             {
-                if (objectList[i].id == request.objectId)
-                {
-                    rejectList[i] += 1;
-                    iterationsCounter -= 1;
-                }
+                rejectList[i]++;
             }
-        // }
-    }else{
-        printf("[%d]\tWAIT_CRITICAL, %d: Received ignore message. %d\n", person.lamportClock, person.id, deepRequest.requestType);
+        }
+    }
+    else
+    {
+        //printf("[%d]\tWAIT_CRITICAL, %d: Received ignore message. %d\n", person.lamportClock, person.id, deepRequest.requestType);
     }
 }
 
@@ -597,44 +627,94 @@ void restRequestHandler(Request request)
     deepRequest.priority = request.priority;
     deepRequest.requestType = request.requestType;
     int receivedId = request.id;
-    if(deepRequest.requestType == PREQ)
+    if (deepRequest.requestType == PREQ)
     {
         deepRequest.requestType = PACK;
         updateLamportClock();
-        printf("[%d]\tREST, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+        //printf("[%d]\tREST, %d: SEND PACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
         MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, PACK, MPI_COMM_WORLD);
     }
-    else if(deepRequest.requestType == TREQ)
+    else if (deepRequest.requestType == TREQ)
     {
         deepRequest.requestType = TACK;
         updateLamportClock();
-        printf("[%d]\tREST, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+        //printf("[%d]\tREST, %d: SEND TACK to id: %d and objectId: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
         MPI_Send(&deepRequest, 1, MPI_REQ, receivedId, TACK, MPI_COMM_WORLD);
     }
-    else if(deepRequest.requestType == REJECT)
+    else if (deepRequest.requestType == ACKALL)
     {
-        updateLists(request, "REST");
-        iterationsCounter -= iterator;
+        updateLists(request, "WAIT_CRITICAL");
+        for (int i = 0; i < listSize; i++)
+        {
+            if (sendObjects[i].objectType == POT)
+            {
+                if (sendObjects[i].objectState != person.potList[sendObjects[i].id - 1].objectState)
+                {
+                    objectTypeIsChanged[i] = true;
+                }
+            }
+            else
+            {
+                if (sendObjects[i].objectState != person.toiletList[sendObjects[i].id - 1].objectState)
+                {
+                    objectTypeIsChanged[i] = true;
+                }
+            }
+        }
     }
-    else if(deepRequest.requestType == PACK)
+    else if (deepRequest.requestType == PACK)
     {
-        iterationsCounter--;
+        // if (!isPreviousRequest)
+        // {
+        //printf("[%d]\tWAIT_CRITICAL, %d: Receive PACK from: %d\n", person.lamportClock, person.id, receivedId);
+        for (int i = 0; i < listSize; i++)
+        {
+            if (sendObjects[i].objectType == request.objectType && request.objectId == sendObjects[i].id)
+            {
+                ackList[i]++;
+            }
+        }
+        // }
     }
-    else if(deepRequest.requestType == TACK)
+    else if (deepRequest.requestType == TACK)
     {
-        iterationsCounter--;
+
+        // if (!isPreviousRequest)
+        // {
+        //printf("[%d]\tWAIT_CRITICAL, %d: Receive TACK from: %d about: %d\n", person.lamportClock, person.id, receivedId, request.objectId);
+        for (int i = 0; i < listSize; i++)
+        {
+            if (sendObjects[i].objectType == request.objectType && request.objectId == sendObjects[i].id)
+            {
+                ackList[i]++;
+            }
+        }
+        // }
     }
-    else if(deepRequest.requestType == REJECT)
+    else if (deepRequest.requestType == REJECT)
     {
-        iterationsCounter--;
-    }else{
-        printf("[%d]\tREST, %d: Received ignore message. %d\n", person.lamportClock, person.id, deepRequest.requestType);
+
+        // if (!isPreviousRequest)
+        // {
+        //printf("[%d]\tWAIT_CRITICAL, %d: Receive REJECT from: %d\n", person.lamportClock, person.id, receivedId);
+        for (int i = 0; i < listSize; i++)
+        {
+            if (sendObjects[i].objectType == request.objectType && request.objectId == sendObjects[i].id)
+            {
+                rejectList[i]++;
+            }
+        }
+        // }
+    }
+    else
+    {
+        //printf("[%d]\tWAIT_CRITICAL, %d: Received ignore message. %d\n", person.lamportClock, person.id, deepRequest.requestType);
     }
 }
 
 void inCriticalState()
 {
-    printf(ANSI_COLOR_CYAN "[%d]\tIN_CRITICAL, %d: process is in cricital section" ANSI_COLOR_RESET "\n", person.lamportClock, person.id);
+    printf("[%d]\tIN_CRITICAL, %d: process is in cricital section\n", person.lamportClock, person.id);
     waitRandomTime(person.id);
 }
 
@@ -644,8 +724,14 @@ void afterCriticalState(Object *object)
     request.id = person.id;
     request.requestType = ACKALL;
     request.objectId = object->id;
-    request.objectState = object->objectState == BROKEN ? REPAIRED : BROKEN;
-    request.objectType = object->objectType;
+    if (object->objectType == TOILET)
+    {
+        request.objectState = person.toiletList[object->id - 1].objectState == BROKEN ? REPAIRED : BROKEN;
+    }
+    else
+    {
+        request.objectState = person.potList[object->id - 1].objectState == BROKEN ? REPAIRED : BROKEN;
+    }
     request.priority = person.lamportClock;
     updateLists(request, "AFTER_CRITICAL");
     for (int i = 1; i <= (person.goodCount + person.badCount); i++)
@@ -659,12 +745,38 @@ void afterCriticalState(Object *object)
     }
 }
 
-int preparingState(Object *objectList, int rejectedRest)
+int preparingState(int rejectedRest)
 {
-    int availableObjectsCount = person.avaliableObjectsCount;
-    if (availableObjectsCount > 0)
+    for (int i = 0; i < listSize; i++)
+    {
+        if ((rejectList[i] + ackList[i]) >= (goodNumber + badNumber - 1))
+        {
+
+            for (int j = i; j < listSize - 1; j++)
+            {
+                sendObjects[j].id = sendObjects[j + 1].id;
+                sendObjects[j].noInList = sendObjects[j + 1].noInList;
+                sendObjects[j].objectState = sendObjects[j + 1].objectState;
+                sendObjects[j].objectType = sendObjects[j + 1].objectType;
+                sendObjects[j + 1].id = -1;
+                sendObjects[j + 1].noInList = -1;
+                sendObjects[j + 1].objectState = -1;
+                sendObjects[j + 1].objectType = -1;
+                rejectList[j] = rejectList[j + 1];
+                rejectList[j + 1] = 0;
+                ackList[j] = ackList[j + 1];
+                ackList[j + 1] = 0;
+                objectTypeIsChanged[j] = objectTypeIsChanged[j + 1];
+                objectTypeIsChanged[j + 1] = false;
+            }
+            listSize--;
+        }
+    }
+
+    if ((goodNumber + badNumber - listSize) > 0)
     {
         int iter = 0;
+        Object *objectList = malloc(sizeof(Object) * ARRAY_SIZE);
         if (person.personType - BAD)
         {
             // good
@@ -672,8 +784,20 @@ int preparingState(Object *objectList, int rejectedRest)
             {
                 if (person.toiletList[i].objectState == BROKEN)
                 {
-                    objectList[iter] = person.toiletList[i];
-                    iter++;
+                    int canBeAdd = true;
+                    for (int j = 0; j < listSize; j++)
+                    {
+                        if (sendObjects[j].objectType == TOILET && sendObjects[j].id == person.toiletList[i].id)
+                        {
+                            canBeAdd = false;
+                            break;
+                        }
+                    }
+                    if (canBeAdd)
+                    {
+                        objectList[iter] = person.toiletList[i];
+                        iter++;
+                    }
                 }
             }
             for (int i = 0; i < potNumber; i++)
@@ -681,8 +805,20 @@ int preparingState(Object *objectList, int rejectedRest)
                 if (person.potList[i].objectState == BROKEN)
                 {
 
-                    objectList[iter] = person.potList[i];
-                    iter++;
+                    int canBeAdd = true;
+                    for (int j = 0; j < listSize; j++)
+                    {
+                        if (sendObjects[j].objectType == POT && sendObjects[j].id == person.potList[i].id)
+                        {
+                            canBeAdd = false;
+                            break;
+                        }
+                    }
+                    if (canBeAdd)
+                    {
+                        objectList[iter] = person.potList[i];
+                        iter++;
+                    }
                 }
             }
         }
@@ -693,23 +829,59 @@ int preparingState(Object *objectList, int rejectedRest)
             {
                 if (person.toiletList[i].objectState == REPAIRED)
                 {
-                    objectList[iter] = person.toiletList[i];
-                    iter++;
+                    int canBeAdd = true;
+                    for (int j = 0; j < listSize; j++)
+                    {
+                        if (sendObjects[j].objectType == TOILET && sendObjects[j].id == person.toiletList[i].id)
+                        {
+                            canBeAdd = false;
+                            break;
+                        }
+                    }
+                    if (canBeAdd)
+                    {
+                        objectList[iter] = person.toiletList[i];
+                        iter++;
+                    }
                 }
             }
             for (int i = 0; i < potNumber; i++)
             {
                 if (person.potList[i].objectState == REPAIRED)
                 {
-                    objectList[iter] = person.potList[i];
-                    iter++;
+                    int canBeAdd = true;
+                    for (int j = 0; j < listSize; j++)
+                    {
+                        if (sendObjects[j].objectType == POT && sendObjects[j].id == person.potList[i].id)
+                        {
+                            canBeAdd = false;
+                            break;
+                        }
+                    }
+                    if (canBeAdd)
+                    {
+                        objectList[iter] = person.potList[i];
+                        iter++;
+                    }
                 }
             }
         }
 
-        sendRequestForObjects(sendObjects, iter, rejectedRest);
+        sendRequestForObjects(objectList, iter, rejectedRest);
 
-        return iter;
+        int result = listSize + iter;
+        for (int i = listSize, j = 0; j < iter; i++, j++)
+        {
+            sendObjects[i] = objectList[j];
+        }
+        for (int i = listSize; i < ARRAY_SIZE; i++)
+        {
+            rejectList[i] = 0;
+            ackList[i] = 0;
+            objectTypeIsChanged[i] = false;
+        }
+        listSize = result;
+        return result;
     }
     else
         return -1;
@@ -737,7 +909,7 @@ void sendRequestForObjects(Object *ObjectList, int iterator, int rejectedRest)
                 int priority = rand() % 5;
                 updateLamportClock();
                 req.priority = person.priority + priority;
-                printf(ANSI_COLOR_YELLOW "[%d]\tPREPARING, %d: Send %s to: %d about %d" ANSI_COLOR_RESET "\n", person.lamportClock, person.id, req.objectState == TREQ ? "TREQ" : "PREQ", j, req.objectId);
+                //printf(ANSI_COLOR_YELLOW "[%d]\tPREPARING, %d: Send %s to: %d about %d" ANSI_COLOR_RESET "\n", person.lamportClock, person.id, req.objectState == TREQ ? "TREQ" : "PREQ", j, req.objectId);
                 iterationsCounter += 1;
                 MPI_Send(&req, 1, MPI_REQ, j, req.requestType, MPI_COMM_WORLD);
             }
@@ -750,28 +922,28 @@ void updateLists(Request request, char *stateName)
     int receivedId = request.id;
     if (request.objectType == POT)
     {
-        printf("[%d]\t%s, %d: Receive ACK_ALL with pot: %d and state: %s\n", person.lamportClock, stateName, person.id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
+        //printf("[%d]\t%s, %d: Receive ACK_ALL with pot: %d and state: %s\n", person.lamportClock, stateName, person.id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
         person.potList[request.objectId - 1].objectState = request.objectState;
         if (person.personType == GOOD)
         {
-            person.avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
+            person.avaliableObjectsCount = goodNumber + badNumber - listSize;
         }
         else
         {
-            person.avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
+            person.avaliableObjectsCount += goodNumber + badNumber - listSize;
         }
     }
     else
     {
-        printf("[%d]\t%s, %d: Receive ACK_ALL with toilet: %d and state: %s\n", person.lamportClock, stateName, person.id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
+        //printf("[%d]\t%s, %d: Receive ACK_ALL with toilet: %d and state: %s\n", person.lamportClock, stateName, person.id, receivedId, request.objectState - BROKEN ? "repaired" : "broken");
         person.toiletList[request.objectId - 1].objectState = request.objectState;
         if (person.personType == GOOD)
         {
-            person.avaliableObjectsCount += request.objectState - BROKEN ? -1 : 1;
+            person.avaliableObjectsCount += goodNumber + badNumber - listSize;
         }
         else
         {
-            person.avaliableObjectsCount += request.objectState - BROKEN ? 1 : -1;
+            person.avaliableObjectsCount += goodNumber + badNumber - listSize;
         }
     }
 }
@@ -785,47 +957,52 @@ void updateLamportClock()
 
 int waitCriticalState(int *objectId, int *objectType)
 {
-    int it = listSize;
-    int tempListSize = listSize;
-    for (int i = 0; i < tempListSize; i++)
+    int resultFalse = true;
+    for (int i = 0; i < listSize; i++)
     {
-        int tempRejectListValue = rejectList[i];
-        if (tempRejectListValue > 0)
+        if (rejectList[i] == 0)
         {
-            // delete from array
-            for (int j = i; j < tempListSize - 1; j++)
-            {
-                sendObjects[j] = sendObjects[j + 1];
-                rejectList[j] = rejectList[j + 1];
-                ackList[j] = ackList[j + 1];
-            }
-            tempListSize -= 1;
-            printf("[%d]\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person.lamportClock, person.id, tempListSize);
-
-            listSize = tempListSize;
+            resultFalse = false;
+            break;
+            // printf("[%d]\tWAIT_CRITICAL, %d: Remove element from list, current list size: %d\n", person.lamportClock, person.id, tempListSize);
         }
     }
 
-    tempListSize = listSize;
-    for (int i = 0; i < tempListSize; i++)
+    for (int i = 0; i < listSize; i++)
     {
-        int tempAckListValue = ackList[i];
-        if (tempAckListValue == (person.goodCount + person.badCount - 1))
+        if (ackList[i] == (person.goodCount + person.badCount - 1) && !objectTypeIsChanged[i])
         {
-            int tempAckListValue = ackList[i];
-            if (tempAckListValue == (person.goodCount + person.badCount - 1))
+            if (sendObjects[i].objectType == TOILET)
             {
-                printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
-                *objectId = sendObjects[i].id;
-                *objectType = sendObjects[i].objectType;
-                return true;
+                for (int j = 0; j < toiletNumber; j++)
+                {
+                    if (person.toiletList[j].id == sendObjects[i].id)
+                    {
+                        printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
+                        *objectId = sendObjects[i].id;
+                        *objectType = sendObjects[i].objectType;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                for (int j = 0; j < potNumber; j++)
+                {
+                    if (person.potList[j].id == sendObjects[i].id)
+                    {
+                        printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "toilet" : "pot", sendObjects[i].id);
+                        *objectId = sendObjects[i].id;
+                        *objectType = sendObjects[i].objectType;
+                        return true;
+                    }
+                }
             }
         }
     }
-    tempListSize = listSize;
-    if (tempListSize == 0)
+    if (resultFalse)
     {
-        printf("[%d]\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.lamportClock, person.id);
+        //printf("[%d]\tWAIT_CRITICAL, %d: List is empty, going to rest\n", person.lamportClock, person.id);
         return false;
     }
     return -1;

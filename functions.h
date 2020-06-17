@@ -25,7 +25,7 @@ void updateLamportClock();
 
 void handleStates();
 
-int preparingState(Object *objectList, int rejectedRest);
+int preparingState(int rejectedRest);
 
 int waitCriticalState(int *objectId, int *objectType);
 
