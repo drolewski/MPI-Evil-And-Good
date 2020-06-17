@@ -17,7 +17,7 @@ Person person;
 Object ackObject;
 int ackList[ARRAY_COL][ARRAY_ROW];
 int rejectList[ARRAY_COL][ARRAY_ROW];
-int listSize = 0;
+int listSize = potNumber + toiletNumber;
 Object sendObjects[ARRAY_COL];
 
 pthread_mutex_t lamportMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -178,12 +178,12 @@ void handleStates()
             {
                 for (int j = 0; j < (goodNumber + badNumber); j++)
                 {
-                    rejectList[i][j] = 0;
+                    rejectList[i][j] = -1;
                 }
             }
             for (int i = 0; i < (toiletNumber + potNumber); i++)
                 for (int j = 0; j < (goodNumber + badNumber); j++)
-                    ackList[i][j] = 0;
+                    ackList[i][j] = -1;
 
             state = PREPARING;
             break;
@@ -201,6 +201,7 @@ void handleStates()
             if (tempListASD > 0)
             {
                 state = WAIT_CRITICAL;
+                printf("%d\t%d: Going to WAIT_CRITICAL\n", person.lamportClock, person.id);
             }
             break;
         case WAIT_CRITICAL:
@@ -232,6 +233,7 @@ void handleStates()
             {
                 rejectedRest = true;
                 state = REST;
+                printf("%d\t%d: Going to REST with rejectedRest\n", person.lamportClock, person.id);
             }
             break;
         case IN_CRITICAL:
@@ -241,6 +243,8 @@ void handleStates()
         case AFTER_CRITICAL:
             afterCriticalState(&ackObject);
             state = REST;
+                printf("%d\t%d: Going to REST\n", person.lamportClock, person.id);
+
             break;
         case REST:
             pthread_mutex_lock(&messageListMutex);
@@ -256,6 +260,8 @@ void handleStates()
             if (first == NULL)
             {
                 state = PREPARING;
+                printf("%d\t%d: Going to PREPARING\n", person.lamportClock, person.id);
+
             }
             pthread_mutex_unlock(&messageListMutex);
             break;
@@ -722,6 +728,35 @@ void waitCriticalRequestHandler(Request request)
 
 void restRequestHandler(Request request, int objectId, int objectType)
 {
+
+    int tempListSize = listSize;
+    for (int i = 0; i < listSize; i++)
+    {
+        int columnACK = 0;
+        int columnRJCK = 0;
+        if (sendObjects[i].id != -1)
+        {
+            for (int j = 0; j < (goodNumber + badNumber); j++)
+            {
+                columnACK += ackList[i][j];
+                columnRJCK += rejectList[i][j];
+            }
+            if ((columnACK + columnRJCK) >= (goodNumber + badNumber - 1))
+            {
+                for (int k = 0; k < ARRAY_ROW; k++)
+                {
+                    rejectList[i][k] = -1;
+                    ackList[i][k] = -1;
+                }
+
+                sendObjects[i].id = -1;
+                sendObjects[i].noInList = -1;
+                sendObjects[i].objectState = -1;
+                sendObjects[i].objectType = -1;
+            }
+        }
+    }
+
     Request deepRequest;
     deepRequest.id = person.id;
     deepRequest.objectId = request.objectId;
@@ -909,6 +944,11 @@ void afterCriticalState(Object *object)
         sendObjects[id].noInList = -1;
         sendObjects[id].objectState = -1;
         sendObjects[id].objectType = -1;
+        for (int k = 0; k < ARRAY_ROW; k++)
+        {
+            rejectList[id][k] = -1;
+            ackList[id][k] = -1;
+        }
     }
 }
 
@@ -928,28 +968,38 @@ int preparingState(int rejectedRest)
             }
             if ((columnACK + columnRJCK) >= (goodNumber + badNumber - 1))
             {
-                for (int j = i; j < listSize - 1; j++)
+                for (int k = 0; k < ARRAY_ROW; k++)
                 {
-                    sendObjects[j] = sendObjects[j + 1];
-                    for (int k = 0; k < ARRAY_ROW; k++)
-                    {
-                        rejectList[j][k] = rejectList[j + 1][k];
-                        ackList[j][k] = ackList[j + 1][k];
-                    }
+                    rejectList[i][k] = -1;
+                    ackList[i][k] = -1;
                 }
 
-                sendObjects[listSize - 1].id = -1;
-                sendObjects[listSize - 1].noInList = -1;
-                sendObjects[listSize - 1].objectState = -1;
-                sendObjects[listSize - 1].objectType = -1;
-                listSize--;
+                sendObjects[i].id = -1;
+                sendObjects[i].noInList = -1;
+                sendObjects[i].objectState = -1;
+                sendObjects[i].objectType = -1;
             }
         }
     }
-    if ((potNumber + toiletNumber - listSize) > 0)
+    int avaliableObjects = 0;
+    for (int j = 0; j < toiletNumber; j++)
+    {
+        if ((person.toiletList[j].objectState == REPAIRED && person.personType == BAD) || (person.toiletList[j].objectState == BROKEN && person.personType == GOOD))
+        {
+            avaliableObjects += 1;
+        }
+    }
+    for (int j = 0; j < potNumber; j++)
+    {
+        if ((person.toiletList[j].objectState == REPAIRED && person.personType == BAD) || (person.toiletList[j].objectState == BROKEN && person.personType == GOOD))
+        {
+            avaliableObjects += 1;
+        }
+    }
+    if (avaliableObjects > 0)
     {
         int iter = 0;
-        Object *objectList = malloc(sizeof(Object) * (potNumber + toiletNumber - listSize));
+        Object *objectList = malloc(sizeof(Object) * (avaliableObjects));
         if (person.personType - BAD)
         {
             // good
@@ -1038,21 +1088,21 @@ int preparingState(int rejectedRest)
 
         sendRequestForObjects(objectList, iter, rejectedRest);
         int result = listSize + iter;
-        for (int i = listSize, j = 0; j < iter; i++, j++)
+        for (int i = 0, j = 0; i < listSize; i++)
         {
-            sendObjects[i] = objectList[j];
-        }
-        for (int i = listSize; i < ARRAY_COL; i++)
-        {
-            for (int j = 0; j < ARRAY_ROW; j++)
+            if (sendObjects[i].id == -1)
             {
-                ackList[i][j] = 0;
-                rejectList[i][j] = 0;
+                sendObjects[i] = objectList[j++];
+                for (int k = 0; k < ARRAY_ROW; k++)
+                {
+                    ackList[i][k] = 0;
+                    rejectList[i][k] = 0;
+                }
             }
         }
         free(objectList);
-        listSize = result;
-        return result;
+        // listSize = result;
+        return iter;
     }
     else
         return -1;
@@ -1081,10 +1131,10 @@ void sendRequestForObjects(Object *ObjectList, int iterator, int rejectedRest)
                 req.lamportClock = person.lamportClock;
                 updateLamportClock();
                 req.priority = person.priority + priority;
-                // printf("[%d]\tPREPARING, %d: Send %s to: %d about %d\n", person.lamportClock, person.id, req.requestType == TREQ ? "TREQ" : "PREQ", j, req.objectId);
                 MPI_Send(&req, 1, MPI_REQ, j, req.requestType, MPI_COMM_WORLD);
             }
         }
+        // printf("[%d]\tPREPARING, %d: Send\n", person.lamportClock, person.id);
     }
 }
 
@@ -1118,6 +1168,10 @@ void updateLists(Request request, char *stateName)
             person.avaliableObjectsCount = toiletNumber + potNumber - listSize;
         }
     }
+    for (int i = 0; i < listSize; i++)
+    {
+        if(sendObjects[i].id == request.objectId && sendObjects[i].objectType == request.objectType) sendObjects[i].objectState = request.objectState;
+    }
 }
 
 void updateLamportClock()
@@ -1130,7 +1184,7 @@ void updateLamportClock()
 int waitCriticalState(int *objectId, int *objectType)
 {
     int areAllRejected = true;
-
+    int neededState = person.personType == GOOD ? BROKEN : REPAIRED;
     for (int i = 0; i < listSize; i++)
     {
         int rejectCounter = 0;
@@ -1153,83 +1207,101 @@ int waitCriticalState(int *objectId, int *objectType)
 
     for (int i = 0; i < listSize; i++)
     {
-        int ackCounter = 0;
-        int rejectCounter = 0;
-        for (int j = 0; j < (goodNumber + badNumber); j++)
+        if (sendObjects[i].id != -1)
         {
-            ackCounter += ackList[i][j];
-            rejectCounter += rejectList[i][j];
-        }
-
-        if (ackCounter >= (person.goodCount + person.badCount - 1) && rejectCounter == 0)
-        {
-            if (sendObjects[i].objectType == TOILET)
+            int ackCounter = 0;
+            int rejectCounter = 0;
+            for (int j = 0; j < (goodNumber + badNumber); j++)
             {
-                for (int j = 0; j < ARRAY_COL; j++)
-                {
-                    if (sendObjects[i].objectType == person.toiletList[j].objectType && sendObjects[i].id == person.toiletList[j].id)
-                    {
+                ackCounter += ackList[i][j];
+                rejectCounter += rejectList[i][j];
+            }
+            //  printf("[%d]\tWAIT_CRITICAL, %d:  %d , there are %d avaliableObjects; ackList = %d, rejectList = %d\n", person.lamportClock, person.id,  sendObjects[i].id, person.avaliableObjectsCount, ackCounter, rejectCounter);
 
-                        if (sendObjects[i].objectState == person.toiletList[j].objectState)
+            if (ackCounter >= (person.goodCount + person.badCount - 1) && rejectCounter == 0)
+            {
+                if (sendObjects[i].objectType == TOILET)
+                {
+                    for (int j = 0; j < ARRAY_COL; j++)
+                    {
+                        if (sendObjects[i].objectType == person.toiletList[j].objectType && sendObjects[i].id == person.toiletList[j].id)
                         {
-                            printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL, there are %d avaliableObjects; ackList = %d, rejectList = %d\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "TOILET" : "POT", sendObjects[i].id, person.avaliableObjectsCount, ackCounter, rejectCounter);
-                            *objectId = sendObjects[i].id;
-                            *objectType = sendObjects[i].objectType;
-                            return true;
+
+                            if (sendObjects[i].objectState == person.toiletList[j].objectState && sendObjects[i].objectState == neededState)
+                            {
+                                printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL, there are %d avaliableObjects; ackList = %d, rejectList = %d\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "TOILET" : "POT", sendObjects[i].id, person.avaliableObjectsCount, ackCounter, rejectCounter);
+                                *objectId = sendObjects[i].id;
+                                *objectType = sendObjects[i].objectType;
+                                return true;
+                            }
+                            else
+                            {
+                                for (int k = 0; k < ARRAY_ROW; k++)
+                                {
+                                    rejectList[i][k] = -1;
+                                    ackList[i][k] = -1;
+                                }
+
+                                sendObjects[i].id = -1;
+                                sendObjects[i].noInList = -1;
+                                sendObjects[i].objectState = -1;
+                                sendObjects[i].objectType = -1;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (int j = 0; j < ARRAY_COL; j++)
+                    {
+                        if (sendObjects[i].objectType == person.potList[j].objectType && sendObjects[i].id == person.potList[j].id)
+                        {
+
+                            if (sendObjects[i].objectState == person.potList[j].objectState && sendObjects[i].objectState == neededState)
+                            {
+                                printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL, listSize: %d ; ackList = %d, rejectList = %d\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "TOILET" : "POT", sendObjects[i].id, listSize, ackCounter, rejectCounter);
+                                *objectId = sendObjects[i].id;
+                                *objectType = sendObjects[i].objectType;
+                                return true;
+                            }
+                            else
+                            {
+                                for (int k = 0; k < ARRAY_ROW; k++)
+                                {
+                                    rejectList[i][k] = -1;
+                                    ackList[i][k] = -1;
+                                }
+
+                                sendObjects[i].id = -1;
+                                sendObjects[i].noInList = -1;
+                                sendObjects[i].objectState = -1;
+                                sendObjects[i].objectType = -1;
+                            }
                         }
                     }
                 }
             }
-            else
+            else if (ackCounter + rejectCounter == (person.goodCount + person.badCount - 1))
             {
-                for (int j = 0; j < ARRAY_COL; j++)
-                {
-                    if (sendObjects[i].objectType == person.potList[j].objectType && sendObjects[i].id == person.potList[j].id)
-                    {
 
-                        if (sendObjects[i].objectState == person.potList[j].objectState)
-                        {
-                            printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d is given, going to IN_CRITICAL, listSize: %d ; ackList = %d, rejectList = %d\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "TOILET" : "POT", sendObjects[i].id, listSize, ackCounter, rejectCounter);
-                            *objectId = sendObjects[i].id;
-                            *objectType = sendObjects[i].objectType;
-                            return true;
-                        }
-                    }
+                for (int k = 0; k < ARRAY_ROW; k++)
+                {
+                    rejectList[i][k] = -1;
+                    ackList[i][k] = -1;
                 }
+
+                sendObjects[i].id = -1;
+                sendObjects[i].noInList = -1;
+                sendObjects[i].objectState = -1;
+                sendObjects[i].objectType = -1;
+
+                // printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d BLOCKED ACK, listSize: %d; ackList = %d, rejectList = %d\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "TOILET" : "POT", sendObjects[i].id, listSize, ackCounter, rejectCounter);
+            }
+            else if (rejectCounter > 0)
+            {
+                // printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d BLOCKED REJECT, listSize: %d; ackList = %d, rejectList = %d\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "TOILET" : "POT", sendObjects[i].id, listSize, ackCounter, rejectCounter);
             }
         }
-        else if (ackCounter + rejectCounter == (person.goodCount + person.badCount - 1))
-        {
-            // for (int j = i; j < listSize - 1; j++)
-            // {
-            //     sendObjects[j] = sendObjects[j + 1];
-            //     for (int k = 0; k < ARRAY_ROW; k++)
-            //     {
-            //         rejectList[j][k] = rejectList[j + 1][k];
-            //         ackList[j][k] = ackList[j + 1][k];
-            //     }
-            // }
-
-            // for (int k = 0; k < ARRAY_ROW; k++)
-            // {
-            //     rejectList[listSize - 1][k] = -1;
-            //     ackList[listSize - 1][k] = -1;
-            // }
-
-            // sendObjects[listSize - 1].id = -1;
-            // sendObjects[listSize - 1].noInList = -1;
-            // sendObjects[listSize - 1].objectState = -1;
-            // sendObjects[listSize - 1].objectType = -1;
-
-            // listSize--;
-
-            // printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d BLOCKED ACK, listSize: %d; ackList = %d, rejectList = %d\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "TOILET" : "POT", sendObjects[i].id, listSize, ackCounter, rejectCounter);
-        }
-        // else if (rejectCounter >0)
-        // {
-        // printf("[%d]\tWAIT_CRITICAL, %d: ACK for %s %d BLOCKED REJECT, listSize: %d; ackList = %d, rejectList = %d\n", person.lamportClock, person.id, sendObjects[i].objectType == TOILET ? "TOILET" : "POT", sendObjects[i].id, listSize, ackCounter, rejectCounter);
-
-        // }
     }
 
     return -1;
